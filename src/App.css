@@ -1,38 +1,139 @@
-.App {
+/* @import "~react-screen-orientation/src/index"; */
+
+body {
+  zoom: 90%;
+  height: auto;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.app {
+  background: rgb(243, 249, 255);
+  /* background: rgb(219, 233, 249); */
+  min-height: 111vh;
+}
+
+
+div.title-header {
+  position: fixed;
+  width: 112vw;
+  top: 0;
+  z-index: 1000;
+  background: #fff;
+}
+
+
+div.styleBgsite {
+  background: linear-gradient(131deg, rgba(0, 189, 255, 1) 0%, rgba(49, 77, 254, 1) 52%, rgba(1, 29, 231, 1) 98%);
+}
+
+
+div.row-main {
+  background: rgb(243, 249, 255);
+  position: relative;
+  top: 50px;
+  /* min-height: 111vh; */
+  /* width: 100vw; */
+  margin: 0;
+}
+
+div.card-body.card-planing {
+  background: rgba(255, 255, 255, 0.973);
+  transition: 0.4s;
+}
+
+div.card-body.card-planing:hover {
+  background: #fff;
+}
+
+div.row-planing div.col,
+div.row-planing div.col-sm-1 {
+  padding: 0.2rem;
+  border-right: solid 2px;
+  border-color: rgb(232, 252, 255);
+}
+
+div.row-planing div:nth-child(1) {
+  text-align: center;
+  font-size: 0.8rem;
+  /* background: red; */
+}
+
+div.row-planing div:nth-child(2) {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+table.tbl-qc-planning {
+  margin-bottom: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+table.tbl-qc-planning tr td {
+  padding: 0.25rem;
+  padding-top: 0.1rem;
+  border-bottom: 0;
+  border-right: 1px rgba(126, 124, 124, 0.721) solid;
+  text-align: center;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+table.tbl-qc-planning tr td.noborder {
+  border-right: 0;
 }
 
-.App-link {
-  color: #61dafb;
+table.tbl-qc-planning tr.headerplan:nth-child(1) {
+  font-weight: bold;
+  font-size: 0.8rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+table.tbl-qc-planning tbody tr.headerplan {
+  line-height: 1rem;
+}
+
+table.tbl-qc-planning tr.headerplan:nth-child(2) {
+  font-size: 0.9rem;
+}
+
+table.tbl-qc-detail thead tr th,
+table.tbl-qc-detail tbody tr td {
+  /* padding: 0.rem; */
+  font-size: 0.8rem;
+}
+
+button.btn-input {
+  background: rgb(0, 189, 255);
+  background: linear-gradient(121deg, rgba(0, 189, 255, 1) 9%, rgba(50, 81, 250, 1) 51%, rgba(21, 57, 252, 1) 100%);
+  border: none;
+}
+
+svg.icon-completed {
+  color: linear-gradient(121deg, rgba(89, 250, 86, 1) 9%, rgba(0, 153, 21, 1) 76%);
+}
+
+table tbody tr td svg {
+  transition: all 0.5s ease;
+}
+
+table tbody tr td svg.opened {
+  transform: rotateX(180deg);
+  transition: all 0.5s ease;
+}
+
+div.row-planed {
+  display: none;
+  overflow: hidden;
+  transition: 3s ease-out;
+}
+
+div.row-planed.opened {
+  overflow: hidden;
+  transition: 3s ease-out;
+  display: block;
 }

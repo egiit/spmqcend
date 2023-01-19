@@ -1,0 +1,27 @@
+section {
+  background: rgb(208, 0, 0);
+  background: linear-gradient(128deg, rgba(208, 0, 0, 0.9559174011401436) 0%, rgba(204, 54, 0, 0.882) 50%, rgba(255, 31, 31, 0.99) 91%);
+}
+
+.login-body {
+  min-height: 111vh;
+}
+
+/* @keyframes mybackground {
+  from {
+    background: linear-gradient(to right, #fc466b, #3f5efb);
+  }
+  to {
+    background: linear-gradient(to right, #fc466b, #3f5efb);
+  }
+}
+ */
+
+/* @keyframes mymove {
+  0% {
+    background-color: #60d394;
+  }
+  100% {
+    background-color: #aaf683;
+  }
+} */
