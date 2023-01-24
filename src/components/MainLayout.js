@@ -1,13 +1,13 @@
-import Offcanvas from "react-bootstrap/Offcanvas";
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import "../App.css";
-// import TitleHeaderScan from "./TitleHeaderScan";
-import axios from "../axios/axios";
-import { Row, Col, Button } from "react-bootstrap";
-// import { Message } from "../partial/Message";
-import "axios-progress-bar/dist/nprogress.css";
 import DeviceOrientation, { Orientation } from "react-screen-orientation";
+
+import axios from "../axios/axios";
+import "axios-progress-bar/dist/nprogress.css";
+
+import TitleHeaderScan from "./TitleHeaderScan";
+import MenuOffCanvas from "./MenuOffCanvas";
 
 const MainLayout = () => {
   const [show, setShow] = useState(false);
@@ -29,34 +29,28 @@ const MainLayout = () => {
   };
 
   return (
-    <DeviceOrientation lockOrientation={"landscape"}>
-      <Orientation orientation="landscape" alwaysRender={false}>
-        <div className="app">
-          <Outlet context={{ handleShow: handleShow }} />
-        </div>
-        <Offcanvas show={show} onHide={handleClose} placement="end">
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>SPM-QC End Line</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body>
-            <Row>
-              <Col>
-                <Button variant="warning" onClick={() => logout()}>
-                  logout
-                </Button>
-              </Col>
-            </Row>
-          </Offcanvas.Body>
-        </Offcanvas>
-      </Orientation>
-      {/* <Orientation orientation="portrait">
+    <>
+      <DeviceOrientation lockOrientation={"landscape"}>
+        <Orientation orientation="landscape" alwaysRender={false}>
+          <div className="app">
+            <TitleHeaderScan handleShow={handleShow} />
+            <Outlet />
+          </div>
+          <MenuOffCanvas
+            show={show}
+            handleClose={handleClose}
+            logout={logout}
+          />
+        </Orientation>
+        {/* <Orientation orientation="portrait">
         <Row>
           <Col className="text-center fs-4 fw-bold">
             <p className="text-center">Please rotate your device</p>
           </Col>
         </Row>
       </Orientation> */}
-    </DeviceOrientation>
+      </DeviceOrientation>
+    </>
   );
 };
 

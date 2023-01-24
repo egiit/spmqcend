@@ -4,6 +4,8 @@ import MainLayout from "./components/MainLayout";
 import QcMap from "./map/QcMap";
 import Login from "./page/Login";
 import Main from "./page/Main";
+import { Message } from "./partial/Message";
+import { Flasher } from "react-universal-flash";
 
 function App() {
   return (
@@ -12,13 +14,16 @@ function App() {
       <Route
         element={
           <ProtectedRouter>
-            <MainLayout />
+            <Flasher position="bottom_center">
+              <Message />
+            </Flasher>
+            <QcMap>
+              <MainLayout />
+            </QcMap>
           </ProtectedRouter>
         }
       >
-        <Route element={<QcMap />}>
-          <Route path="maininput" element={<Main />} />
-        </Route>
+        <Route path="maininput" element={<Main />} />
       </Route>
     </Routes>
   );

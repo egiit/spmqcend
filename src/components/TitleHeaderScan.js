@@ -1,14 +1,15 @@
 // import moment from "moment";
 import { useContext, useState } from "react";
-import { Row, Col, NavDropdown } from "react-bootstrap";
+import { Row, Col, NavDropdown, Button } from "react-bootstrap";
 import useInterval from "use-interval";
-import { BiRefresh } from "react-icons/bi";
+import { MdOutlineMenuOpen } from "react-icons/md";
 import LogoSumbiri from "../asset/logos.png";
-import { QcEndlineContex } from "../provider/QcEndProvider";
+// import { QcEndlineContex } from "../provider/QcEndProvider";
+import { AuthContext } from "../auth/AuthProvider";
 
 const TitleHeaderScan = ({ handleShow }) => {
-  const { qcName, qcType, siteName, lineName, shift } =
-    useContext(QcEndlineContex);
+  const { value } = useContext(AuthContext);
+  const { qcName, qcType, siteName, lineName, shift } = value;
   let time = new Date().toLocaleTimeString("en-US", {
     hour12: false,
     hour: "2-digit",
@@ -65,7 +66,7 @@ const TitleHeaderScan = ({ handleShow }) => {
         <p className="text fs-5 fw-bold mb-0">QC {qcType}</p>
         <p className="text fs-6 fw-bold mb-0">Inspection</p>
       </Col>
-      <Col onClick={() => handleShow()}>
+      <Col>
         <p className="text  fw-bold mb-0">{shift}</p>
         <p className="text  fw-bold mb-0">{qcName}</p>
       </Col>
@@ -87,8 +88,15 @@ const TitleHeaderScan = ({ handleShow }) => {
           ))} */}
         </NavDropdown>
       </Col>
-      <Col sm={1} className="pe-0 me-0 text-center">
-        <BiRefresh size={45} color="blue" style={{ cursor: "pointer" }} />
+      <Col sm={1} className="pe-0 me-0 text-center pt-2">
+        <Button
+          variant="outline-primary"
+          size="sm"
+          className="shadow-sm"
+          onClick={() => handleShow()}
+        >
+          <MdOutlineMenuOpen size={30} />
+        </Button>
       </Col>
     </Row>
   );

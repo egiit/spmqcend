@@ -27,7 +27,7 @@ div.title-header {
   position: fixed;
   width: 112vw;
   top: 0;
-  z-index: 1000;
+  z-index: 1;
   background: #fff;
 }
 
@@ -86,11 +86,59 @@ table.tbl-qc-planning tr td {
 
 table.tbl-qc-planning tr td.noborder {
   border-right: 0;
+  width: 62px;
+  max-width: 62px;
 }
 
 table.tbl-qc-planning tr.headerplan:nth-child(1) {
   font-weight: bold;
   font-size: 0.8rem;
+}
+
+table.tbl-qc-planning tr td:nth-child(n+7):nth-child(-n+9) {
+  width: 55px;
+}
+
+table.tbl-qc-planning tr td:nth-child(n+5):nth-child(-n+6) {
+  width: 38px;
+}
+
+/* for buyer colomn wrap  */
+table.tbl-qc-planning tr td:nth-child(1) {
+  width: 62px;
+  max-width: 62px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.tbl-qc-planning tr td:nth-child(2) {
+  width: 122px;
+  max-width: 122px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.tbl-qc-planning tr td:nth-child(3) {
+  width: 296px;
+  max-width: 296px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.tbl-qc-planning tr td:nth-child(4) {
+  width: 180px;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.tbl-qc-planning tr td:nth-last-child(1) {
+  width: 62px;
+  max-width: 62px;
 }
 
 table.tbl-qc-planning tbody tr.headerplan {
@@ -136,4 +184,50 @@ div.row-planed.opened {
   overflow: hidden;
   transition: 3s ease-out;
   display: block;
+}
+
+div.fade.modal-backdrop.show {
+  width: 100%;
+  height: 100%;
+}
+
+div.fade.offcanvas-backdrop.show {
+  height: 100%;
+}
+
+div.modal-dialog.modal-fullscreen {
+  width: 100%;
+  height: 100%;
+}
+
+#flash-box {
+  top: 50px;
+}
+
+div.main-content-input {
+  height: 92vh;
+}
+
+button.btn svg.undo-btn {
+  transform: rotate(-30deg);
+}
+
+div.good-btn {
+  background: rgb(37, 194, 48);
+  background: linear-gradient(130deg, rgba(37, 194, 48, 1) 7%, rgba(57, 224, 54, 0.8155637254901961) 47%, rgba(0, 153, 21, 1) 87%);
+}
+
+div.btn-bs {
+  background: rgb(194, 37, 37);
+  background: linear-gradient(130deg, rgba(194, 37, 37, 1) 0%, rgba(246, 92, 92, 0.8155637254901961) 21%, rgba(207, 4, 4, 1) 71%);
+}
+
+div.btn-repaird {
+  background: rgb(37, 124, 194);
+  background: linear-gradient(130deg, rgba(37, 124, 194, 1) 5%, rgba(79, 157, 244, 0.8155637254901961) 24%, rgba(4, 103, 207, 1) 77%);
+}
+
+div.btn-defect {
+  background: rgb(240, 188, 53);
+  background: linear-gradient(130deg, rgba(240, 188, 53, 1) 7%, rgba(255, 222, 32, 0.8883928571428571) 47%, rgba(218, 179, 0, 1) 87%);
 }

@@ -1,6 +1,10 @@
-section {
+/* section {
   background: rgb(208, 0, 0);
   background: linear-gradient(128deg, rgba(208, 0, 0, 0.9559174011401436) 0%, rgba(204, 54, 0, 0.882) 50%, rgba(255, 31, 31, 0.99) 91%);
+} */
+section {
+  background: rgb(56, 30, 255);
+  background: radial-gradient(circle, rgba(56, 30, 255, 0.9921218487394958) 0%, rgba(23, 181, 241, 1) 50%, rgba(58, 102, 241, 1) 100%);
 }
 
 .login-body {

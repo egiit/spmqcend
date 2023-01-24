@@ -16,11 +16,18 @@ export const QcEndProvider = ({ children }) => {
 
   const initialstate = {
     date: moment().format("YYYY-MM-DD"),
+    // schDate: "2023-01-21",
     schDate: moment().format("YYYY-MM-DD"),
     dataDailyPlan: [],
+    dataHCselect: [],
+    bdlSelect: [],
+    listDefect: [],
+    listPart: [],
     siteActive: siteName,
     activeTab: "normal",
-    // dataQrBundle: [],
+    mdlHC: false,
+    pageActive: "",
+    mdlInput: false,
     // listSite: [],
     // listLine: [],
     // listResultScan: [],
@@ -62,12 +69,74 @@ export const QcEndProvider = ({ children }) => {
       .catch((err) => console.log(err));
   }
 
+  async function getListPart() {
+    await axios.get(`/qc/part`).then((res) => {
+      dispatch({
+        type: _ACTION._GET_LIST_PART,
+        payload: { data: res.data },
+      });
+    });
+  }
+  async function getListDefect() {
+    await axios.get(`/qc/defect`).then((res) => {
+      dispatch({
+        type: _ACTION._GET_LIST_DEFECT,
+        payload: { data: res.data },
+      });
+    });
+  }
+
+  // declare state and dispatch
   const [state, dispatch] = useReducer(reducer, initialstate);
+
+  const refreshPlanning = () =>
+    getDailyPlanning(state.schDate, siteName, lineName, idSiteLine, shift);
+  const refrehBundle = () => getQrBundle(state.schDate, siteName, lineName);
+
+  const refrehAll = () => {
+    refreshPlanning();
+    refrehBundle();
+  };
+
+  useEffect(() => {
+    getListPart();
+    getListDefect();
+  }, []);
 
   useEffect(() => {
     getDailyPlanning(state.schDate, siteName, lineName, idSiteLine, shift);
     getQrBundle(state.schDate, siteName, lineName);
   }, [state.schDate, siteName, lineName, idSiteLine, shift]);
+
+  //function bundleSelect
+  function bundleSelected(dataBdl) {
+    dispatch({
+      type: _ACTION._SET_BDL_SELECT,
+      payload: { data: dataBdl },
+    });
+    dispatch({
+      type: _ACTION._SET_MDL_INPUT,
+      payload: true,
+    });
+  }
+  //function bundleSelect
+  function bdlUnslected() {
+    dispatch({
+      type: _ACTION._SET_BDL_SELECT,
+      payload: { data: [] },
+    });
+    dispatch({
+      type: _ACTION._SET_MDL_INPUT,
+      payload: false,
+    });
+  }
+
+  function handlePageActive(page) {
+    dispatch({
+      type: _ACTION._SET_DEF_PAGE,
+      payload: page,
+    });
+  }
 
   return (
     <QcEndlineContex.Provider
@@ -80,6 +149,12 @@ export const QcEndProvider = ({ children }) => {
         siteName,
         lineName,
         shift,
+        refreshPlanning,
+        refrehBundle,
+        refrehAll,
+        bundleSelected,
+        bdlUnslected,
+        handlePageActive,
       }}
     >
       {children}

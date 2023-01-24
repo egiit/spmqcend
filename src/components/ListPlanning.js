@@ -1,17 +1,23 @@
+import { memo } from "react";
 import { Card, Button, Table, Row, Col } from "react-bootstrap";
 import { FaUserPlus } from "react-icons/fa";
-import { IoIosArrowDown, IoMdTimer } from "react-icons/io";
+import { IoIosArrowDown } from "react-icons/io";
 import { GiCheckMark } from "react-icons/gi";
 import { RiFileEditFill } from "react-icons/ri";
 import { useContext } from "react";
 import { QcEndlineContex } from "../provider/QcEndProvider";
+import { flash } from "react-universal-flash";
 
-const ListPlanning = () => {
+const ListPlanning = ({ selectHc, handleSelBdl }) => {
   const { state } = useContext(QcEndlineContex);
-  function accordOpen(planId) {
-    const arrow = document.getElementsByClassName(`arrow${planId}`)[0];
+
+  function accordOpen(plan) {
+    if (plan.ACT_MP === null)
+      return flash("Please Set Actual Manpower First!", 2000, "warning");
+    const getUnixId = plan.SCHD_ID + plan.SCHD_QTY;
+    const arrow = document.getElementsByClassName(`arrow${getUnixId}`)[0];
     const rowListline = document.getElementsByClassName(
-      `row-planid-${planId}`
+      `row-planid-${getUnixId}`
     )[0];
     arrow.classList.toggle("opened");
     rowListline.classList.toggle("opened");
@@ -40,7 +46,7 @@ const ListPlanning = () => {
                         <Button
                           size="sm"
                           variant="primary"
-                          onClick={() => console.log("Danger")}
+                          onClick={() => selectHc(plan, "normal")}
                         >
                           <FaUserPlus size="20" color="#FFF" />
                         </Button>
@@ -48,7 +54,7 @@ const ListPlanning = () => {
                       <td
                         rowSpan={2}
                         className="noborder"
-                        onClick={() => accordOpen(plan.SCHD_ID + plan.SCHD_QTY)}
+                        onClick={() => accordOpen(plan, "normal")}
                       >
                         <IoIosArrowDown
                           size="20"
@@ -59,17 +65,16 @@ const ListPlanning = () => {
                     <tr>
                       <td>{plan.CUSTOMER_NAME}</td>
                       <td>{plan.ORDER_REFERENCE_PO_NO}</td>
-                      <td>{plan.PRODUCT_ITEM_CODE}</td>
+                      <td>{plan.ORDER_STYLE_DESCRIPTION}</td>
                       {/* <td>{plan.PRODUCT_ITEM_DESCRIPTION}</td> */}
                       <td>{plan.ITEM_COLOR_NAME}</td>
                       <td>{plan.PLAN_WH}</td>
-                      <td>{plan.PLAN_MP}</td>
-                      <td>{plan.PLAN_TARGET}</td>
+                      <MP plan={plan} />
+                      <td>
+                        {plan.ACT_TARGET ? plan.ACT_TARGET : plan.PLAN_TARGET}
+                      </td>
                       <td>45</td>
                       <td>-300</td>
-                    </tr>
-                    <tr>
-                      <td colSpan={10}></td>
                     </tr>
                   </tbody>
                 </Table>
@@ -105,34 +110,45 @@ const ListPlanning = () => {
                           </tr>
                         </thead>
                         <tbody className=" align-middle">
-                          {state.dataQrBundle
-                            .filter((lsbdl) => lsbdl.SCHD_ID === plan.SCHD_ID)
-                            .map((bdl, i) => (
-                              <tr className="text-center" key={i}>
-                                <td>{bdl.BUNDLE_SEQUENCE}</td>
-                                <td>{bdl.BARCODE_SERIAL}</td>
-                                <td>{bdl.ORDER_STYLE}</td>
-                                <td>{bdl.ORDER_SIZE}</td>
-                                <td>{bdl.ORDER_QTY}</td>
-                                <td>48</td>
-                                <td>47</td>
-                                <td>1</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>
-                                  <GiCheckMark size={20} color="#00a814" />
-                                </td>
-                                <td>
-                                  <Button
-                                    size="sm"
-                                    className="btn-input"
-                                    onClick={() => console.log("Primary")}
-                                  >
-                                    <RiFileEditFill size={20} />
-                                  </Button>
-                                </td>
-                              </tr>
-                            ))}
+                          {state.dataQrBundle.length !== 0 ? (
+                            state.dataQrBundle
+                              .filter((lsbdl) => lsbdl.SCHD_ID === plan.SCHD_ID)
+                              .map((bdl, i) => (
+                                <tr className="text-center" key={i}>
+                                  <td>{bdl.BUNDLE_SEQUENCE}</td>
+                                  <td>{bdl.BARCODE_SERIAL}</td>
+                                  <td>{bdl.ORDER_STYLE}</td>
+                                  <td>{bdl.ORDER_SIZE}</td>
+                                  <td>{bdl.ORDER_QTY}</td>
+                                  <td>48</td>
+                                  <td>47</td>
+                                  <td>1</td>
+                                  <td>-</td>
+                                  <td>-</td>
+                                  <td>
+                                    <GiCheckMark size={20} color="#00a814" />
+                                  </td>
+                                  <td>
+                                    <Button
+                                      size="sm"
+                                      className="btn-input"
+                                      onClick={() => handleSelBdl(bdl, "N")}
+                                    >
+                                      <RiFileEditFill size={20} />
+                                    </Button>
+                                  </td>
+                                </tr>
+                              ))
+                          ) : (
+                            <tr>
+                              <td
+                                colSpan={12}
+                                className="text-center fst-italic"
+                              >
+                                No Bundle Loading
+                              </td>
+                            </tr>
+                          )}
                         </tbody>
                       </Table>
                     ) : null}
@@ -145,5 +161,12 @@ const ListPlanning = () => {
     </>
   );
 };
+
+const MP = memo(({ plan }) => {
+  if (plan.ACT_MP == null) {
+    return <td className="text-warning">{plan.PLAN_MP}</td>;
+  }
+  return <td>{plan.ACT_MP}</td>;
+});
 
 export default ListPlanning;

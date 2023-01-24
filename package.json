@@ -19,6 +19,7 @@
     "react-router-dom": "^6.6.2",
     "react-screen-orientation": "^0.0.4",
     "react-scripts": "5.0.1",
+    "react-universal-flash": "^1.0.18",
     "use-interval": "^1.4.0",
     "web-vitals": "^2.1.4"
   },
