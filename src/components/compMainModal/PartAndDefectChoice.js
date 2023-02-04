@@ -3,9 +3,10 @@ import { Row, Col, Card, Button, InputGroup, Form } from "react-bootstrap";
 // import { GiBackwardTime } from 'react-icons/gi';
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { QcEndlineContex } from "../../provider/QcEndProvider";
+import { flash } from "react-universal-flash";
 
-const PartAndDefectChoice = () => {
-  const { state, handlePageActive } = useContext(QcEndlineContex);
+const PartAndDefectChoice = ({ type }) => {
+  const { state, handlePageActive, postOutput } = useContext(QcEndlineContex);
   const [partSelected, setPartSelected] = useState("");
   const [defectSelected, setDefectSelected] = useState("");
   const [queryPart, setQueryPart] = useState("");
@@ -107,6 +108,18 @@ const PartAndDefectChoice = () => {
     return rows;
   }
 
+  function handlePost() {
+    if (defectSelected === "" || partSelected === "")
+      return flash("Please Select Part And Issue!", 2000, "danger");
+    const dataPost = {
+      ENDLINE_DEFECT_CODE: defectSelected,
+      ENDLINE_PART_CODE: partSelected,
+    };
+    postOutput(type, dataPost);
+    setPartSelected("");
+    setDefectSelected("");
+  }
+
   return (
     <div className="pt-2">
       <Row>
@@ -115,7 +128,9 @@ const PartAndDefectChoice = () => {
             <Card.Body className="py-1">
               <div className="fw-bold mb-3 border-bottom">
                 <Row>
-                  <Col>Defect Part</Col>
+                  <Col className={type === "BS" ? "text-danger" : null}>
+                    {type} Part
+                  </Col>
                   <Col className="mb-1">
                     <Form.Control
                       size="sm"
@@ -147,7 +162,9 @@ const PartAndDefectChoice = () => {
             <Card.Body className="py-1">
               <div className="fw-bold mb-3 border-bottom">
                 <Row>
-                  <Col>Defect Issue</Col>
+                  <Col className={type === "BS" ? "text-danger" : null}>
+                    {type} Issue
+                  </Col>
                   <Col className="mb-1">
                     <Form.Control
                       size="sm"
@@ -204,14 +221,10 @@ const PartAndDefectChoice = () => {
         <Col sm={2} className="text-end">
           <Button
             variant="primary"
-            // disabled={partCode === "" || defCode === ""}
-            onClick={() =>
-              console.log(
-                `Part Code ${partSelected} - Defect Code ${defectSelected}`
-              )
-            }
+            disabled={defectSelected === "" || partSelected === ""}
+            onClick={() => handlePost()}
           >
-            <span>Next</span> <IoIosArrowForward size={20} />
+            <span>Save</span> <IoIosArrowForward size={20} />
           </Button>
         </Col>
       </Row>

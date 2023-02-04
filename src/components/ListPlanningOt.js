@@ -1,29 +1,43 @@
-import { memo } from "react";
+import React, { memo } from "react";
 import { Card, Button, Table, Row, Col } from "react-bootstrap";
 import { FaUserPlus } from "react-icons/fa";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoMdTimer, IoMdDoneAll } from "react-icons/io";
 import { GiCheckMark } from "react-icons/gi";
 import { RiFileEditFill } from "react-icons/ri";
+import { BiTransferAlt } from "react-icons/bi";
+import { BsViewList } from "react-icons/bs";
 import { useContext } from "react";
 import { QcEndlineContex } from "../provider/QcEndProvider";
 import { flash } from "react-universal-flash";
 
-const ListPlanningOt = ({ dataDailyPlan, selectHc, handleSelBdl }) => {
-  const { state } = useContext(QcEndlineContex);
+const ListPlanningOt = ({ dataDailyPlan, selectHc, handleSelPlanSize }) => {
+  const { state, handlMdlTfrActv } = useContext(QcEndlineContex);
 
   function accordOpen(plan) {
-    if (plan.ACT_MP_OT === null)
+    if (plan.ACT_MP === null)
       return flash("Please Set Actual Manpower First!", 2000, "warning");
-
     const getUnixId = plan.SCHD_ID + plan.SCHD_QTY;
-    const arrow = document.getElementsByClassName(`arrow${getUnixId}-ot`)[0];
+    const arrow = document.getElementsByClassName(`arrow${getUnixId}`)[0];
     const rowListline = document.getElementsByClassName(
-      `row-planid-${getUnixId}-ot`
+      `row-planid-${getUnixId}`
     )[0];
     arrow.classList.toggle("opened");
     rowListline.classList.toggle("opened");
   }
 
+  function viewQrList(planz) {
+    const getPlanzunix = planz.SCHD_ID + planz.ORDER_SIZE;
+    const trlisqr = document.getElementsByClassName(getPlanzunix)[0];
+    trlisqr.classList.toggle("shows");
+  }
+
+  function checkStatus(qty, checked) {
+    if (checked) {
+      if (checked === qty) return <GiCheckMark size={20} color="#00a814" />;
+      if (checked !== qty) return <IoMdTimer size={20} color="#fcba03" />;
+    }
+    return null;
+  }
   return (
     <>
       {dataDailyPlan
@@ -55,11 +69,11 @@ const ListPlanningOt = ({ dataDailyPlan, selectHc, handleSelBdl }) => {
                       <td
                         rowSpan={2}
                         className="noborder"
-                        onClick={() => accordOpen(plan.SCHD_ID + plan.SCHD_QTY)}
+                        onClick={() => accordOpen(plan, "ot")}
                       >
                         <IoIosArrowDown
                           size="20"
-                          className={`arrow${plan.SCHD_ID + plan.SCHD_QTY}-ot`}
+                          className={`arrow${plan.SCHD_ID + plan.SCHD_QTY}`}
                         />
                       </td>
                     </tr>
@@ -76,8 +90,12 @@ const ListPlanningOt = ({ dataDailyPlan, selectHc, handleSelBdl }) => {
                           ? plan.ACT_TARGET_OT
                           : plan.PLAN_TARGET_OT}
                       </td>
-                      <td>45</td>
-                      <td>-300</td>
+                      <td>{plan.NORMAL_OUTPUT_OT}</td>
+                      <td>
+                        {plan.ACT_TARGET_OT
+                          ? plan.ACT_TARGET_OT - plan.OT_OUTPUT
+                          : 0}
+                      </td>
                     </tr>
                   </tbody>
                 </Table>
@@ -85,7 +103,7 @@ const ListPlanningOt = ({ dataDailyPlan, selectHc, handleSelBdl }) => {
                 <Row
                   className={`mt-2 row-planed row-planid-${
                     plan.SCHD_ID + plan.SCHD_QTY
-                  }-ot`}
+                  }`}
                 >
                   <Col>
                     {state.dataQrBundle ? (
@@ -98,49 +116,168 @@ const ListPlanningOt = ({ dataDailyPlan, selectHc, handleSelBdl }) => {
                       >
                         <thead>
                           <tr className="table-dark text-center align-middle">
-                            <th>BOX</th>
-                            <th>QR SERIAL</th>
+                            {/* <th>BOX</th> */}
+                            {/* <th>QR SERIAL</th> */}
                             <th>STYLE</th>
                             <th>SIZE</th>
+                            <th>T.BUNDLE</th>
                             <th>QTY</th>
                             <th>CHECKED</th>
-                            <th>GOOD</th>
+                            <th>RFT</th>
                             <th>DEFECT</th>
                             <th>REPAIRD</th>
+                            <th>BS</th>
                             <th>PENDING</th>
                             <th>STATUS</th>
                             <th>ACT</th>
                           </tr>
                         </thead>
                         <tbody className=" align-middle">
-                          {state.dataQrBundle.length !== 0 ? (
-                            state.dataQrBundle
-                              .filter((lsbdl) => lsbdl.SCHD_ID === plan.SCHD_ID)
-                              .map((bdl, i) => (
-                                <tr className="text-center" key={i}>
-                                  <td>{bdl.BUNDLE_SEQUENCE}</td>
-                                  <td>{bdl.BARCODE_SERIAL}</td>
-                                  <td>{bdl.ORDER_STYLE}</td>
-                                  <td>{bdl.ORDER_SIZE}</td>
-                                  <td>{bdl.ORDER_QTY}</td>
-                                  <td>48</td>
-                                  <td>47</td>
-                                  <td>1</td>
-                                  <td>-</td>
-                                  <td>-</td>
-                                  <td>
-                                    <GiCheckMark size={20} color="#00a814" />
-                                  </td>
-                                  <td>
-                                    <Button
-                                      size="sm"
-                                      className="btn-input"
-                                      onClick={() => handleSelBdl(bdl, "O")}
+                          {state.dataPlanBySize.length !== 0 ? (
+                            state.dataPlanBySize
+                              .filter((planz) => planz.SCHD_ID === plan.SCHD_ID)
+                              .map((plnz, i) => (
+                                <React.Fragment key={i}>
+                                  <tr className="text-center">
+                                    {/* <td>{plnz.BUNDLE_SEQUENCE}</td> */}
+                                    {/* <td>{plnz.BARCODE_SERIAL}</td> */}
+                                    <td>{plnz.ORDER_STYLE}</td>
+                                    <td>{plnz.ORDER_SIZE}</td>
+                                    <td>{plnz.BDL_TOTAL}</td>
+                                    <td>{plnz.QTY}</td>
+                                    <td>{plnz.TOTAL_CHECKED}</td>
+                                    <td>{plnz.RTT}</td>
+                                    <td>{plnz.DEFECT}</td>
+                                    <td>{plnz.REPAIRED}</td>
+                                    <td>{plnz.BS}</td>
+                                    <td>
+                                      {plnz.TOTAL_CHECKED
+                                        ? plnz.QTY - plnz.TOTAL_CHECKED
+                                        : null}
+                                    </td>
+                                    <td>
+                                      {checkStatus(
+                                        plnz.QTY,
+                                        plnz.TOTAL_CHECKED
+                                      )}
+                                    </td>
+                                    <td>
+                                      <Button
+                                        size="sm"
+                                        className="btn-transfer me-2"
+                                        onClick={() => viewQrList(plnz, "O")}
+                                      >
+                                        <BsViewList size={20} />
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        className="btn-input"
+                                        onClick={() =>
+                                          handleSelPlanSize(plnz, "O")
+                                        }
+                                      >
+                                        <RiFileEditFill size={20} />
+                                      </Button>
+                                    </td>
+                                  </tr>
+                                  <tr
+                                    className={`listqrview ${
+                                      plnz.SCHD_ID + plnz.ORDER_SIZE
+                                    }`}
+                                  >
+                                    <td
+                                      colSpan={12}
+                                      className="table-secondary"
                                     >
-                                      <RiFileEditFill size={20} />
-                                    </Button>
-                                  </td>
-                                </tr>
+                                      <div className="fw-bold">
+                                        Total Good : {plnz.GOOD} {"   "} | Total
+                                        Transfer : {plnz.TFR_QTY} {"   "} |{" "}
+                                        Balance :{" "}
+                                        {plnz.TFR_QTY
+                                          ? plnz.GOOD - plnz.TFR_QTY
+                                          : null}
+                                      </div>
+                                      <Table size="sm" bordered responsive>
+                                        <thead>
+                                          <tr className="table-light text-center">
+                                            <th>BOX</th>
+                                            <th>QR SERIAL</th>
+                                            <th>ORDER REF</th>
+                                            <th>SIZE</th>
+                                            <th>QTY</th>
+                                            <th>SCH DATE</th>
+                                            <th>SCANIN DATE</th>
+                                            <th>TFR STATUS</th>
+                                            <th>ACT</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody className="table-light">
+                                          {state.dataQrBundle
+                                            ? state.dataQrBundle
+                                                .filter(
+                                                  (bdls) =>
+                                                    bdls.ORDER_STYLE ===
+                                                      plnz.ORDER_STYLE &&
+                                                    bdls.ORDER_SIZE ===
+                                                      plnz.ORDER_SIZE &&
+                                                    bdls.ORDER_COLOR ===
+                                                      plnz.ORDER_COLOR
+                                                )
+                                                .map((bdl, idx) => (
+                                                  <tr
+                                                    key={idx}
+                                                    className="text-center"
+                                                  >
+                                                    <td>
+                                                      {bdl.BUNDLE_SEQUENCE}
+                                                    </td>
+                                                    <td>
+                                                      {bdl.BARCODE_SERIAL}
+                                                    </td>
+                                                    <td>{bdl.ORDER_REF}</td>
+                                                    <td>{bdl.ORDER_SIZE}</td>
+                                                    <td>{bdl.ORDER_QTY}</td>
+                                                    <td>
+                                                      {bdl.SCHD_PROD_DATE}
+                                                    </td>
+                                                    <td>{bdl.SCAN_DATE}</td>
+                                                    <td>
+                                                      {bdl.BARCODE_TRANSFER ? (
+                                                        <IoMdDoneAll
+                                                          size={20}
+                                                          color="#00a814"
+                                                        />
+                                                      ) : null}
+                                                    </td>
+                                                    <td>
+                                                      <Button
+                                                        size="sm"
+                                                        className="btn-transfer"
+                                                        disabled={
+                                                          bdl.BARCODE_SERIAL ===
+                                                          bdl.BARCODE_TRANSFER
+                                                        }
+                                                        onClick={() =>
+                                                          handlMdlTfrActv(
+                                                            plnz,
+                                                            bdl,
+                                                            "O"
+                                                          )
+                                                        }
+                                                      >
+                                                        <BiTransferAlt
+                                                          size={16}
+                                                        />
+                                                      </Button>
+                                                    </td>
+                                                  </tr>
+                                                ))
+                                            : null}
+                                        </tbody>
+                                      </Table>
+                                    </td>
+                                  </tr>
+                                </React.Fragment>
                               ))
                           ) : (
                             <tr>
@@ -166,10 +303,10 @@ const ListPlanningOt = ({ dataDailyPlan, selectHc, handleSelBdl }) => {
 };
 
 const MP = memo(({ plan }) => {
-  if (plan.ACT_MP_OT == null) {
-    return <td className="text-warning">{plan.PLAN_MP_OT}</td>;
+  if (plan.ACT_MP == null) {
+    return <td className="text-warning">{plan.PLAN_MP}</td>;
   }
-  return <td>{plan.ACT_MP_OT}</td>;
+  return <td>{plan.ACT_MP}</td>;
 });
 
 export default ListPlanningOt;

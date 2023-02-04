@@ -4,23 +4,47 @@ import { ImUndo2 } from "react-icons/im";
 import { QcEndlineContex } from "../../provider/QcEndProvider";
 import { IoIosArrowBack } from "react-icons/io";
 import { FcRuler } from "react-icons/fc";
-// import { _ACTION } from "../../provider/QcEndAction";
+import { _ACTION } from "../../provider/QcEndAction";
+import { flash } from "react-universal-flash";
 
 const MainBtnQcInpt = () => {
-  const { state, bdlUnslected, handlePageActive } = useContext(QcEndlineContex);
-  const bdl = state.bdlSelect;
+  const {
+    state,
+    dispatch,
+    planSizeUnSelected,
+    handlePageActive,
+    postOutput,
+    handleUndoDefRejGood,
+  } = useContext(QcEndlineContex);
+  const bdl = state.planSizeSelect;
+  const qr = state.qrQtyResult[0];
+
+  function handleMultiple(e) {
+    e.preventDefault();
+    const { value } = e.target;
+    if (value > 5 || value < 0)
+      return flash(
+        `Can't Set Multiple Less Then 0 and Greater Than 5`,
+        2000,
+        "danger"
+      );
+    return dispatch({
+      type: _ACTION._SET_MULTIPLE_RTT,
+      payload: value,
+    });
+  }
 
   return (
     <>
       <Row className="justify-content-between pe-0 mb-2">
-        <Col sm={4}>
+        <Col sm={5}>
           <Row className="border rounded p-1 ms-1 bg-warning bg-opacity-50">
             <Col className="border-end border-dark">
-              Bundle QTY : <span className="ms-1 fw-bold">{bdl.ORDER_QTY}</span>
+              Sum Of Bundle QTY :<span className="ms-1 fw-bold">{bdl.QTY}</span>
             </Col>
             <Col>
-              Checked QTY :{" "}
-              <span className="ms-1 fw-bold">{bdl.ORDER_QTY}</span>
+              Total Checked QTY :
+              <span className="ms-1 fw-bold">{qr.TOTAL_CHECK}</span>
             </Col>
           </Row>
         </Col>
@@ -39,22 +63,17 @@ const MainBtnQcInpt = () => {
                   <Row>
                     <Col sm={9}>
                       <Row
-                        className="good-btn btn p-3 rounded d-flex align-items-center shadow"
-                        // className={`bg-success btn p-3 rounded d-flex align-items-center shadow ${
-                        //   sequenceStatus === headerActiv.QC_LBO_SS
-                        //     ? 'disabled'
-                        //     : ''
-                        // }`}
+                        className={`good-btn btn p-3 rounded d-flex align-items-center shadow ${
+                          bdl.QTY === qr.TOTAL_CHECK ? "disabled" : ""
+                        }`}
                         style={{ height: "30vh" }}
-                        // onClick={() =>
-                        //   handlePostDefRejGood('GOOD', null, null)
-                        // }
+                        onClick={() => postOutput("RTT")}
                       >
                         <Col className="text-start">
-                          <h3>GOOD</h3>
+                          <h3>RFT</h3>
                         </Col>
                         <Col className="text-center ms-4">
-                          <h1>00</h1>
+                          <h1>{qr.RTT}</h1>
                         </Col>
                       </Row>
                     </Col>
@@ -70,6 +89,10 @@ const MainBtnQcInpt = () => {
                           <div className="mb-1">
                             <Form.Control
                               type="number"
+                              min={0}
+                              max={5}
+                              value={state.multipleRtt}
+                              onChange={handleMultiple}
                               className="text-center fw-bold fs-5"
                             />
                           </div>
@@ -83,13 +106,8 @@ const MainBtnQcInpt = () => {
                           <Button
                             variant="light"
                             className="shadow-sm border"
-                            // disabled={goodValue === 0}
-                            // onClick={() =>
-                            //   handleUndoDefRejGood(
-                            //     headerActiv.QC_LBO_ID,
-                            //     'GOOD'
-                            //   )
-                            // }
+                            disabled={bdl.UNDO_RTT === 0 || qr.RTT === "0"}
+                            onClick={() => handleUndoDefRejGood("RTT")}
                           >
                             <ImUndo2 size={40} className="undo-btn" />
                           </Button>
@@ -108,20 +126,17 @@ const MainBtnQcInpt = () => {
                   <Row>
                     <Col sm={9}>
                       <Row
-                        className={`btn-bs btn p-3 rounded d-flex align-items-center shadow`}
-                        // className={`bg-danger btn p-3 rounded d-flex align-items-center shadow ${
-                        //   sequenceStatus === headerActiv.QC_LBO_SS
-                        //     ? 'disabled'
-                        //     : ''
-                        // }`}
+                        className={`btn-bs btn p-3 rounded d-flex align-items-center shadow ${
+                          bdl.QTY === qr.TOTAL_CHECK ? "disabled" : ""
+                        }`}
                         style={{ height: "30vh" }}
-                        // onClick={() => handleShowRejAndDef('REJECT')}
+                        onClick={() => handlePageActive("BS")}
                       >
                         <Col className="text-start">
                           <h3>BS</h3>
                         </Col>
                         <Col className="text-center ms-4">
-                          <h1>00</h1>
+                          <h1>{qr.BS}</h1>
                         </Col>
                       </Row>
                     </Col>
@@ -134,13 +149,8 @@ const MainBtnQcInpt = () => {
                           <Button
                             variant="light"
                             className="shadow-sm border"
-                            // disabled={rejectValue === 0}
-                            // onClick={() =>
-                            //   handleUndoDefRejGood(
-                            //     headerActiv.QC_LBO_ID,
-                            //     'REJECT'
-                            //   )
-                            // }
+                            disabled={bdl.UNDO_BS === 0 || qr.BS === "0"}
+                            onClick={() => handleUndoDefRejGood("BS")}
                           >
                             <ImUndo2 size={40} className="undo-btn" />
                           </Button>
@@ -161,12 +171,9 @@ const MainBtnQcInpt = () => {
                   <Row>
                     <Col sm={9}>
                       <Row
-                        className={`btn-defect btn p-2 rounded d-flex align-items-center shadow mb-2`}
-                        // className={`bg-warning btn p-3 rounded d-flex align-items-center shadow ${
-                        //   sequenceStatus === headerActiv.QC_LBO_SS
-                        //     ? 'disabled'
-                        //     : ''
-                        // }`}
+                        className={`btn-defect btn p-2 rounded d-flex align-items-center shadow mb-2 ${
+                          bdl.QTY === qr.TOTAL_CHECK ? "disabled" : ""
+                        }`}
                         style={{ height: "14vh" }}
                         onClick={() => handlePageActive("DEFECT")}
                       >
@@ -174,18 +181,15 @@ const MainBtnQcInpt = () => {
                           <h3>DEFECTIVES</h3>
                         </Col>
                         <Col className="text-center ms-4">
-                          <h1>00</h1>
+                          <h1>{qr.DEFECT}</h1>
                         </Col>
                       </Row>
                       <Row
-                        className={`btn-defect btn p-2 rounded d-flex align-items-center shadow mt-1}`}
-                        // className={`bg-warning btn p-3 rounded d-flex align-items-center shadow mt-1 ${
-                        //   sequenceStatus === headerActiv.QC_LBO_SS
-                        //     ? 'disabled'
-                        //     : ''
-                        // }`}
+                        className={`btn-defect btn p-2 rounded d-flex align-items-center shadow mt-1 ${
+                          bdl.QTY === qr.TOTAL_CHECK ? "disabled" : ""
+                        }`}
                         style={{ height: "14vh" }}
-                        // onClick={() => handlePostDefBefore()}
+                        onClick={() => postOutput("DEFECT_PREV")}
                       >
                         <Col className="text-start">
                           <h3>DEFECT PREVIOUS </h3>
@@ -201,13 +205,10 @@ const MainBtnQcInpt = () => {
                           <Button
                             variant="light"
                             className="shadow-sm border"
-                            // disabled={defectValue === 0}
-                            // onClick={() =>
-                            //   handleUndoDefRejGood(
-                            //     headerActiv.QC_LBO_ID,
-                            //     'DEFECT'
-                            //   )
-                            // }
+                            disabled={
+                              bdl.UNDO_DEFECT === 0 || qr.DEFECT === "0"
+                            }
+                            onClick={() => handleUndoDefRejGood("DEFECT")}
                           >
                             <ImUndo2 size={40} className="undo-btn" />
                           </Button>
@@ -226,20 +227,17 @@ const MainBtnQcInpt = () => {
                   <Row>
                     <Col sm={9}>
                       <Row
-                        className={`btn-repaird btn p-3 rounded d-flex align-items-center shadow`}
-                        // className={`bg-danger btn p-3 rounded d-flex align-items-center shadow ${
-                        //   sequenceStatus === headerActiv.QC_LBO_SS
-                        //     ? 'disabled'
-                        //     : ''
-                        // }`}
+                        className={`btn-repaird btn p-3 rounded d-flex align-items-center shadow ${
+                          state.dataDefectForRep.length === 0 ? "disabled" : ""
+                        }`}
                         style={{ height: "30vh" }}
-                        // onClick={() => handleShowRejAndDef('REJECT')}
+                        onClick={() => handlePageActive("REPAIRED")}
                       >
                         <Col className="text-start">
-                          <h3>REPAIRD</h3>
+                          <h3>REPAIRED</h3>
                         </Col>
                         <Col className="text-center ms-4">
-                          <h1>00</h1>
+                          <h1>{qr.REPAIRED}</h1>
                         </Col>
                       </Row>
                     </Col>
@@ -252,13 +250,10 @@ const MainBtnQcInpt = () => {
                           <Button
                             variant="light"
                             className="shadow-sm border"
-                            // disabled={rejectValue === 0}
-                            // onClick={() =>
-                            //   handleUndoDefRejGood(
-                            //     headerActiv.QC_LBO_ID,
-                            //     'REJECT'
-                            //   )
-                            // }
+                            disabled={
+                              bdl.UNDO_REPAIR === 0 || qr.REPAIRED === "0"
+                            }
+                            onClick={() => handleUndoDefRejGood("REPAIR")}
                           >
                             <ImUndo2 size={40} className="undo-btn" />
                           </Button>
@@ -274,7 +269,7 @@ const MainBtnQcInpt = () => {
       </Row>
       <Row className="justify-content-end mt-4">
         <Col sm={3} className="text-end">
-          <Button variant="primary" onClick={bdlUnslected}>
+          <Button variant="primary" onClick={planSizeUnSelected}>
             <IoIosArrowBack size={20} /> Back
           </Button>
         </Col>

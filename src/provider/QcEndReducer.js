@@ -17,10 +17,10 @@ export const _QCReducer = (state, action) => {
         ...state,
         dataHCselect: action.payload.data,
       };
-    case _ACTION._SET_BDL_SELECT:
+    case _ACTION._SET_PLNZ_SELECT:
       return {
         ...state,
-        bdlSelect: action.payload.data,
+        planSizeSelect: action.payload.data,
       };
     case _ACTION._SET_MDL_INPUT:
       return {
@@ -56,6 +56,41 @@ export const _QCReducer = (state, action) => {
       return {
         ...state,
         pageActive: action.payload,
+      };
+    case _ACTION._SET_MULTIPLE_RTT:
+      return {
+        ...state,
+        multipleRtt: action.payload,
+      };
+    case _ACTION._GET_QR_RESULT:
+      return {
+        ...state,
+        qrQtyResult: action.payload.data,
+      };
+    case _ACTION._GET_PLANNING_BYSIZE:
+      return {
+        ...state,
+        dataPlanBySize: action.payload.data,
+      };
+    case _ACTION._SET_DEF_PREV:
+      return {
+        ...state,
+        defPrev: action.payload,
+      };
+    case _ACTION._GET_DEF_4_REPAIRD:
+      return {
+        ...state,
+        dataDefectForRep: action.payload.data,
+      };
+    case _ACTION._SET_MDL_TFR:
+      return {
+        ...state,
+        mdlTfr: action.payload,
+      };
+    case _ACTION._SET_QR_4_TFR:
+      return {
+        ...state,
+        qrForTfr: action.payload,
       };
 
     default:

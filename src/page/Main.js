@@ -8,9 +8,10 @@ import { _ACTION } from "../provider/QcEndAction";
 import ListPlanningOt from "../components/ListPlanningOt";
 import ModalUpdtHC from "../components/ModalUpdtHC";
 import MainModalInput from "../components/MainModalInput";
+import ModalQrForTfr from "../components/ModalQrForTfr";
 
 const Main = () => {
-  const { state, dispatch, bundleSelected } = useContext(QcEndlineContex);
+  const { state, dispatch, planSizeSelected } = useContext(QcEndlineContex);
   // const { handleShow } = useOutletContext();
 
   //fucntion change tab
@@ -54,9 +55,9 @@ const Main = () => {
   }
 
   //function for select bundle
-  function handleSelBdl(bundleQr, type) {
+  function handleSelPlanSize(bundleQr, type) {
     const databundle = { ...bundleQr, type: type };
-    bundleSelected(databundle);
+    planSizeSelected(databundle);
   }
 
   return (
@@ -83,18 +84,22 @@ const Main = () => {
           </Nav>
 
           {state.activeTab === "normal" ? (
-            <ListPlanning selectHc={selectHc} handleSelBdl={handleSelBdl} />
+            <ListPlanning
+              selectHc={selectHc}
+              handleSelPlanSize={handleSelPlanSize}
+            />
           ) : (
             <ListPlanningOt
               dataDailyPlan={filterOtSch(state.dataDailyPlan)}
               selectHc={selectHc}
-              handleSelBdl={handleSelBdl}
+              handleSelPlanSize={handleSelPlanSize}
             />
           )}
         </Col>
       </Row>
       {state.mdlHC ? <ModalUpdtHC handleClose={handleMdlHcClose} /> : null}
       {state.mdlInput ? <MainModalInput /> : null}
+      {state.mdlTfr ? <ModalQrForTfr /> : null}
     </>
   );
 };
