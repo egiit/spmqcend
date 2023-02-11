@@ -9,6 +9,7 @@ import ListPlanningOt from "../components/ListPlanningOt";
 import ModalUpdtHC from "../components/ModalUpdtHC";
 import MainModalInput from "../components/MainModalInput";
 import ModalQrForTfr from "../components/ModalQrForTfr";
+import TableListPendding from "../components/TableListPendding";
 
 const Main = () => {
   const { state, dispatch, planSizeSelected } = useContext(QcEndlineContex);
@@ -55,9 +56,16 @@ const Main = () => {
   }
 
   //function for select bundle
-  function handleSelPlanSize(bundleQr, type) {
+  function handleSelPlanSize(bundleQr, type, SCHD) {
     const databundle = { ...bundleQr, type: type };
-    planSizeSelected(databundle);
+
+    planSizeSelected(databundle, SCHD);
+  }
+
+  function viewQrList(planz) {
+    const getPlanzunix = planz.SCHD_ID + planz.ORDER_SIZE;
+    const trlisqr = document.getElementsByClassName(getPlanzunix)[0];
+    trlisqr.classList.toggle("shows");
   }
 
   return (
@@ -81,20 +89,31 @@ const Main = () => {
                 Over Time
               </Nav.Link>
             </Nav.Item>
+            <Nav.Item onClick={() => handleTabs("pendding")}>
+              <Nav.Link className="" eventKey="pendding">
+                List Pendding
+              </Nav.Link>
+            </Nav.Item>
           </Nav>
 
           {state.activeTab === "normal" ? (
             <ListPlanning
               selectHc={selectHc}
               handleSelPlanSize={handleSelPlanSize}
+              viewQrList={viewQrList}
             />
-          ) : (
+          ) : null}
+          {state.activeTab === "ot" ? (
             <ListPlanningOt
               dataDailyPlan={filterOtSch(state.dataDailyPlan)}
               selectHc={selectHc}
               handleSelPlanSize={handleSelPlanSize}
+              viewQrList={viewQrList}
             />
-          )}
+          ) : null}
+          {state.activeTab === "pendding" ? (
+            <TableListPendding viewQrList={viewQrList} />
+          ) : null}
         </Col>
       </Row>
       {state.mdlHC ? <ModalUpdtHC handleClose={handleMdlHcClose} /> : null}

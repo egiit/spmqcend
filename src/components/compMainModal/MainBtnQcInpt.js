@@ -44,7 +44,7 @@ const MainBtnQcInpt = () => {
             </Col>
             <Col>
               Total Checked QTY :
-              <span className="ms-1 fw-bold">{qr.TOTAL_CHECK}</span>
+              <span className="ms-1 fw-bold">{qr.TOTAL_CHECKED}</span>
             </Col>
           </Row>
         </Col>
@@ -64,7 +64,7 @@ const MainBtnQcInpt = () => {
                     <Col sm={9}>
                       <Row
                         className={`good-btn btn p-3 rounded d-flex align-items-center shadow ${
-                          bdl.QTY === qr.TOTAL_CHECK ? "disabled" : ""
+                          bdl.QTY === qr.TOTAL_CHECKED ? "disabled" : ""
                         }`}
                         style={{ height: "30vh" }}
                         onClick={() => postOutput("RTT")}
@@ -127,13 +127,13 @@ const MainBtnQcInpt = () => {
                     <Col sm={9}>
                       <Row
                         className={`btn-bs btn p-3 rounded d-flex align-items-center shadow ${
-                          bdl.QTY === qr.TOTAL_CHECK ? "disabled" : ""
+                          bdl.QTY === qr.TOTAL_CHECKED ? "disabled" : ""
                         }`}
                         style={{ height: "30vh" }}
                         onClick={() => handlePageActive("BS")}
                       >
                         <Col className="text-start">
-                          <h3>BS</h3>
+                          <h3>BAD STOCK</h3>
                         </Col>
                         <Col className="text-center ms-4">
                           <h1>{qr.BS}</h1>
@@ -172,7 +172,7 @@ const MainBtnQcInpt = () => {
                     <Col sm={9}>
                       <Row
                         className={`btn-defect btn p-2 rounded d-flex align-items-center shadow mb-2 ${
-                          bdl.QTY === qr.TOTAL_CHECK ? "disabled" : ""
+                          bdl.QTY === qr.TOTAL_CHECKED ? "disabled" : ""
                         }`}
                         style={{ height: "14vh" }}
                         onClick={() => handlePageActive("DEFECT")}
@@ -186,7 +186,7 @@ const MainBtnQcInpt = () => {
                       </Row>
                       <Row
                         className={`btn-defect btn p-2 rounded d-flex align-items-center shadow mt-1 ${
-                          bdl.QTY === qr.TOTAL_CHECK ? "disabled" : ""
+                          bdl.QTY === qr.TOTAL_CHECKED ? "disabled" : ""
                         }`}
                         style={{ height: "14vh" }}
                         onClick={() => postOutput("DEFECT_PREV")}
@@ -269,7 +269,10 @@ const MainBtnQcInpt = () => {
       </Row>
       <Row className="justify-content-end mt-4">
         <Col sm={3} className="text-end">
-          <Button variant="primary" onClick={planSizeUnSelected}>
+          <Button
+            variant="primary"
+            onClick={() => planSizeUnSelected(bdl.PLANSIZE_ID)}
+          >
             <IoIosArrowBack size={20} /> Back
           </Button>
         </Col>

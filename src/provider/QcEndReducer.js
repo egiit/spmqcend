@@ -27,6 +27,11 @@ export const _QCReducer = (state, action) => {
         ...state,
         mdlInput: action.payload,
       };
+    case _ACTION._SET_SCHD_SELECT:
+      return {
+        ...state,
+        schdSelected: action.payload.data,
+      };
     case _ACTION._SET_MDL_HC:
       return {
         ...state,
@@ -41,6 +46,11 @@ export const _QCReducer = (state, action) => {
       return {
         ...state,
         dataQrBundle: action.payload.data,
+      };
+    case _ACTION._GET_SCH_QR_BUNDLE_PEND:
+      return {
+        ...state,
+        dataQrBundlePend: action.payload.data,
       };
     case _ACTION._GET_LIST_DEFECT:
       return {
@@ -71,6 +81,11 @@ export const _QCReducer = (state, action) => {
       return {
         ...state,
         dataPlanBySize: action.payload.data,
+      };
+    case _ACTION._GET_PLANNING_BYSIZE_PEND:
+      return {
+        ...state,
+        dataPlanBySizePend: action.payload.data,
       };
     case _ACTION._SET_DEF_PREV:
       return {

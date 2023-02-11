@@ -8,7 +8,7 @@ import { flash } from "react-universal-flash";
 import CheckNilai from "../partial/CheckNilai";
 export const QcEndlineContex = createContext(null);
 
-const intialqrqty = { BS: 0, DEFECT: 0, REPAIRED: 0, RTT: 0 };
+const intialqrqty = { BS: 0, DEFECT: 0, REPAIRED: 0, RTT: 0, TOTAL_CHECKED: 0 };
 
 export const QcEndProvider = ({ children }) => {
   const { value } = useContext(AuthContext);
@@ -19,10 +19,13 @@ export const QcEndProvider = ({ children }) => {
 
   const initialstate = {
     date: moment().format("YYYY-MM-DD"),
-    // schDate: "2023-01-27",
+    // schDate: "2023-02-06",
     schDate: moment().format("YYYY-MM-DD"),
     dataDailyPlan: [],
     dataPlanBySize: [],
+    dataPlanBySizePend: [],
+    dataQrBundle: [],
+    dataQrBundlePend: [],
     dataHCselect: [],
     dataDefectForRep: [],
     planSizeSelect: [],
@@ -38,7 +41,7 @@ export const QcEndProvider = ({ children }) => {
     multipleRtt: "",
     defPrev: {},
     qrForTfr: {},
-    // listLine: [],
+    schdSelected: [],
     // listResultScan: [],
     // lineActive: "",
   };
@@ -72,6 +75,35 @@ export const QcEndProvider = ({ children }) => {
         if (res.status === 200) {
           dispatch({
             type: _ACTION._GET_PLANNING_BYSIZE,
+            payload: { data: res.data.data },
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+
+  //function get data size planning
+  async function getSizePlaningPend(date, siteName, lineName) {
+    await axios
+      .get(`/qc/endline/planz-pendding/${date}/${siteName}/${lineName}`)
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch({
+            type: _ACTION._GET_PLANNING_BYSIZE_PEND,
+            payload: { data: res.data.data },
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+  //function get data size planning
+  async function getQrBundlePend(date, siteName, lineName) {
+    await axios
+      .get(`/qc/endline/qr-sewing-in-pend/${date}/${siteName}/${lineName}`)
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch({
+            type: _ACTION._GET_SCH_QR_BUNDLE_PEND,
             payload: { data: res.data.data },
           });
         }
@@ -137,10 +169,16 @@ export const QcEndProvider = ({ children }) => {
     getDailyPlanning(state.schDate, siteName, lineName, idSiteLine, shift);
     getQrBundle(state.schDate, siteName, lineName);
     getSizePlaning(state.schDate, siteName, lineName);
+    getSizePlaningPend(state.schDate, siteName, lineName);
+    getQrBundlePend(state.schDate, siteName, lineName);
   }, [state.schDate, siteName, lineName, idSiteLine, shift]);
 
   //function if plan per size taped
-  function planSizeSelected(planz) {
+  function planSizeSelected(planz, SCHD) {
+    dispatch({
+      type: _ACTION._SET_SCHD_SELECT,
+      payload: { data: SCHD },
+    });
     getQrQtyResult(planz.SCHD_ID, planz.ORDER_SIZE);
     getListDefForRep(planz.SCHD_ID, planz.ORDER_SIZE);
     postPlanSize(planz);
@@ -152,6 +190,9 @@ export const QcEndProvider = ({ children }) => {
   //function bundleUnSelect
   function planSizeUnSelected() {
     refrehAll();
+    const qr = state.qrQtyResult[0];
+    const dataUpdPlanSize = { ...state.planSizeSelect, ...qr };
+    patchPlanSize(dataUpdPlanSize);
     dispatch({
       type: _ACTION._SET_PLNZ_SELECT,
       payload: { data: [] },
@@ -190,8 +231,26 @@ export const QcEndProvider = ({ children }) => {
             type: _ACTION._SET_MDL_INPUT,
             payload: true,
           });
+          //jika plan size baru maka masukan plansize_id ke selected
+          if (res.data.status === "create") {
+            const { PLANSIZE_ID } = res.data.data;
+            dispatch({
+              type: _ACTION._SET_PLNZ_SELECT,
+              payload: { data: { ...plansize, PLANSIZE_ID } },
+            });
+          }
         }
       })
+      .catch((err) => flash(err.message, 2000, "danger"));
+  }
+  //fucntion update data to plansize after count
+  async function patchPlanSize(plan) {
+    const plansize = {
+      ...plan,
+      PLANSIZE_MOD_ID: userId,
+    };
+    await axios
+      .patch("/qc/endline/plansize", plansize)
       .catch((err) => flash(err.message, 2000, "danger"));
   }
 
@@ -227,6 +286,7 @@ export const QcEndProvider = ({ children }) => {
     const qr = state.qrQtyResult[0];
 
     const dataBasic = {
+      PLANSIZE_ID: bdl.PLANSIZE_ID,
       ENDLINE_PLAN_SIZE: bdl.ORDER_SIZE,
       ENDLINE_OUT_QTY: 1,
       ENDLINE_ID_SITELINE: idSiteLine,
@@ -234,13 +294,14 @@ export const QcEndProvider = ({ children }) => {
       ENDLINE_PORD_TYPE: bdl.type,
       ENDLINE_SCH_ID: bdl.SCH_ID,
       ENDLINE_SCHD_ID: bdl.SCHD_ID,
-      ENDLINE_SCHD_DATE: bdl.SCHD_PROD_DATE,
-      ENDLINE_SEQUANCE: 0,
+      ENDLINE_ACT_SCHD_ID: state.schdSelected.SCHD_ID,
+      ENDLINE_SCHD_DATE: state.schdSelected.SCHD_PROD_DATE,
+      ENDLINE_SEQUANCE: parseInt(qr.TOTAL_CHECKED) + 1,
       ENDLINE_TIME: moment().format("hh:mm:ss"),
       ENDLINE_ADD_ID: userId,
     };
 
-    const qtyPush = parseInt(qr.TOTAL_CHECK) + dataBasic.ENDLINE_OUT_QTY;
+    const qtyPush = parseInt(qr.TOTAL_CHECKED) + dataBasic.ENDLINE_OUT_QTY;
 
     if (qtyPush > bdl.QTY) {
       return flash(
@@ -256,7 +317,7 @@ export const QcEndProvider = ({ children }) => {
           state.multipleRtt === "0" || state.multipleRtt === ""
             ? 1
             : state.multipleRtt;
-        const compQtyTotal = parseInt(qr.TOTAL_CHECK) + parseInt(qtyRtt);
+        const compQtyTotal = parseInt(qr.TOTAL_CHECKED) + parseInt(qtyRtt);
 
         if (compQtyTotal > bdl.QTY) {
           return flash(
@@ -496,7 +557,7 @@ export const QcEndProvider = ({ children }) => {
   function handlMdlTfrActv(planz, bdl, type) {
     const databundle = { ...planz, type: type };
     const bal = CheckNilai(planz.GOOD) - CheckNilai(planz.TFR_QTY);
-    console.log(bal);
+
     if (bal < bdl.ORDER_QTY) {
       return flash("No Balance For Transfer", 2000, "danger");
     }
