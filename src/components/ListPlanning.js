@@ -3,6 +3,7 @@ import { Card, Button, Table, Row, Col } from "react-bootstrap";
 import { FaUserPlus } from "react-icons/fa";
 import { IoIosArrowDown, IoMdTimer } from "react-icons/io";
 import { GiCheckMark } from "react-icons/gi";
+import { SlNote } from "react-icons/sl";
 import { useContext } from "react";
 import { QcEndlineContex } from "../provider/QcEndProvider";
 import { flash } from "react-universal-flash";
@@ -10,7 +11,12 @@ import { getTimeFromMins } from "../partial/TimeManipulate";
 import TrPlanSize from "./compMainModal/TrPlanSize";
 import TrPlanSizePending from "./compMainModal/TrPlanSizePending";
 
-const ListPlanning = ({ selectHc, handleSelPlanSize, viewQrList }) => {
+const ListPlanning = ({
+  selectHc,
+  handleSelPlanSize,
+  viewQrList,
+  openMdlRemark,
+}) => {
   const { state } = useContext(QcEndlineContex);
 
   function accordOpen(plan) {
@@ -51,6 +57,15 @@ const ListPlanning = ({ selectHc, handleSelPlanSize, viewQrList }) => {
                       <td>Target</td>
                       <td>Output</td>
                       <td>Var</td>
+                      <td rowSpan={2} className=" border-0">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => openMdlRemark(plan, "normal")}
+                        >
+                          <SlNote size="18" color="#FFF" />
+                        </Button>
+                      </td>
                       <td rowSpan={2} className="noborder">
                         <Button
                           size="sm"

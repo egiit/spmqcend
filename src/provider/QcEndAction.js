@@ -20,4 +20,6 @@ export const _ACTION = {
   _SET_DEF_PREV: "setDefPrev",
   _GET_DEF_4_REPAIRD: "defForrepaird",
   _SET_QR_4_TFR: "setQRForTfr",
+  _SET_MDL_REMARK: "setMdlRemak",
+  _SET_PLAN_REMARK: "setPlanRemark",
 };

@@ -19,8 +19,8 @@ export const QcEndProvider = ({ children }) => {
 
   const initialstate = {
     date: moment().format("YYYY-MM-DD"),
-    // schDate: "2023-02-06",
-    schDate: moment().format("YYYY-MM-DD"),
+    schDate: "2023-02-06",
+    // schDate: moment().format("YYYY-MM-DD"),
     dataDailyPlan: [],
     dataPlanBySize: [],
     dataPlanBySizePend: [],
@@ -31,6 +31,7 @@ export const QcEndProvider = ({ children }) => {
     planSizeSelect: [],
     listDefect: [],
     listPart: [],
+    planForRemark: {},
     qrQtyResult: [intialqrqty],
     siteActive: siteName,
     activeTab: "normal",
@@ -38,6 +39,7 @@ export const QcEndProvider = ({ children }) => {
     pageActive: "",
     mdlInput: false,
     mdlTfr: false,
+    mdlRemark: false,
     multipleRtt: "",
     defPrev: {},
     qrForTfr: {},
@@ -158,6 +160,8 @@ export const QcEndProvider = ({ children }) => {
     getDailyPlanning(state.schDate, siteName, lineName, idSiteLine, shift);
     getQrBundle(state.schDate, siteName, lineName);
     getSizePlaning(state.schDate, siteName, lineName);
+    getSizePlaningPend(state.schDate, siteName, lineName);
+    getQrBundlePend(state.schDate, siteName, lineName);
   };
 
   useEffect(() => {
@@ -372,6 +376,7 @@ export const QcEndProvider = ({ children }) => {
       .then((res) => {
         if (res.data.ENDLINE_ADD_ID) {
           getQrQtyResult(res.data.ENDLINE_SCHD_ID, res.data.ENDLINE_PLAN_SIZE);
+          getQrBundlePend(res.data.ENDLINE_SCHD_ID, res.data.ENDLINE_PLAN_SIZE);
           //jika type post defect maka ambil data untuk repaird
           addUndoFrtEndEvryPost(res.data.ENDLINE_OUT_TYPE);
           if (res.data.ENDLINE_OUT_TYPE === "DEFECT") {
@@ -616,6 +621,46 @@ export const QcEndProvider = ({ children }) => {
       });
   }
 
+  //function add update remarks
+  async function handleAddRemark(remaksText, typeProd) {
+    const dataRemak = {
+      SCHD_ID: state.planForRemark.SCHD_ID,
+      ID_SITELINE: idSiteLine,
+      TYPE_PROD: typeProd === "normal" ? "N" : "O",
+      REMARK: remaksText,
+      PROD_DATE: state.planForRemark.SCHD_PROD_DATE,
+      ADD_ID: userId,
+      MOD_ID: userId,
+    };
+
+    await axios
+      .post("/qc/endline/plan/remarks", dataRemak)
+      .then((res) => {
+        if (res.status === 200) {
+          flash(res.data.message, 2000, "success");
+          refreshPlanning();
+          dispatch({
+            type: _ACTION._SET_MDL_REMARK,
+            payload: false,
+          });
+          dispatch({
+            type: _ACTION._SET_PLAN_REMARK,
+            payload: { data: {} },
+          });
+        }
+      })
+      .catch((err) => {
+        flash(err.message, 2000, "danger");
+        dispatch({
+          type: _ACTION._SET_MDL_REMARK,
+          payload: false,
+        });
+        dispatch({
+          type: _ACTION._SET_PLAN_REMARK,
+          payload: { data: {} },
+        });
+      });
+  }
   return (
     <QcEndlineContex.Provider
       value={{
@@ -640,6 +685,7 @@ export const QcEndProvider = ({ children }) => {
         handlMdlTfrActv,
         closedModalTf,
         handleTrfrQr,
+        handleAddRemark,
       }}
     >
       {children}

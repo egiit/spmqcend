@@ -37,6 +37,11 @@ export const _QCReducer = (state, action) => {
         ...state,
         mdlHC: action.payload,
       };
+    case _ACTION._SET_MDL_REMARK:
+      return {
+        ...state,
+        mdlRemark: action.payload,
+      };
     case _ACTION._GET_SCH_DAILY:
       return {
         ...state,
@@ -61,6 +66,11 @@ export const _QCReducer = (state, action) => {
       return {
         ...state,
         listPart: action.payload.data,
+      };
+    case _ACTION._SET_PLAN_REMARK:
+      return {
+        ...state,
+        planForRemark: action.payload.data,
       };
     case _ACTION._SET_DEF_PAGE:
       return {

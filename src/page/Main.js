@@ -10,9 +10,11 @@ import ModalUpdtHC from "../components/ModalUpdtHC";
 import MainModalInput from "../components/MainModalInput";
 import ModalQrForTfr from "../components/ModalQrForTfr";
 import TableListPendding from "../components/TableListPendding";
+import MdlAddRemark from "../components/MdlAddRemark";
 
 const Main = () => {
-  const { state, dispatch, planSizeSelected } = useContext(QcEndlineContex);
+  const { state, dispatch, planSizeSelected, handleAddRemark } =
+    useContext(QcEndlineContex);
   // const { handleShow } = useOutletContext();
 
   //fucntion change tab
@@ -45,6 +47,19 @@ const Main = () => {
       payload: false,
     });
   }
+
+  //function for diactive Modal Remark
+  function handleMdlRmkClose() {
+    dispatch({
+      type: _ACTION._SET_MDL_REMARK,
+      payload: false,
+    });
+    dispatch({
+      type: _ACTION._SET_PLAN_REMARK,
+      payload: { data: {} },
+    });
+  }
+
   // function set dataHCSelect
   function selectHc(data, type) {
     const dataWithType = { ...data, type: type };
@@ -68,6 +83,17 @@ const Main = () => {
     trlisqr.classList.toggle("shows");
   }
 
+  //function open modal remark
+  function openMdlRemark(plan) {
+    dispatch({
+      type: _ACTION._SET_PLAN_REMARK,
+      payload: { data: plan },
+    });
+    dispatch({
+      type: _ACTION._SET_MDL_REMARK,
+      payload: true,
+    });
+  }
   return (
     <>
       {/* <TitleHeaderScan handleShow={handleShow} /> */}
@@ -101,6 +127,7 @@ const Main = () => {
               selectHc={selectHc}
               handleSelPlanSize={handleSelPlanSize}
               viewQrList={viewQrList}
+              openMdlRemark={openMdlRemark}
             />
           ) : null}
           {state.activeTab === "ot" ? (
@@ -109,6 +136,7 @@ const Main = () => {
               selectHc={selectHc}
               handleSelPlanSize={handleSelPlanSize}
               viewQrList={viewQrList}
+              openMdlRemark={openMdlRemark}
             />
           ) : null}
           {state.activeTab === "pendding" ? (
@@ -119,6 +147,15 @@ const Main = () => {
       {state.mdlHC ? <ModalUpdtHC handleClose={handleMdlHcClose} /> : null}
       {state.mdlInput ? <MainModalInput /> : null}
       {state.mdlTfr ? <ModalQrForTfr /> : null}
+      {state.mdlRemark ? (
+        <MdlAddRemark
+          show={state.mdlRemark}
+          plan={state.planForRemark}
+          handleClose={handleMdlRmkClose}
+          typeProd={state.activeTab}
+          handleAddRemark={handleAddRemark}
+        />
+      ) : null}
     </>
   );
 };
