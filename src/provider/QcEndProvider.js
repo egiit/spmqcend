@@ -301,7 +301,7 @@ export const QcEndProvider = ({ children }) => {
       ENDLINE_ACT_SCHD_ID: state.schdSelected.SCHD_ID,
       ENDLINE_SCHD_DATE: state.schdSelected.SCHD_PROD_DATE,
       ENDLINE_SEQUANCE: parseInt(qr.TOTAL_CHECKED) + 1,
-      ENDLINE_TIME: moment().format("hh:mm:ss"),
+      ENDLINE_TIME: moment().format("HH:mm:ss"),
       ENDLINE_ADD_ID: userId,
     };
 
