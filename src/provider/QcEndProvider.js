@@ -19,8 +19,8 @@ export const QcEndProvider = ({ children }) => {
 
   const initialstate = {
     date: moment().format("YYYY-MM-DD"),
-    schDate: "2023-02-06",
-    // schDate: moment().format("YYYY-MM-DD"),
+    // schDate: "2023-02-06",
+    schDate: moment().format("YYYY-MM-DD"),
     dataDailyPlan: [],
     dataPlanBySize: [],
     dataPlanBySizePend: [],
@@ -376,7 +376,7 @@ export const QcEndProvider = ({ children }) => {
       .then((res) => {
         if (res.data.ENDLINE_ADD_ID) {
           getQrQtyResult(res.data.ENDLINE_SCHD_ID, res.data.ENDLINE_PLAN_SIZE);
-          getQrBundlePend(res.data.ENDLINE_SCHD_ID, res.data.ENDLINE_PLAN_SIZE);
+          getQrBundlePend(state.schDate, siteName, lineName);
           //jika type post defect maka ambil data untuk repaird
           addUndoFrtEndEvryPost(res.data.ENDLINE_OUT_TYPE);
           if (res.data.ENDLINE_OUT_TYPE === "DEFECT") {
