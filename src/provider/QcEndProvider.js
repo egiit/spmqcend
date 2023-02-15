@@ -19,8 +19,8 @@ export const QcEndProvider = ({ children }) => {
 
   const initialstate = {
     date: moment().format("YYYY-MM-DD"),
-    schDate: "2023-02-06",
-    // schDate: moment().format("YYYY-MM-DD"),
+    // schDate: "2023-02-06",
+    schDate: moment().format("YYYY-MM-DD"),
     dataDailyPlan: [],
     dataPlanBySize: [],
     dataPlanBySizePend: [],
