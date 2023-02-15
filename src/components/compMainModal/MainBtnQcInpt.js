@@ -106,7 +106,7 @@ const MainBtnQcInpt = () => {
                           <Button
                             variant="light"
                             className="shadow-sm border"
-                            disabled={bdl.UNDO_RTT === 0 || qr.RTT === "0"}
+                            disabled={!bdl.UNDO_RTT || qr.RTT === "0"}
                             onClick={() => handleUndoDefRejGood("RTT")}
                           >
                             <ImUndo2 size={40} className="undo-btn" />
@@ -149,7 +149,7 @@ const MainBtnQcInpt = () => {
                           <Button
                             variant="light"
                             className="shadow-sm border"
-                            disabled={bdl.UNDO_BS === 0 || qr.BS === "0"}
+                            disabled={!bdl.UNDO_BS || qr.BS === "0"}
                             onClick={() => handleUndoDefRejGood("BS")}
                           >
                             <ImUndo2 size={40} className="undo-btn" />
@@ -205,9 +205,7 @@ const MainBtnQcInpt = () => {
                           <Button
                             variant="light"
                             className="shadow-sm border"
-                            disabled={
-                              bdl.UNDO_DEFECT === 0 || qr.DEFECT === "0"
-                            }
+                            disabled={!bdl.UNDO_DEFECT || qr.DEFECT === "0"}
                             onClick={() => handleUndoDefRejGood("DEFECT")}
                           >
                             <ImUndo2 size={40} className="undo-btn" />
@@ -250,9 +248,7 @@ const MainBtnQcInpt = () => {
                           <Button
                             variant="light"
                             className="shadow-sm border"
-                            disabled={
-                              bdl.UNDO_REPAIR === 0 || qr.REPAIRED === "0"
-                            }
+                            disabled={!bdl.UNDO_REPAIR || qr.REPAIRED === "0"}
                             onClick={() => handleUndoDefRejGood("REPAIR")}
                           >
                             <ImUndo2 size={40} className="undo-btn" />

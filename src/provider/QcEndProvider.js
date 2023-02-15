@@ -19,8 +19,8 @@ export const QcEndProvider = ({ children }) => {
 
   const initialstate = {
     date: moment().format("YYYY-MM-DD"),
-    // schDate: "2023-02-06",
-    schDate: moment().format("YYYY-MM-DD"),
+    schDate: "2023-02-06",
+    // schDate: moment().format("YYYY-MM-DD"),
     dataDailyPlan: [],
     dataPlanBySize: [],
     dataPlanBySizePend: [],
@@ -70,9 +70,9 @@ export const QcEndProvider = ({ children }) => {
   }
 
   //function get data size planning
-  async function getSizePlaning(date, siteName, lineName) {
+  async function getSizePlaning(date, siteName, lineName, userId) {
     await axios
-      .get(`/qc/endline/plan-by-size/${date}/${siteName}/${lineName}`)
+      .get(`/qc/endline/plan-by-size/${date}/${siteName}/${lineName}/${userId}`)
       .then((res) => {
         if (res.status === 200) {
           dispatch({
@@ -85,9 +85,11 @@ export const QcEndProvider = ({ children }) => {
   }
 
   //function get data size planning
-  async function getSizePlaningPend(date, siteName, lineName) {
+  async function getSizePlaningPend(date, siteName, lineName, userId) {
     await axios
-      .get(`/qc/endline/planz-pendding/${date}/${siteName}/${lineName}`)
+      .get(
+        `/qc/endline/planz-pendding/${date}/${siteName}/${lineName}/${userId}`
+      )
       .then((res) => {
         if (res.status === 200) {
           dispatch({
@@ -159,8 +161,8 @@ export const QcEndProvider = ({ children }) => {
   const refrehAll = () => {
     getDailyPlanning(state.schDate, siteName, lineName, idSiteLine, shift);
     getQrBundle(state.schDate, siteName, lineName);
-    getSizePlaning(state.schDate, siteName, lineName);
-    getSizePlaningPend(state.schDate, siteName, lineName);
+    getSizePlaning(state.schDate, siteName, lineName, userId);
+    getSizePlaningPend(state.schDate, siteName, lineName, userId);
     getQrBundlePend(state.schDate, siteName, lineName);
   };
 
@@ -172,10 +174,10 @@ export const QcEndProvider = ({ children }) => {
   useEffect(() => {
     getDailyPlanning(state.schDate, siteName, lineName, idSiteLine, shift);
     getQrBundle(state.schDate, siteName, lineName);
-    getSizePlaning(state.schDate, siteName, lineName);
-    getSizePlaningPend(state.schDate, siteName, lineName);
+    getSizePlaning(state.schDate, siteName, lineName, userId);
+    getSizePlaningPend(state.schDate, siteName, lineName, userId);
     getQrBundlePend(state.schDate, siteName, lineName);
-  }, [state.schDate, siteName, lineName, idSiteLine, shift]);
+  }, [state.schDate, siteName, lineName, idSiteLine, shift, userId]);
 
   //function if plan per size taped
   function planSizeSelected(planz, SCHD) {
@@ -236,6 +238,7 @@ export const QcEndProvider = ({ children }) => {
             payload: true,
           });
           //jika plan size baru maka masukan plansize_id ke selected
+
           if (res.data.status === "create") {
             const { PLANSIZE_ID } = res.data.data;
             dispatch({
@@ -415,8 +418,14 @@ export const QcEndProvider = ({ children }) => {
 
   //for proccess repair
   async function proccessRepaird(deftoRepair) {
+    const dataRepair = deftoRepair.map((rep) => ({
+      ...rep,
+      ENDLINE_ADD_ID: userId,
+      PLANSIZE_ID: state.planSizeSelect.PLANSIZE_ID,
+    }));
+
     await axios
-      .patch("/qc/endline/repaired", deftoRepair)
+      .patch("/qc/endline/repaired", dataRepair)
       .then((res) => {
         getQrQtyResult(
           state.planSizeSelect.SCHD_ID,
@@ -493,6 +502,7 @@ export const QcEndProvider = ({ children }) => {
   async function undo(type) {
     const dataUndo = {
       ...state.planSizeSelect,
+      USER_ID: userId,
       ENDLINE_OUT_TYPE: type,
     };
     await axios
