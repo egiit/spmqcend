@@ -18,7 +18,7 @@ const MdlAddRemark = ({
 
   return (
     <Modal
-      dialogClassName="modal-90w"
+      size="xl"
       show={show}
       onHide={handleClose}
       aria-labelledby="example-modal-sizes-title-lg"

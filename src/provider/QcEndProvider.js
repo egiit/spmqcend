@@ -19,7 +19,7 @@ export const QcEndProvider = ({ children }) => {
 
   const initialstate = {
     date: moment().format("YYYY-MM-DD"),
-    // schDate: "2023-02-06",
+    // schDate: "2023-02-14",
     schDate: moment().format("YYYY-MM-DD"),
     dataDailyPlan: [],
     dataPlanBySize: [],
@@ -158,11 +158,11 @@ export const QcEndProvider = ({ children }) => {
 
   const refrehBundle = () => getQrBundle(state.schDate, siteName, lineName);
 
-  const refrehAll = () => {
+  const refrehAll = async () => {
     getDailyPlanning(state.schDate, siteName, lineName, idSiteLine, shift);
     getQrBundle(state.schDate, siteName, lineName);
-    getSizePlaning(state.schDate, siteName, lineName, userId);
     getSizePlaningPend(state.schDate, siteName, lineName, userId);
+    getSizePlaning(state.schDate, siteName, lineName, userId);
     getQrBundlePend(state.schDate, siteName, lineName);
   };
 
@@ -195,10 +195,10 @@ export const QcEndProvider = ({ children }) => {
   }
   //function bundleUnSelect
   function planSizeUnSelected() {
-    refrehAll();
     const qr = state.qrQtyResult[0];
     const dataUpdPlanSize = { ...state.planSizeSelect, ...qr };
     patchPlanSize(dataUpdPlanSize);
+    refrehAll();
     dispatch({
       type: _ACTION._SET_PLNZ_SELECT,
       payload: { data: [] },
@@ -379,7 +379,7 @@ export const QcEndProvider = ({ children }) => {
       .then((res) => {
         if (res.data.ENDLINE_ADD_ID) {
           getQrQtyResult(res.data.ENDLINE_SCHD_ID, res.data.ENDLINE_PLAN_SIZE);
-          getQrBundlePend(state.schDate, siteName, lineName);
+          // getQrBundlePend(state.schDate, siteName, lineName);
           //jika type post defect maka ambil data untuk repaird
           addUndoFrtEndEvryPost(res.data.ENDLINE_OUT_TYPE);
           if (res.data.ENDLINE_OUT_TYPE === "DEFECT") {
