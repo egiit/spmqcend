@@ -5,8 +5,8 @@ const theUrl = window.location.hostname;
 // const protocol = window.location.protocol;
 const instance = axios.create({
   withCredentials: true,
-  // baseURL: `https://api.sumbiri.com`,
-  baseURL: `http://${theUrl}:5001`,
+  baseURL: `https://api.sumbiri.com`,
+  // baseURL: `http://${theUrl}:5001`,
 });
 instance.defaults.headers.common["Content-Type"] = "multipart/form-data";
 

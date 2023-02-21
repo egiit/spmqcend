@@ -117,6 +117,16 @@ export const _QCReducer = (state, action) => {
         ...state,
         qrForTfr: action.payload,
       };
+    case _ACTION._GET_REP_PER_HOURLY:
+      return {
+        ...state,
+        listRepDefHour: action.payload.data,
+      };
+    case _ACTION._GET_REP_DET_HOUR_DEF:
+      return {
+        ...state,
+        listRepDefDetail: action.payload.data,
+      };
 
     default:
       return state;

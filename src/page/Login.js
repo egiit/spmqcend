@@ -83,7 +83,7 @@ const Login = () => {
                   />
                 </div>
                 <h3 className="text-center text-muted fst-italic fs-6 font-weight-light">
-                  SPM - QC End Line
+                  SUMMIT - QC End Line
                 </h3>
                 {/* <Form> */}
                 <Form onSubmit={Auth}>

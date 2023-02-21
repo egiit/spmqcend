@@ -21,7 +21,7 @@ const ListPlanningOt = ({
   const { state } = useContext(QcEndlineContex);
 
   function accordOpen(plan) {
-    if (plan.ACT_MP === null)
+    if (plan.ACT_MP_OT === null)
       return flash("Please Set Actual Manpower First!", 2000, "warning");
     const getUnixId = plan.SCHD_ID + plan.SCHD_QTY;
     const arrow = document.getElementsByClassName(`arrow${getUnixId}`)[0];
@@ -132,10 +132,10 @@ const ListPlanningOt = ({
                             <th>SIZE</th>
                             <th>T.BUNDLE</th>
                             <th>QTY</th>
-                            <th>CHECKED</th>
+                            <th>CHECK</th>
                             <th>RFT</th>
                             <th>DEFECT</th>
-                            <th>REPAIRD</th>
+                            <th>REPAIRED</th>
                             <th>BS</th>
                             <th>PENDING</th>
                             <th>STATUS</th>
@@ -171,10 +171,10 @@ const ListPlanningOt = ({
 };
 
 const MP = memo(({ plan }) => {
-  if (plan.ACT_MP == null) {
-    return <td className="text-warning">{plan.PLAN_MP}</td>;
+  if (plan.ACT_MP_OT === null) {
+    return <td className="text-warning">{plan.PLAN_MP_OT}</td>;
   }
-  return <td>{plan.ACT_MP}</td>;
+  return <td>{plan.ACT_MP_OT}</td>;
 });
 
 export default ListPlanningOt;

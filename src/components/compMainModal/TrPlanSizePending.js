@@ -26,7 +26,7 @@ const TrPlanSizePending = ({
                   {/* <td>{plnz.BUNDLE_SEQUENCE}</td> */}
                   {/* <td>{plnz.BARCODE_SERIAL}</td> */}
                   <td className="text-danger">{plnz.SCHD_PROD_DATE}</td>
-                  <td>{plnz.ORDER_STYLE}</td>
+                  <td style={{ maxWidth: "200px" }}>{plnz.ORDER_STYLE}</td>
                   <td>{plnz.ORDER_SIZE}</td>
                   <td>{plnz.BDL_TOTAL}</td>
                   <td>{plnz.QTY}</td>

@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
           setLineName(decoded.lineName);
           setIdSiteLine(decoded.idSiteLine);
           setShift(decoded.shift);
-          navigate("maininput");
+          // navigate("maininput");
         })
         .catch((error) => {
           if (error.response) return navigate("/");

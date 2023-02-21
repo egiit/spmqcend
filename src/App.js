@@ -6,6 +6,7 @@ import Login from "./page/Login";
 import Main from "./page/Main";
 import { Message } from "./partial/Message";
 import { Flasher } from "react-universal-flash";
+import Reporting from "./page/Reporting";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         }
       >
         <Route path="maininput" element={<Main />} />
+        <Route path="/reporting" element={<Reporting />} />
       </Route>
     </Routes>
   );

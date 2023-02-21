@@ -126,14 +126,14 @@ const ListPlanning = ({
                             {/* <th>BOX</th> */}
                             {/* <th>QR SERIAL</th> */}
                             <th>SCH DATE</th>
-                            <th>STYLE</th>
+                            <th style={{ maxWidth: "200px" }}>STYLE</th>
                             <th>SIZE</th>
                             <th>T.BUNDLE</th>
                             <th>QTY</th>
-                            <th>CHECKED</th>
+                            <th>CHECK</th>
                             <th>RFT</th>
                             <th>DEFECT</th>
-                            <th>REPAIRD</th>
+                            <th>REPAIRED</th>
                             <th>BS</th>
                             <th>PENDING</th>
                             <th>STATUS</th>

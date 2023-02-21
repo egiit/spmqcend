@@ -44,6 +44,8 @@ export const QcEndProvider = ({ children }) => {
     defPrev: {},
     qrForTfr: {},
     schdSelected: [],
+    listRepDefHour: [],
+    listRepDefDetail: [],
     // listResultScan: [],
     // lineActive: "",
   };
@@ -696,6 +698,7 @@ export const QcEndProvider = ({ children }) => {
         closedModalTf,
         handleTrfrQr,
         handleAddRemark,
+        idSiteLine,
       }}
     >
       {children}

@@ -22,4 +22,6 @@ export const _ACTION = {
   _SET_QR_4_TFR: "setQRForTfr",
   _SET_MDL_REMARK: "setMdlRemak",
   _SET_PLAN_REMARK: "setPlanRemark",
+  _GET_REP_PER_HOURLY: "getReportsQcEndHour",
+  _GET_REP_DET_HOUR_DEF: "getHourDefDetail",
 };
