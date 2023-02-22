@@ -23,14 +23,25 @@ const Reporting = () => {
     const actualTarget = state.dataDailyPlan.filter(
       (dat) => dat.ACT_TARGET !== null
     );
-    return findTot(actualTarget, "ACT_TARGET");
+    const actualTargetOt = state.dataDailyPlan.filter(
+      (dat) => dat.ACT_TARGET_OT !== null
+    );
+    const totTarget =
+      findTot(actualTarget, "ACT_TARGET") +
+      findTot(actualTargetOt, "ACT_TARGET_OT");
+    return totTarget;
   }
 
   function findNOutput() {
-    const actualTarget = state.dataDailyPlan.filter(
+    const outputNormal = state.dataDailyPlan.filter(
       (dat) => dat.NORMAL_OUTPUT !== null
     );
-    return findTot(actualTarget, "NORMAL_OUTPUT");
+    const outputOt = state.dataDailyPlan.filter(
+      (dat) => dat.OT_OUTPUT !== null
+    );
+    const totOutput =
+      findTot(outputNormal, "NORMAL_OUTPUT") + findTot(outputOt, "OT_OUTPUT");
+    return totOutput;
   }
 
   function findCheckTot() {
