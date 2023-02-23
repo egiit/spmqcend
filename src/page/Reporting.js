@@ -103,10 +103,10 @@ const Reporting = () => {
           Qty: {defpar.ENDLINE_OUT_QTY}
         </ListGroup.Item>
         <ListGroup.Item className="py-1">
-          Part: {defpar.PART_NAME}
+          Defect: {defpar.DEFECT_NAME}
         </ListGroup.Item>
         <ListGroup.Item className="py-1">
-          Defect: {defpar.DEFECT_NAME}
+          Part: {defpar.PART_NAME}
         </ListGroup.Item>
       </ListGroup>
     ));
@@ -236,7 +236,7 @@ const Reporting = () => {
                               <th>GOOD</th>
                               <th>RFT</th>
                               <th>DEFECT</th>
-                              <th>REPAIRED</th>
+                              <th>AFTER REPAIR</th>
                               <th>BS</th>
                               {/* <th>RFT%</th>
                               <th>DEFECT%</th> */}
