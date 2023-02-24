@@ -117,10 +117,9 @@ const Reporting = () => {
       return [];
     }
 
-    // console.log(size);
     const dat = rows.filter(
       (row) =>
-        parseInt(row.ENDLINE_SCHD_ID) === parseInt(schdi) &&
+        parseInt(row.ENDLINE_ACT_SCHD_ID) === parseInt(schdi) &&
         row.TYP === typ &&
         parseInt(row.ENDLINE_TIME) === parseInt(time) &&
         row.ENDLINE_PLAN_SIZE === size
