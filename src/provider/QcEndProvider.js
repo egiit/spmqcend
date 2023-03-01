@@ -19,7 +19,7 @@ export const QcEndProvider = ({ children }) => {
 
   const initialstate = {
     date: moment().format("YYYY-MM-DD"),
-    // schDate: "2023-02-14",
+    // schDate: "2023-02-22",
     schDate: moment().format("YYYY-MM-DD"),
     dataDailyPlan: [],
     dataPlanBySize: [],
@@ -423,6 +423,7 @@ export const QcEndProvider = ({ children }) => {
     const dataRepair = deftoRepair.map((rep) => ({
       ...rep,
       ENDLINE_ADD_ID: userId,
+      ENDLINE_ACT_RPR_SCHD_ID: state.schdSelected.SCHD_ID,
       PLANSIZE_ID: state.planSizeSelect.PLANSIZE_ID,
     }));
 
