@@ -100,10 +100,10 @@ const ListPlanningOt = ({
                           ? plan.ACT_TARGET_OT
                           : plan.PLAN_TARGET_OT}
                       </td>
-                      <td>{plan.NORMAL_OUTPUT_OT}</td>
+                      <td>{plan.OT_OUTPUT}</td>
                       <td>
                         {plan.ACT_TARGET_OT
-                          ? plan.ACT_TARGET_OT - plan.OT_OUTPUT
+                          ? plan.OT_OUTPUT - plan.ACT_TARGET_OT
                           : 0}
                       </td>
                     </tr>

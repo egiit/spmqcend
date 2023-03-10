@@ -100,7 +100,7 @@ const ListPlanning = ({
                       <td>{plan.NORMAL_OUTPUT}</td>
                       <td>
                         {plan.ACT_TARGET
-                          ? plan.ACT_TARGET - plan.NORMAL_OUTPUT
+                          ? plan.NORMAL_OUTPUT - plan.ACT_TARGET
                           : 0}
                       </td>
                     </tr>
