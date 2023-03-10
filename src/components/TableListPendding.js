@@ -28,6 +28,7 @@ const TableListPendding = ({
             {/* <th>QR SERIAL</th> */}
             <th>SCHEDULE DATE</th>
             <th>STYLE</th>
+            <th>COLOR</th>
             <th>SIZE</th>
             <th>T.BUNDLE</th>
             <th>QTY</th>
@@ -50,6 +51,7 @@ const TableListPendding = ({
                   {/* <td>{plnz.BARCODE_SERIAL}</td> */}
                   <td>{plnz.SCHD_PROD_DATE}</td>
                   <td>{plnz.ORDER_STYLE}</td>
+                  <td>{plnz.ORDER_COLOR}</td>
                   <td>{plnz.ORDER_SIZE}</td>
                   <td>{plnz.BDL_TOTAL}</td>
                   <td>{plnz.QTY}</td>
@@ -80,7 +82,7 @@ const TableListPendding = ({
                   </td>
                 </tr>
                 <tr className={`listqrview ${plnz.SCHD_ID + plnz.ORDER_SIZE}`}>
-                  <td colSpan={13} className="table-secondary">
+                  <td colSpan={14} className="table-secondary">
                     <div className="fw-bold">
                       Total Good : {plnz.GOOD} {"   "} | Total Transfer :{" "}
                       {plnz.TFR_QTY} {"   "} | Balance :{" "}
