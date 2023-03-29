@@ -142,6 +142,19 @@ const Reporting = () => {
     );
   };
 
+  function filterSchd(rows, schdi) {
+    if (!rows) {
+      return [];
+    }
+    console.log(rows);
+    console.log(schdi);
+    const dat = rows.filter(
+      (row) => parseInt(row.ENDLINE_ACT_SCHD_ID) === parseInt(schdi)
+    );
+
+    return dat;
+  }
+
   return (
     <div className="mt-5 pt-3">
       <div className="fw-bold ms-3 fs-5 mb-2 text-center bg-secondary text-light">
@@ -244,21 +257,23 @@ const Reporting = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {state.listRepDefHour.length !== 0 ? (
-                              state.listRepDefHour.map((check, i) => (
-                                <tr
-                                  className="text-center align-middle"
-                                  key={i}
-                                >
-                                  <td>{check.ENDLINE_TIME}</td>
-                                  <td>{check.ENDLINE_PLAN_SIZE}</td>
-                                  <td>{check.CHECKED}</td>
-                                  <td>{check.GOOD}</td>
-                                  <td>{check.RTT}</td>
-                                  <td>{check.DEFECT}</td>
-                                  <td>{check.REPAIRED}</td>
-                                  <td> {check.BS}</td>
-                                  {/* <td>
+                            {filterSchd(state.listRepDefHour, plan.SCHD_ID)
+                              .length !== 0 ? (
+                              filterSchd(state.listRepDefHour, plan.SCHD_ID).map(
+                                (check, i) => (
+                                  <tr
+                                    className="text-center align-middle"
+                                    key={i}
+                                  >
+                                    <td>{check.ENDLINE_TIME}</td>
+                                    <td>{check.ENDLINE_PLAN_SIZE}</td>
+                                    <td>{check.CHECKED}</td>
+                                    <td>{check.GOOD}</td>
+                                    <td>{check.RTT}</td>
+                                    <td>{check.DEFECT}</td>
+                                    <td>{check.REPAIRED}</td>
+                                    <td> {check.BS}</td>
+                                    {/* <td>
                                     {check.RTT
                       ? `${CheckNilai(
                           (check.RTT / check.CHECKED) * 100
@@ -272,30 +287,31 @@ const Reporting = () => {
                         ).toFixed(2)}%`
                       : null}
                                   </td> */}
-                                  <td style={{ whiteSpace: "nowrap" }}>
-                                    {findListPartDef(
-                                      filterPartDefRep(
-                                        state.listRepDefDetail,
-                                        check.ENDLINE_ACT_SCHD_ID,
-                                        check.HOUR_TIME,
-                                        check.ENDLINE_PLAN_SIZE,
-                                        "DEF"
-                                      )
-                                    )}
-                                  </td>
-                                  <td style={{ whiteSpace: "nowrap" }}>
-                                    {findListPartDef(
-                                      filterPartDefRep(
-                                        state.listRepDefDetail,
-                                        check.ENDLINE_ACT_SCHD_ID,
-                                        check.HOUR_TIME,
-                                        check.ENDLINE_PLAN_SIZE,
-                                        "REPAIR"
-                                      )
-                                    )}
-                                  </td>
-                                </tr>
-                              ))
+                                    <td style={{ whiteSpace: "nowrap" }}>
+                                      {findListPartDef(
+                                        filterPartDefRep(
+                                          state.listRepDefDetail,
+                                          check.ENDLINE_ACT_SCHD_ID,
+                                          check.HOUR_TIME,
+                                          check.ENDLINE_PLAN_SIZE,
+                                          "DEF"
+                                        )
+                                      )}
+                                    </td>
+                                    <td style={{ whiteSpace: "nowrap" }}>
+                                      {findListPartDef(
+                                        filterPartDefRep(
+                                          state.listRepDefDetail,
+                                          check.ENDLINE_ACT_SCHD_ID,
+                                          check.HOUR_TIME,
+                                          check.ENDLINE_PLAN_SIZE,
+                                          "REPAIR"
+                                        )
+                                      )}
+                                    </td>
+                                  </tr>
+                                )
+                              )
                             ) : (
                               <tr>
                                 <td

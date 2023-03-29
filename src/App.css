@@ -95,9 +95,10 @@ table.tbl-qc-planning tr.headerplan:nth-child(1) {
   font-size: 0.8rem;
 }
 
+/* 
 table.tbl-qc-planning tr td:nth-child(n+7):nth-child(-n+9) {
   width: 55px;
-}
+} */
 
 table.tbl-qc-planning tr td:nth-child(n+5):nth-child(-n+6) {
   width: 38px;
