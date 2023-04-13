@@ -46,7 +46,11 @@ export const QcEndProvider = ({ children }) => {
     schdSelected: [],
     listRepDefHour: [],
     listRepDefDetail: [],
-    // listResultScan: [],
+    qrMeasSelected: {},
+    measurSpec: [],
+    mdlMeas: false,
+    bdlForRetrun: {},
+    mdlConfirReturn: false,
     // lineActive: "",
   };
 
@@ -674,6 +678,81 @@ export const QcEndProvider = ({ children }) => {
         });
       });
   }
+
+  //function mdl measueremen
+
+  function mdlMasurement(status) {
+    dispatch({
+      type: _ACTION._SET_MDL_MEAS,
+      payload: status,
+    });
+  }
+
+  //function get spec list
+  async function getSpectList(bdl, schdId) {
+    const { ORDER_NO, ORDER_SIZE } = bdl;
+
+    dispatch({
+      type: _ACTION._SET_QR_MES_SELECT,
+      payload: { data: { ...bdl, ACT_SCHD_ID: schdId } },
+    });
+
+    await axios
+      .get(`/measurement/spec-list/${ORDER_NO}/${ORDER_SIZE}`)
+      .then((res) => {
+        if (res.status === 200) {
+          mdlMasurement(true);
+          dispatch({
+            type: _ACTION._GET_MEASUREMENT_SPECT,
+            payload: { data: res.data.data },
+          });
+        }
+      })
+      .catch((err) => flash("No Data Measurement Spec list", 3000, "danger"));
+  }
+
+  //function untuk open modal Return QR
+  function handlMdlReturn(planz, bdl) {
+    const bal = CheckNilai(planz.QTY) - CheckNilai(planz.TOTAL_CHECKED);
+
+    if (bal < bdl.ORDER_QTY) {
+      return flash(`Can't Return Bundle Already Check`, 2000, "danger");
+    }
+
+    dispatch({
+      type: _ACTION._SET_BDL_RETURN,
+      payload: { data: { ...planz, ...bdl } },
+    });
+    dispatch({
+      type: _ACTION._SET_MDL_RETRURN,
+      payload: true,
+    });
+  }
+
+  //function untuk close modal return QR
+  function closedModalRetr() {
+    dispatch({
+      type: _ACTION._SET_BDL_RETURN,
+      payload: { data: {} },
+    });
+    dispatch({
+      type: _ACTION._SET_MDL_RETRURN,
+      payload: false,
+    });
+  }
+  //function untu return QR
+  function handleReturn() {
+    const { BARCODE_SERIAL, SCH_ID, SCHD_ID, PLANSIZE_ID } = state.bdlForRetrun;
+    const dataReturn = {
+      BARCODE_SERIAL,
+      SCH_ID,
+      SCHD_ID,
+      PLANSIZE_ID,
+      SEWING_RETURN_BY: userId,
+      SEWING_SCAN_LOCATION: siteName,
+    };
+    console.log(dataReturn);
+  }
   return (
     <QcEndlineContex.Provider
       value={{
@@ -685,6 +764,7 @@ export const QcEndProvider = ({ children }) => {
         siteName,
         lineName,
         shift,
+        idSiteLine,
         refreshPlanning,
         refrehBundle,
         refrehAll,
@@ -699,7 +779,11 @@ export const QcEndProvider = ({ children }) => {
         closedModalTf,
         handleTrfrQr,
         handleAddRemark,
-        idSiteLine,
+        getSpectList,
+        mdlMasurement,
+        handlMdlReturn,
+        closedModalRetr,
+        handleReturn,
       }}
     >
       {children}

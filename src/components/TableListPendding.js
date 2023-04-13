@@ -6,6 +6,7 @@ import { BiTransferAlt } from "react-icons/bi";
 import { BsViewList } from "react-icons/bs";
 import React, { useContext } from "react";
 import { QcEndlineContex } from "../provider/QcEndProvider";
+import { ImUndo2 } from "react-icons/im";
 
 const TableListPendding = ({
   //   plan,
@@ -127,6 +128,13 @@ const TableListPendding = ({
                                     ) : null}
                                   </td>
                                   <td>
+                                    <Button
+                                      size="sm"
+                                      className="btn-transfer me-2"
+                                      onClick={() => console.log("return")}
+                                    >
+                                      <ImUndo2 size={16} />
+                                    </Button>
                                     <Button
                                       size="sm"
                                       className="btn-transfer"

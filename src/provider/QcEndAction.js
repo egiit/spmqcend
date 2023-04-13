@@ -24,4 +24,9 @@ export const _ACTION = {
   _SET_PLAN_REMARK: "setPlanRemark",
   _GET_REP_PER_HOURLY: "getReportsQcEndHour",
   _GET_REP_DET_HOUR_DEF: "getHourDefDetail",
+  _GET_MEASUREMENT_SPECT: "getMeasurementSpect",
+  _SET_QR_MES_SELECT: "setQrMeasSelect",
+  _SET_MDL_MEAS: "setMDlMeas",
+  _SET_MDL_RETRURN: "setMdlReturn",
+  _SET_BDL_RETURN: "setBdlForReturn",
 };

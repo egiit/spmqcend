@@ -11,9 +11,11 @@ import MainModalInput from "../components/MainModalInput";
 import ModalQrForTfr from "../components/ModalQrForTfr";
 import TableListPendding from "../components/TableListPendding";
 import MdlAddRemark from "../components/MdlAddRemark";
+import MdlMeasurement from "../components/MdlMeasurement";
+import MdlConfReturn from "../components/MdlConfReturn";
 
 const Main = () => {
-  const { state, dispatch, planSizeSelected, handleAddRemark } =
+  const { state, dispatch, planSizeSelected, handleAddRemark, mdlMasurement } =
     useContext(QcEndlineContex);
   // const { handleShow } = useOutletContext();
 
@@ -94,6 +96,18 @@ const Main = () => {
       payload: true,
     });
   }
+
+  function handleCloseMeas() {
+    mdlMasurement(false);
+    dispatch({
+      type: _ACTION._GET_MEASUREMENT_SPECT,
+      payload: { data: [] },
+    });
+    dispatch({
+      type: _ACTION._GET_MEASUREMENT_SPECT,
+      payload: { data: {} },
+    });
+  }
   return (
     <>
       {/* <TitleHeaderScan handleShow={handleShow} /> */}
@@ -147,6 +161,7 @@ const Main = () => {
       {state.mdlHC ? <ModalUpdtHC handleClose={handleMdlHcClose} /> : null}
       {state.mdlInput ? <MainModalInput /> : null}
       {state.mdlTfr ? <ModalQrForTfr /> : null}
+      {state.mdlConfirReturn ? <MdlConfReturn /> : null}
       {state.mdlRemark ? (
         <MdlAddRemark
           show={state.mdlRemark}
@@ -156,6 +171,7 @@ const Main = () => {
           handleAddRemark={handleAddRemark}
         />
       ) : null}
+      {state.mdlMeas ? <MdlMeasurement handleClose={handleCloseMeas} /> : null}
     </>
   );
 };

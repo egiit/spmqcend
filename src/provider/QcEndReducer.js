@@ -127,6 +127,31 @@ export const _QCReducer = (state, action) => {
         ...state,
         listRepDefDetail: action.payload.data,
       };
+    case _ACTION._GET_MEASUREMENT_SPECT:
+      return {
+        ...state,
+        measurSpec: action.payload.data,
+      };
+    case _ACTION._SET_QR_MES_SELECT:
+      return {
+        ...state,
+        qrMeasSelected: action.payload.data,
+      };
+    case _ACTION._SET_MDL_MEAS:
+      return {
+        ...state,
+        mdlMeas: action.payload,
+      };
+    case _ACTION._SET_MDL_RETRURN:
+      return {
+        ...state,
+        mdlConfirReturn: action.payload,
+      };
+    case _ACTION._SET_BDL_RETURN:
+      return {
+        ...state,
+        bdlForRetrun: action.payload.data,
+      };
 
     default:
       return state;

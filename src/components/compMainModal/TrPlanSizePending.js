@@ -5,6 +5,8 @@ import { BiTransferAlt } from "react-icons/bi";
 import { BsViewList } from "react-icons/bs";
 import React, { useContext } from "react";
 import { QcEndlineContex } from "../../provider/QcEndProvider";
+import { FcRuler } from "react-icons/fc";
+import { ImUndo2 } from "react-icons/im";
 
 const TrPlanSizePending = ({
   plan,
@@ -13,7 +15,8 @@ const TrPlanSizePending = ({
   checkStatus,
   typeProd,
 }) => {
-  const { state, handlMdlTfrActv } = useContext(QcEndlineContex);
+  const { state, handlMdlTfrActv, getSpectList, handlMdlReturn } =
+    useContext(QcEndlineContex);
 
   return (
     <>
@@ -104,7 +107,25 @@ const TrPlanSizePending = ({
                                   <td>
                                     <Button
                                       size="sm"
-                                      className="btn-transfer"
+                                      className="btn-transfer me-2"
+                                      onClick={() =>
+                                        handlMdlReturn(plnz, bdl, typeProd)
+                                      }
+                                    >
+                                      <ImUndo2 size={16} />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline-secondary"
+                                      className="me-2"
+                                      onClick={() =>
+                                        getSpectList(bdl, plnz.SCHD_ID)
+                                      }
+                                    >
+                                      <FcRuler size={16} />
+                                    </Button>
+                                    <Button
+                                      size="sm"
                                       disabled={
                                         bdl.BARCODE_SERIAL ===
                                         bdl.BARCODE_TRANSFER

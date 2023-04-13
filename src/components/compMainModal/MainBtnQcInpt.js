@@ -3,7 +3,6 @@ import { Row, Col, Button, Card, Form } from "react-bootstrap";
 import { ImUndo2 } from "react-icons/im";
 import { QcEndlineContex } from "../../provider/QcEndProvider";
 import { IoIosArrowBack } from "react-icons/io";
-import { FcRuler } from "react-icons/fc";
 import { _ACTION } from "../../provider/QcEndAction";
 import { flash } from "react-universal-flash";
 
@@ -48,11 +47,11 @@ const MainBtnQcInpt = () => {
             </Col>
           </Row>
         </Col>
-        <Col sm={3} className="text-end pe-0">
+        {/* <Col sm={3} className="text-end pe-0">
           <Button variant="primary" onClick={() => console.log("Primary")}>
             Messurment <FcRuler size={20} />
           </Button>
-        </Col>
+        </Col> */}
       </Row>
       <Row>
         <Col>

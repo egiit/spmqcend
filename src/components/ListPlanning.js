@@ -22,7 +22,8 @@ const ListPlanning = ({
   function accordOpen(plan) {
     if (plan.ACT_MP === null)
       return flash("Please Set Actual Manpower First!", 2000, "warning");
-    const getUnixId = plan.SCHD_ID + plan.SCHD_QTY;
+    const getUnixId = `${plan.SCHD_ID}${plan.SCHD_QTY}`;
+
     const arrow = document.getElementsByClassName(`arrow${getUnixId}`)[0];
     const rowListline = document.getElementsByClassName(
       `row-planid-${getUnixId}`
@@ -82,7 +83,7 @@ const ListPlanning = ({
                       >
                         <IoIosArrowDown
                           size="20"
-                          className={`arrow${plan.SCHD_ID + plan.SCHD_QTY}`}
+                          className={`arrow${plan.SCHD_ID}${plan.SCHD_QTY}`}
                         />
                       </td>
                     </tr>
@@ -108,9 +109,7 @@ const ListPlanning = ({
                 </Table>
                 {/* detail bundle planning */}
                 <Row
-                  className={`mt-2 row-planed row-planid-${
-                    plan.SCHD_ID + plan.SCHD_QTY
-                  }`}
+                  className={`mt-2 row-planed row-planid-${plan.SCHD_ID}${plan.SCHD_QTY}`}
                 >
                   <Col>
                     {state.dataQrBundle ? (

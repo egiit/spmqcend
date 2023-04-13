@@ -18,6 +18,11 @@ const MenuOffCanvas = ({ show, handleClose, logout }) => {
     handleClose();
   };
 
+  const refreshd = (e, link) => {
+    refrehAll();
+    handleClose();
+  };
+
   const handleOpenReport = async (e) => {
     handleNavigate(e, "/reporting");
     await axios
@@ -53,7 +58,7 @@ const MenuOffCanvas = ({ show, handleClose, logout }) => {
       </Offcanvas.Header>
       <Offcanvas.Body className="pt-1">
         <div className="d-grid">
-          <Button variant="secondary" onClick={() => refrehAll()}>
+          <Button variant="secondary" onClick={() => refreshd()}>
             Refresh <GrRefresh size={20} />
           </Button>
         </div>
