@@ -194,17 +194,15 @@ const MdlMeasurement = ({ handleClose }) => {
   }
 
   useEffect(() => {
-    inputShow.current.focus();
     if (dataTemp.length > 0 && dataTemp[idxInput]) {
-      inputShow.current.value = dataTemp[idxInput].MES_VALUE;
+      inputShow.current.focus();
       if (dataTemp[idxInput].MES_VALUE.toString() === "0") {
+        inputShow.current.value = dataTemp[idxInput].MES_VALUE;
         passCheckVal(true);
       } else {
+        inputShow.current.value = "";
         passCheckVal(false);
       }
-    } else {
-      inputShow.current.value = "";
-      passCheckVal(false);
     }
   }, [idxInput, dataTemp]);
 
@@ -384,7 +382,7 @@ const MdlMeasurement = ({ handleClose }) => {
                 size="sm"
                 variant="primary"
                 onClick={() => activeInput()}
-                disabled={state.measurSpec === 0 || seq === 6}
+                disabled={state.measurSpec?.length === 0 || seq === 6}
               >
                 ADD : #{seq > 5 ? 5 : seq}
               </Button>
@@ -430,7 +428,7 @@ const MdlMeasurement = ({ handleClose }) => {
                   <thead>
                     <tr
                       className="text-center"
-                      style={{ position: "sticky", top: 0, zIndex: 104 }}
+                      style={{ position: "sticky", top: 0, zIndex: 1 }}
                     >
                       <th className="bg-secondary text-light">NO</th>
                       <th className="bg-secondary text-light">DESCRIPTION</th>

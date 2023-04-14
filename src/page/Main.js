@@ -15,8 +15,14 @@ import MdlMeasurement from "../components/MdlMeasurement";
 import MdlConfReturn from "../components/MdlConfReturn";
 
 const Main = () => {
-  const { state, dispatch, planSizeSelected, handleAddRemark, mdlMasurement } =
-    useContext(QcEndlineContex);
+  const {
+    state,
+    dispatch,
+    planSizeSelected,
+    handleAddRemark,
+    mdlMasurement,
+    measCkCountRfrs,
+  } = useContext(QcEndlineContex);
   // const { handleShow } = useOutletContext();
 
   //fucntion change tab
@@ -98,6 +104,7 @@ const Main = () => {
   }
 
   function handleCloseMeas() {
+    measCkCountRfrs();
     mdlMasurement(false);
     dispatch({
       type: _ACTION._GET_MEASUREMENT_SPECT,

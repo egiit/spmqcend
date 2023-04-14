@@ -119,6 +119,7 @@ table.tbl-qc-planning tr td:nth-child(2) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  direction: rtl;
 }
 
 table.tbl-qc-planning tr td:nth-child(3) {
@@ -308,24 +309,26 @@ div.bg-maeasur-inpt {
   left: 0;
   visibility: hidden;
   transition: all 0.4s ease;
+  z-index: 4;
 }
 
 div.mdl-input-measure {
-  height: 33%;
+  height: 35%;
   width: 95%;
   background: #fff;
-  top: 30%;
+  top: 5%;
   left: 2.5%;
   /* text-align: center; */
   border-radius: 20px;
   padding: 1rem;
-  position: absolute;
+  position: fixed;
   border: 1px solid #cbcbcb;
   box-shadow: 7px 8px 5px -3px rgba(0, 0, 0, 0.61);
   -webkit-box-shadow: 7px 8px 5px -3px rgba(0, 0, 0, 0.61);
   -moz-box-shadow: 7px 8px 5px -3px rgba(0, 0, 0, 0.61);
   visibility: hidden;
   transition: all 0.3s ease;
+  z-index: 5;
 }
 
 div.bg-maeasur-inpt.show {
@@ -335,7 +338,7 @@ div.bg-maeasur-inpt.show {
 }
 
 div.mdl-input-measure.show {
-  top: 35%;
+  top: 20%;
   visibility: visible;
   transition: ease-in-out;
   transition: all 0.4s ease;

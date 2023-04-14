@@ -29,4 +29,5 @@ export const _ACTION = {
   _SET_MDL_MEAS: "setMDlMeas",
   _SET_MDL_RETRURN: "setMdlReturn",
   _SET_BDL_RETURN: "setBdlForReturn",
+  _SET_MEAS_CHECK_COUNT: "getMeasCheckCount",
 };

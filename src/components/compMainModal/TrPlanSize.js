@@ -15,7 +15,7 @@ const TrPlanSize = ({
   checkStatus,
   typeProd,
 }) => {
-  const { state, handlMdlTfrActv, getSpectList, handlMdlReturn } =
+  const { state, handlMdlTfrActv, getSpectList, handlMdlReturn, measCountVal } =
     useContext(QcEndlineContex);
 
   return (
@@ -74,8 +74,9 @@ const TrPlanSize = ({
                         <th>ORDER REF</th>
                         <th>SIZE</th>
                         <th>QTY</th>
-                        <th>SCH DATE</th>
                         <th>SCANIN DATE</th>
+                        {/* <th>SCH DATE</th> */}
+                        <th>MEAS CHECK</th>
                         <th>TFR STATUS</th>
                         <th>ACT</th>
                       </tr>
@@ -96,8 +97,14 @@ const TrPlanSize = ({
                                 <td>{bdl.ORDER_REF}</td>
                                 <td>{bdl.ORDER_SIZE}</td>
                                 <td>{bdl.ORDER_QTY}</td>
-                                <td>{bdl.SCHD_PROD_DATE}</td>
                                 <td>{bdl.SCAN_DATE}</td>
+                                {/* <td>{bdl.SCHD_PROD_DATE}</td> */}
+                                <td>
+                                  {measCountVal(
+                                    state.measCheckCount,
+                                    bdl.BARCODE_SERIAL
+                                  )}
+                                </td>
                                 <td>
                                   {bdl.BARCODE_TRANSFER ? (
                                     <IoMdDoneAll size={20} color="#00a814" />

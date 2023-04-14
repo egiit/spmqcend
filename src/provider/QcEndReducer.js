@@ -152,6 +152,11 @@ export const _QCReducer = (state, action) => {
         ...state,
         bdlForRetrun: action.payload.data,
       };
+    case _ACTION._SET_MEAS_CHECK_COUNT:
+      return {
+        ...state,
+        measCheckCount: action.payload.data,
+      };
 
     default:
       return state;

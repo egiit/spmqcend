@@ -51,6 +51,7 @@ export const QcEndProvider = ({ children }) => {
     mdlMeas: false,
     bdlForRetrun: {},
     mdlConfirReturn: false,
+    measCheckCount: [],
     // lineActive: "",
   };
 
@@ -146,6 +147,23 @@ export const QcEndProvider = ({ children }) => {
     });
   }
 
+  //get data qr have check measurement
+  async function getQrMeasCheck(date, siteName, lineName) {
+    await axios
+      .get(
+        `/measurement/endline/meas-count-check/${date}/${siteName}/${lineName}`
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch({
+            type: _ACTION._SET_MEAS_CHECK_COUNT,
+            payload: { data: res.data.data },
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+
   //get Defect code/name list
   async function getListDefect() {
     await axios.get(`/qc/defect`).then((res) => {
@@ -163,10 +181,13 @@ export const QcEndProvider = ({ children }) => {
     getDailyPlanning(state.schDate, siteName, lineName, idSiteLine, shift);
 
   const refrehBundle = () => getQrBundle(state.schDate, siteName, lineName);
+  const measCkCountRfrs = () =>
+    getQrMeasCheck(state.schDate, siteName, lineName);
 
   const refrehAll = async () => {
     getDailyPlanning(state.schDate, siteName, lineName, idSiteLine, shift);
     getQrBundle(state.schDate, siteName, lineName);
+    getQrMeasCheck(state.schDate, siteName, lineName);
     getSizePlaningPend(state.schDate, siteName, lineName, userId);
     getSizePlaning(state.schDate, siteName, lineName, userId);
     getQrBundlePend(state.schDate, siteName, lineName);
@@ -180,6 +201,7 @@ export const QcEndProvider = ({ children }) => {
   useEffect(() => {
     getDailyPlanning(state.schDate, siteName, lineName, idSiteLine, shift);
     getQrBundle(state.schDate, siteName, lineName);
+    getQrMeasCheck(state.schDate, siteName, lineName);
     getSizePlaning(state.schDate, siteName, lineName, userId);
     getSizePlaningPend(state.schDate, siteName, lineName, userId);
     getQrBundlePend(state.schDate, siteName, lineName);
@@ -741,18 +763,42 @@ export const QcEndProvider = ({ children }) => {
     });
   }
   //function untu return QR
-  function handleReturn() {
+  async function handleReturn() {
     const { BARCODE_SERIAL, SCH_ID, SCHD_ID, PLANSIZE_ID } = state.bdlForRetrun;
     const dataReturn = {
       BARCODE_SERIAL,
       SCH_ID,
       SCHD_ID,
       PLANSIZE_ID,
-      SEWING_RETURN_BY: userId,
       SEWING_SCAN_LOCATION: siteName,
+      SEWING_RETURN_BY: userId,
     };
-    console.log(dataReturn);
+    // console.log(dataReturn);
+    await axios
+      .post("/qc/endline/qr/return", dataReturn)
+      .then((res) => {
+        if ([200, 202].includes(res.status)) {
+          flash(res.data.message, 2000, "warning");
+          refrehAll();
+          return closedModalRetr();
+        }
+      })
+      .catch((err) => {
+        flash(err.message, 2000, "danger");
+        closedModalRetr();
+      });
   }
+
+  //function get cal measur check
+  function measCountVal(data, barcodeserial) {
+    if (data.length < 1) return "";
+    const checkQrExist = data.filter(
+      (qr) => qr.BARCODE_SERIAL === barcodeserial
+    );
+
+    if (checkQrExist.length > 0) return checkQrExist[0].CHECK_COUNT;
+  }
+
   return (
     <QcEndlineContex.Provider
       value={{
@@ -784,6 +830,8 @@ export const QcEndProvider = ({ children }) => {
         handlMdlReturn,
         closedModalRetr,
         handleReturn,
+        measCkCountRfrs,
+        measCountVal,
       }}
     >
       {children}
