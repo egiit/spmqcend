@@ -203,6 +203,9 @@ const MdlMeasurement = ({ handleClose }) => {
         inputShow.current.value = "";
         passCheckVal(false);
       }
+    } else {
+      inputShow.current.value = "";
+      passCheckVal(false);
     }
   }, [idxInput, dataTemp]);
 

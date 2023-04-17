@@ -714,20 +714,25 @@ export const QcEndProvider = ({ children }) => {
   async function getSpectList(bdl, schdId) {
     const { ORDER_NO, ORDER_SIZE } = bdl;
 
-    dispatch({
-      type: _ACTION._SET_QR_MES_SELECT,
-      payload: { data: { ...bdl, ACT_SCHD_ID: schdId } },
-    });
-
     await axios
       .get(`/measurement/spec-list/${ORDER_NO}/${ORDER_SIZE}`)
       .then((res) => {
-        if (res.status === 200) {
-          mdlMasurement(true);
+        if (res.status === 200 && res.data.data.length > 0) {
+          dispatch({
+            type: _ACTION._SET_QR_MES_SELECT,
+            payload: { data: { ...bdl, ACT_SCHD_ID: schdId } },
+          });
           dispatch({
             type: _ACTION._GET_MEASUREMENT_SPECT,
             payload: { data: res.data.data },
           });
+          mdlMasurement(true);
+        } else {
+          flash(
+            "No Data Spec List Measurement, Please Call QC ADM",
+            3000,
+            "warning"
+          );
         }
       })
       .catch((err) => flash("No Data Measurement Spec list", 3000, "danger"));
