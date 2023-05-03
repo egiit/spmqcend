@@ -19,8 +19,9 @@ export const QcEndProvider = ({ children }) => {
 
   const initialstate = {
     date: moment().format("YYYY-MM-DD"),
-    // schDate: "2023-02-22",
     schDate: moment().format("YYYY-MM-DD"),
+    // date: "2023-04-29",
+    // schDate: "2023-04-29",
     dataDailyPlan: [],
     dataPlanBySize: [],
     dataPlanBySizePend: [],
@@ -745,7 +746,6 @@ export const QcEndProvider = ({ children }) => {
     if (bal < bdl.ORDER_QTY) {
       return flash(`Can't Return Bundle Already Check`, 2000, "danger");
     }
-
     dispatch({
       type: _ACTION._SET_BDL_RETURN,
       payload: { data: { ...planz, ...bdl } },

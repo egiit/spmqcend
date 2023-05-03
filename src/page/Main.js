@@ -13,6 +13,7 @@ import TableListPendding from "../components/TableListPendding";
 import MdlAddRemark from "../components/MdlAddRemark";
 import MdlMeasurement from "../components/MdlMeasurement";
 import MdlConfReturn from "../components/MdlConfReturn";
+import { flash } from "react-universal-flash";
 
 const Main = () => {
   const {
@@ -80,8 +81,14 @@ const Main = () => {
 
   //function for select bundle
   function handleSelPlanSize(bundleQr, type, SCHD) {
-    const databundle = { ...bundleQr, type: type };
+    if (bundleQr.RETURN_COUNT)
+      return flash(
+        `You Have ${bundleQr.RETURN_COUNT} Box Return, Please Confirm To Preparation`,
+        4000,
+        "warning"
+      );
 
+    const databundle = { ...bundleQr, type: type };
     planSizeSelected(databundle, SCHD);
   }
 

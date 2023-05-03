@@ -84,7 +84,7 @@ const ListPlanningOt = ({
                       >
                         <IoIosArrowDown
                           size="20"
-                          className={`arrow$${plan.SCHD_ID}${plan.SCHD_QTY}`}
+                          className={`arrow${plan.SCHD_ID}${plan.SCHD_QTY}`}
                         />
                       </td>
                     </tr>
@@ -127,7 +127,8 @@ const ListPlanningOt = ({
                           <tr className="table-dark text-center align-middle">
                             {/* <th>BOX</th> */}
                             {/* <th>QR SERIAL</th> */}
-                            <th>STYLE</th>
+                            <th>SCH DATE</th>
+                            <th style={{ maxWidth: "200px" }}>STYLE</th>
                             <th>SIZE</th>
                             <th>T.BUNDLE</th>
                             <th>QTY</th>
