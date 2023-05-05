@@ -88,7 +88,8 @@ const TrPlanSize = ({
                               (bdls) =>
                                 bdls.ORDER_STYLE === plnz.ORDER_STYLE &&
                                 bdls.ORDER_SIZE === plnz.ORDER_SIZE &&
-                                bdls.ORDER_COLOR === plnz.ORDER_COLOR
+                                bdls.ORDER_COLOR === plnz.ORDER_COLOR &&
+                                plnz.SCHD_ID === bdls.SCHD_ID
                             )
                             .map((bdl, idx) => (
                               <tr key={idx} className="text-center">
