@@ -28,6 +28,9 @@ const ModalUpdtHC = ({ handleClose }) => {
     if (data.type === "normal") {
       newData.ACT_MP = mpCount;
     }
+    if (data.type === "extOt") {
+      newData.ACT_MP_X_OT = mpCount;
+    }
 
     await axios
       .post("/qc/endline/act-manpower", newData)
@@ -58,6 +61,14 @@ const ModalUpdtHC = ({ handleClose }) => {
       }
       return setmaxhc(dataHCselect.PLAN_MP_OT + 10);
     }
+    if (dataHCselect.type === "extOt") {
+      if (dataHCselect.ACT_MP_X_OT !== null) {
+        setHc(dataHCselect.ACT_MP_X_OT);
+      } else {
+        setHc(dataHCselect.PLAN_MP_X_OT);
+      }
+      return setmaxhc(dataHCselect.PLAN_MP_X_OT + 10);
+    }
   }, [dataHCselect]);
 
   return (
@@ -80,7 +91,7 @@ const ModalUpdtHC = ({ handleClose }) => {
               </Button>
               <Button
                 size="sm"
-                variant={dataHCselect.type === "ot" ? "warning" : "primary"}
+                variant={dataHCselect.type !== "normal" ? "warning" : "primary"}
               >
                 {dataHCselect.ORDER_STYLE_DESCRIPTION}
               </Button>
@@ -88,7 +99,7 @@ const ModalUpdtHC = ({ handleClose }) => {
           </Row>
           <Row
             className={`justify-content-center mb-2 ${
-              dataHCselect.type === "ot" ? "bg-warning" : "bg-primary"
+              dataHCselect.type !== "normal" ? "bg-warning" : "bg-primary"
             } rounded m-2 py-1`}
           >
             <Col sm={3}>

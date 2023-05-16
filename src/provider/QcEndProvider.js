@@ -20,8 +20,8 @@ export const QcEndProvider = ({ children }) => {
   const initialstate = {
     date: moment().format("YYYY-MM-DD"),
     schDate: moment().format("YYYY-MM-DD"),
-    // date: "2023-04-29",
-    // schDate: "2023-04-29",
+    // date: "2023-04-11",
+    // schDate: "2023-04-11",
     dataDailyPlan: [],
     dataPlanBySize: [],
     dataPlanBySizePend: [],
@@ -661,12 +661,18 @@ export const QcEndProvider = ({ children }) => {
       });
   }
 
+  function findType(typeProd) {
+    if (typeProd === "normal") return "N";
+    if (typeProd === "ot") return "O";
+    if (typeProd === "extOt") return "XO";
+  }
+
   //function add update remarks
   async function handleAddRemark(remaksText, typeProd) {
     const dataRemak = {
       SCHD_ID: state.planForRemark.SCHD_ID,
       ID_SITELINE: idSiteLine,
-      TYPE_PROD: typeProd === "normal" ? "N" : "O",
+      TYPE_PROD: findType(typeProd),
       REMARK: remaksText,
       PROD_DATE: state.planForRemark.SCHD_PROD_DATE,
       ADD_ID: userId,

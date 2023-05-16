@@ -16,6 +16,13 @@ const MdlAddRemark = ({
     setRemaksText(value);
   }
 
+  //find devault value
+  function findDefvalue(typeProd, plan) {
+    if (typeProd === "normal") return plan.NORMAL_REMARK;
+    if (typeProd === "ot") return plan.OT_REMARK;
+    if (typeProd === "extOt") return plan.OT_X_REMARK;
+  }
+
   return (
     <Modal
       size="xl"
@@ -88,9 +95,7 @@ const MdlAddRemark = ({
               as="textarea"
               aria-label="Remark"
               onChange={handleRemaksText}
-              defaultValue={
-                typeProd === "normal" ? plan.NORMAL_REMARK : plan.OT_REMARK
-              }
+              defaultValue={findDefvalue(typeProd, plan)}
             />
           </Col>
         </Row>

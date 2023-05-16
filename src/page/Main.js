@@ -14,6 +14,7 @@ import MdlAddRemark from "../components/MdlAddRemark";
 import MdlMeasurement from "../components/MdlMeasurement";
 import MdlConfReturn from "../components/MdlConfReturn";
 import { flash } from "react-universal-flash";
+import LisPlanningExtOt from "../components/LisPlanningExtOt";
 
 const Main = () => {
   const {
@@ -35,12 +36,12 @@ const Main = () => {
   }
 
   //function for filter data only OT in tabs ot
-  function filterOtSch(plan) {
-    if (plan.length) {
-      return plan.filter((sch) => sch.PLAN_TARGET_OT !== null);
-    }
-    return plan;
-  }
+  // function filterOtSch(plan) {
+  //   if (plan.length) {
+  //     return plan.filter((sch) => sch.PLAN_TARGET_OT !== null);
+  //   }
+  //   return plan;
+  // }
 
   //function for active Modal HC
   function handleMdlHc() {
@@ -143,6 +144,11 @@ const Main = () => {
                 Over Time
               </Nav.Link>
             </Nav.Item>
+            <Nav.Item onClick={() => handleTabs("extOt")}>
+              <Nav.Link className="" eventKey="extOt">
+                Extra OT
+              </Nav.Link>
+            </Nav.Item>
             <Nav.Item onClick={() => handleTabs("pendding")}>
               <Nav.Link className="" eventKey="pendding">
                 List Pendding
@@ -151,21 +157,45 @@ const Main = () => {
           </Nav>
 
           {state.activeTab === "normal" ? (
-            <ListPlanning
-              selectHc={selectHc}
-              handleSelPlanSize={handleSelPlanSize}
-              viewQrList={viewQrList}
-              openMdlRemark={openMdlRemark}
-            />
+            <div>
+              <div className="bg-primary text-center my-1 fw-bold fs-5 text-light">
+                Normal Time
+              </div>
+              <ListPlanning
+                selectHc={selectHc}
+                handleSelPlanSize={handleSelPlanSize}
+                viewQrList={viewQrList}
+                openMdlRemark={openMdlRemark}
+              />
+            </div>
           ) : null}
           {state.activeTab === "ot" ? (
-            <ListPlanningOt
-              dataDailyPlan={filterOtSch(state.dataDailyPlan)}
-              selectHc={selectHc}
-              handleSelPlanSize={handleSelPlanSize}
-              viewQrList={viewQrList}
-              openMdlRemark={openMdlRemark}
-            />
+            <div>
+              <div className="bg-warning text-center my-1 fw-bold fs-5 ">
+                Over Time
+              </div>
+              <ListPlanningOt
+                dataDailyPlan={state.dataDailyPlan}
+                selectHc={selectHc}
+                handleSelPlanSize={handleSelPlanSize}
+                viewQrList={viewQrList}
+                openMdlRemark={openMdlRemark}
+              />
+            </div>
+          ) : null}
+          {state.activeTab === "extOt" ? (
+            <div>
+              <div className="bg-danger text-center my-1 fw-bold fs-5 text-light">
+                Extra Over Time
+              </div>
+              <LisPlanningExtOt
+                dataDailyPlan={state.dataDailyPlan}
+                selectHc={selectHc}
+                handleSelPlanSize={handleSelPlanSize}
+                viewQrList={viewQrList}
+                openMdlRemark={openMdlRemark}
+              />
+            </div>
           ) : null}
           {state.activeTab === "pendding" ? (
             <TableListPendding viewQrList={viewQrList} />

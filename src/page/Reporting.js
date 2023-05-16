@@ -26,9 +26,13 @@ const Reporting = () => {
     const actualTargetOt = state.dataDailyPlan.filter(
       (dat) => dat.ACT_TARGET_OT !== null
     );
+    const actualTargeExtOt = state.dataDailyPlan.filter(
+      (dat) => dat.ACT_TARGET_X_OT !== null
+    );
     const totTarget =
       findTot(actualTarget, "ACT_TARGET") +
-      findTot(actualTargetOt, "ACT_TARGET_OT");
+      findTot(actualTargetOt, "ACT_TARGET_OT") +
+      findTot(actualTargeExtOt, "ACT_TARGET_X_OT");
     return totTarget;
   }
 
@@ -39,8 +43,13 @@ const Reporting = () => {
     const outputOt = state.dataDailyPlan.filter(
       (dat) => dat.OT_OUTPUT !== null
     );
+    const xoutputOt = state.dataDailyPlan.filter(
+      (dat) => dat.X_OT_OUTPUT !== null
+    );
     const totOutput =
-      findTot(outputNormal, "NORMAL_OUTPUT") + findTot(outputOt, "OT_OUTPUT");
+      findTot(outputNormal, "NORMAL_OUTPUT") +
+      findTot(outputOt, "OT_OUTPUT") +
+      findTot(xoutputOt, "X_OT_OUTPUT");
     return totOutput;
   }
 
@@ -210,13 +219,26 @@ const Reporting = () => {
                           <MP plan={plan} />
                           <td>
                             {plan.ACT_TARGET
-                              ? plan.ACT_TARGET
-                              : plan.PLAN_TARGET}
+                              ? CheckNilai(plan.ACT_TARGET) +
+                                CheckNilai(plan.ACT_TARGET_OT) +
+                                CheckNilai(plan.ACT_TARGET_X_OT)
+                              : CheckNilai(plan.PLAN_TARGET) +
+                                CheckNilai(plan.PLAN_TARGETPLAN_TARGET_OT) +
+                                CheckNilai(plan.PLAN_TARGET_X_OT)}
                           </td>
-                          <td>{plan.NORMAL_OUTPUT}</td>
+                          <td>
+                            {CheckNilai(plan.NORMAL_OUTPUT) +
+                              CheckNilai(plan.OT_OUTPUT) +
+                              CheckNilai(plan.X_OT_OUTPUT)}
+                          </td>
                           <td>
                             {plan.ACT_TARGET
-                              ? plan.ACT_TARGET - plan.NORMAL_OUTPUT
+                              ? CheckNilai(plan.ACT_TARGET) +
+                                CheckNilai(plan.ACT_TARGET_OT) +
+                                CheckNilai(plan.ACT_TARGET_X_OT) -
+                                (CheckNilai(plan.PLAN_TARGET) +
+                                  CheckNilai(plan.PLAN_TARGETPLAN_TARGET_OT) +
+                                  CheckNilai(plan.PLAN_TARGET_X_OT))
                               : 0}
                           </td>
                         </tr>
