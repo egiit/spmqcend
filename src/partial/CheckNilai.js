@@ -1,7 +1,7 @@
 const CheckNilai = (nilai) => {
-  if (!nilai || isNaN(nilai)) return 0;
+  if (!nilai || isNaN(nilai)) return Number(0);
 
-  return nilai;
+  return Number(nilai);
 };
 
 export default CheckNilai;

@@ -56,18 +56,22 @@ const ModalUpdtHC = ({ handleClose }) => {
     if (dataHCselect.type === "ot") {
       if (dataHCselect.ACT_MP_OT !== null) {
         setHc(dataHCselect.ACT_MP_OT);
-      } else {
+      } else if (dataHCselect.PLAN_MP_OT !== null) {
         setHc(dataHCselect.PLAN_MP_OT);
+      } else {
+        setHc(dataHCselect.PLAN_MP);
       }
-      return setmaxhc(dataHCselect.PLAN_MP_OT + 10);
+      return setmaxhc(dataHCselect.PLAN_MP + 10);
     }
     if (dataHCselect.type === "extOt") {
       if (dataHCselect.ACT_MP_X_OT !== null) {
         setHc(dataHCselect.ACT_MP_X_OT);
-      } else {
+      } else if (dataHCselect.PLAN_MP_X_OT !== null) {
         setHc(dataHCselect.PLAN_MP_X_OT);
+      } else {
+        setHc(dataHCselect.PLAN_MP);
       }
-      return setmaxhc(dataHCselect.PLAN_MP_X_OT + 10);
+      return setmaxhc(dataHCselect.PLAN_MP + 10);
     }
   }, [dataHCselect]);
 

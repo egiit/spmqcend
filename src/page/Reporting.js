@@ -162,6 +162,14 @@ const Reporting = () => {
     return dat;
   }
 
+  function SumAll(n1, n2, n3) {
+    const nilai1 = CheckNilai(n1);
+    const nilai2 = CheckNilai(n2);
+    const nilai3 = CheckNilai(n3);
+    const total = nilai1 + nilai2 + nilai3;
+    return total;
+  }
+
   return (
     <div className="mt-5 pt-3">
       <div className="fw-bold ms-3 fs-5 mb-2 text-center bg-secondary text-light">
@@ -227,18 +235,24 @@ const Reporting = () => {
                                 CheckNilai(plan.PLAN_TARGET_X_OT)}
                           </td>
                           <td>
-                            {CheckNilai(plan.NORMAL_OUTPUT) +
-                              CheckNilai(plan.OT_OUTPUT) +
-                              CheckNilai(plan.X_OT_OUTPUT)}
+                            {SumAll(
+                              plan.NORMAL_OUTPUT,
+                              plan.OT_OUTPUT,
+                              plan.X_OT_OUTPUT
+                            )}
                           </td>
                           <td>
                             {plan.ACT_TARGET
-                              ? CheckNilai(plan.ACT_TARGET) +
-                                CheckNilai(plan.ACT_TARGET_OT) +
-                                CheckNilai(plan.ACT_TARGET_X_OT) -
-                                (CheckNilai(plan.PLAN_TARGET) +
-                                  CheckNilai(plan.PLAN_TARGETPLAN_TARGET_OT) +
-                                  CheckNilai(plan.PLAN_TARGET_X_OT))
+                              ? SumAll(
+                                  plan.NORMAL_OUTPUT,
+                                  plan.OT_OUTPUT,
+                                  plan.X_OT_OUTPUT
+                                ) -
+                                SumAll(
+                                  plan.ACT_TARGET,
+                                  plan.ACT_TARGET_OT,
+                                  plan.ACT_TARGET_X_OT
+                                )
                               : 0}
                           </td>
                         </tr>

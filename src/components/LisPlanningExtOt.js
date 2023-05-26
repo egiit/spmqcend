@@ -10,6 +10,7 @@ import { flash } from "react-universal-flash";
 import TrPlanSize from "./compMainModal/TrPlanSize";
 import TrPlanSizePending from "./compMainModal/TrPlanSizePending";
 import { getTimeFromMins } from "../partial/TimeManipulate";
+import CheckNilai from "../partial/CheckNilai";
 
 const LisPlanningExtOt = ({
   dataDailyPlan,
@@ -99,12 +100,13 @@ const LisPlanningExtOt = ({
                       <td>
                         {plan.ACT_TARGET_X_OT
                           ? plan.ACT_TARGET_X_OT
-                          : plan.PLAN_TARGET_X_OT}
+                          : CheckNilai(plan.PLAN_TARGET_X_OT)}
                       </td>
-                      <td>{plan.OT_OUTPUT}</td>
+                      <td>{CheckNilai(plan.X_OT_OUTPUT)}</td>
                       <td>
                         {plan.ACT_TARGET_X_OT
-                          ? plan.OT_OUTPUT - plan.ACT_TARGET_X_OT
+                          ? CheckNilai(plan.X_OT_OUTPUT) -
+                            CheckNilai(plan.ACT_TARGET_X_OT)
                           : 0}
                       </td>
                     </tr>
