@@ -115,6 +115,10 @@ const TrPlanSize = ({
                                   <Button
                                     size="sm"
                                     className="btn-transfer me-2"
+                                    disabled={
+                                      bdl.BARCODE_SERIAL ===
+                                      bdl.BARCODE_TRANSFER
+                                    }
                                     onClick={() =>
                                       handlMdlReturn(plnz, bdl, typeProd)
                                     }
@@ -125,6 +129,10 @@ const TrPlanSize = ({
                                     size="sm"
                                     variant="outline-secondary"
                                     className="me-2"
+                                    disabled={
+                                      bdl.BARCODE_SERIAL ===
+                                      bdl.BARCODE_TRANSFER
+                                    }
                                     onClick={() =>
                                       getSpectList(bdl, plnz.SCHD_ID)
                                     }

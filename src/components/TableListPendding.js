@@ -12,7 +12,8 @@ const TableListPendding = ({
   //   plan,
   viewQrList,
 }) => {
-  const { state, handlMdlTfrActv } = useContext(QcEndlineContex);
+  const { state, handlMdlTfrActv, handlMdlReturn } =
+    useContext(QcEndlineContex);
   function checkStatus(qty, checked) {
     if (checked) {
       if (checked === qty) return <GiCheckMark size={20} color="#00a814" />;
@@ -131,7 +132,11 @@ const TableListPendding = ({
                                     <Button
                                       size="sm"
                                       className="btn-transfer me-2"
-                                      onClick={() => console.log("return")}
+                                      onClick={() => handlMdlReturn(plnz, bdl)}
+                                      disabled={
+                                        bdl.BARCODE_SERIAL ===
+                                        bdl.BARCODE_TRANSFER
+                                      }
                                     >
                                       <ImUndo2 size={16} />
                                     </Button>
