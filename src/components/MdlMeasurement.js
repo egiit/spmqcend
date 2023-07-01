@@ -26,7 +26,7 @@ const MdlMeasurement = ({ handleClose }) => {
   const inputShow = useRef(null);
 
   function activeInput() {
-    if (seq === 6) return flash(`Already 5 Sequance`, 2500, "warning");
+    if (seq === 6) return flash(`Sudah 5 urutan `, 2500, "warning");
     const mdl = document.getElementById("mdlInpt");
     const cntn = document.getElementById("contentMdl");
     mdl.classList.toggle("show");
@@ -42,7 +42,7 @@ const MdlMeasurement = ({ handleClose }) => {
           dataTemp[idxInput].MES_VALUE.toString() !== "0" &&
           !dataTemp[idxInput].MES_CAT
         ) {
-          return flash("Please Set Plus Or Minus", 2500, "warning");
+          return flash("Mohon tentukan plus atau minus", 2500, "warning");
         }
       }
       setIdxInput(newIdx);
@@ -60,7 +60,7 @@ const MdlMeasurement = ({ handleClose }) => {
           dataTemp[idxInput].MES_VALUE.toString() !== "0" &&
           !dataTemp[idxInput].MES_CAT
         ) {
-          return flash("Please Set Plus Or Minus", 2500, "warning");
+          return flash("Mohon tentukan plus atau minus", 2500, "warning");
         }
       }
       setIdxInput(newIdx);
@@ -84,7 +84,7 @@ const MdlMeasurement = ({ handleClose }) => {
     if (spec.MES_UOM === "INCH" && !regex.test(value)) {
       // memvalidasi input
       return flash(
-        `Allow Characters only 0-9 space and slash "/"`,
+        `Angka dan karater yang diperbolehkan hanya 0-9 dan "/"`,
         2600,
         "warning"
       );
@@ -136,14 +136,14 @@ const MdlMeasurement = ({ handleClose }) => {
 
   async function handleSave() {
     if (dataTemp.length === 0)
-      return flash("No Data Measurement for post", 2500, "danger");
+      return flash("Tidak ada data measurement untuk di post", 2500, "danger");
     const dataWitHNull = dataTemp.filter((dt) => dt.MES_VALUE !== "");
 
     await axios
       .post(`/measurement/endline/`, dataWitHNull)
       .then((res) => {
         if (res.status === 200) {
-          flash("Success Add Data Post", 2500, "success");
+          flash("Berhasil menyimpan data", 2500, "success");
           //   const newDataPost = [...dataPostMes, dataTemp];
           //   const newSeq = seq + 1 < 6 ? seq + 1 : 5;
           //   setDataPostMes(newDataPost);
@@ -265,7 +265,7 @@ const MdlMeasurement = ({ handleClose }) => {
   function seqOpsAction(sq) {
     const checkDataPost = dataPostMes.filter((dt) => dt.MES_SEQ === sq);
     if (checkDataPost.length < 1)
-      return flash(`No Data Sequance ${sq}`, 2500, "warning");
+      return flash(`Tidak ada data urutan ke ${sq}`, 2500, "warning");
 
     setOpsiSeq(sq);
   }
@@ -273,7 +273,7 @@ const MdlMeasurement = ({ handleClose }) => {
   function editSeq(sq) {
     const checkDataPost = dataPostMes.filter((dt) => dt.MES_SEQ === sq);
     if (checkDataPost.length < 1)
-      return flash(`No Data Sequance ${sq}`, 2500, "warning");
+      return flash(`Tidak ada data urutan ke ${sq}`, 2500, "warning");
 
     setSeq(sq);
     setDataTemp(checkDataPost);
@@ -306,7 +306,7 @@ const MdlMeasurement = ({ handleClose }) => {
   async function deleteSeqData(sq) {
     const datas = dataPostMes.filter((dt) => dt.MES_SEQ === sq);
     if (datas.length < 1)
-      return flash(`No Data Sequance ${sq}`, 2500, "warning");
+      return flash(`Tidak ada data urutan ke ${sq}`, 2500, "warning");
 
     await axios
       .delete(`/measurement/endline-out/${datas[0].BARCODE_SERIAL}/${sq}`)

@@ -84,7 +84,7 @@ const Main = () => {
   function handleSelPlanSize(bundleQr, type, SCHD) {
     if (bundleQr.RETURN_COUNT)
       return flash(
-        `You Have ${bundleQr.RETURN_COUNT} Box Return, Please Confirm To Preparation`,
+        `Anda memiliki ${bundleQr.RETURN_COUNT} Box yang dikembalikan, Mohon konfirmasi ke Preparation`,
         4000,
         "warning"
       );

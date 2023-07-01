@@ -307,7 +307,7 @@ export const QcEndProvider = ({ children }) => {
   function handlePageActive(page) {
     if (page === "REPAIRED") {
       if (state.dataDefectForRep.length === 0) {
-        return flash("No Data For Repaird !", 2000, "danger");
+        return flash("Tidak ada data repaired !", 2000, "danger");
       }
     }
     dispatch({
@@ -341,7 +341,8 @@ export const QcEndProvider = ({ children }) => {
 
     if (qtyPush > bdl.QTY) {
       return flash(
-        `Can't Input Grather Theen Sum Of Bundle QTY`,
+        `Tidak dapat intput lebih besar dari jumlah bundle QTY'`,
+        //  `Can't Input Grather Theen Sum Of Bundle QTY`,
         2000,
         "danger"
       );
@@ -357,7 +358,8 @@ export const QcEndProvider = ({ children }) => {
 
         if (compQtyTotal > bdl.QTY) {
           return flash(
-            `Can't Input Grather Theen Sum Of Bundle QTT`,
+            `Tidak dapat intput lebih besar dari jumlah bundle QTY'`,
+            // `Can't Input Grather Theen Sum Of Bundle QTT`,
             2000,
             "danger"
           );
@@ -381,7 +383,7 @@ export const QcEndProvider = ({ children }) => {
         return handlePageActive("");
       case "DEFECT_PREV":
         if (!state.defPrev.ENDLINE_DEFECT_CODE)
-          return flash("No Data Previous", 2000, "danger");
+          return flash("Tidak ada data sebelumnya", 2000, "danger");
         const dataDefectPrev = {
           ...dataBasic,
           ...state.defPrev,
@@ -604,7 +606,7 @@ export const QcEndProvider = ({ children }) => {
     const bal = CheckNilai(planz.GOOD) - CheckNilai(planz.TFR_QTY);
 
     if (bal < bdl.ORDER_QTY) {
-      return flash("No Balance For Transfer", 2000, "danger");
+      return flash("Tidak ada balance GOOD untuk ditransfer", 2000, "danger");
     }
 
     const qrData = {
@@ -736,13 +738,15 @@ export const QcEndProvider = ({ children }) => {
           mdlMasurement(true);
         } else {
           flash(
-            "No Data Spec List Measurement, Please Call QC ADM",
+            "Tidak ada data Spec List Measurement, Mohon hubungi Adm QC",
             3000,
             "warning"
           );
         }
       })
-      .catch((err) => flash("No Data Measurement Spec list", 3000, "danger"));
+      .catch((err) =>
+        flash("Tidak ada data Spec List Measurement", 3000, "danger")
+      );
   }
 
   //function untuk open modal Return QR
@@ -750,7 +754,11 @@ export const QcEndProvider = ({ children }) => {
     const bal = CheckNilai(planz.QTY) - CheckNilai(planz.TOTAL_CHECKED);
 
     if (bal < bdl.ORDER_QTY) {
-      return flash(`Can't Return Bundle Already Check`, 2000, "danger");
+      return flash(
+        `Tidak dapat mereturn bundle yang sudah dicheck`,
+        2000,
+        "danger"
+      );
     }
     dispatch({
       type: _ACTION._SET_BDL_RETURN,

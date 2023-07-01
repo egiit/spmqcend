@@ -110,7 +110,7 @@ const PartAndDefectChoice = ({ type }) => {
 
   function handlePost() {
     if (defectSelected === "" || partSelected === "")
-      return flash("Please Select Part And Issue!", 2000, "danger");
+      return flash("Mohon pilih Part dan Issue!", 2000, "danger");
     const dataPost = {
       ENDLINE_DEFECT_CODE: defectSelected,
       ENDLINE_PART_CODE: partSelected,

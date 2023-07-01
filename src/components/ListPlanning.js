@@ -21,7 +21,8 @@ const ListPlanning = ({
 
   function accordOpen(plan) {
     if (plan.ACT_MP === null)
-      return flash("Please Set Actual Manpower First!", 2000, "warning");
+      return flash("Mohon set Manpower terlebih dahulu!", 2000, "warning");
+    // return flash("Please Set Actual Manpower First!", 2000, "warning");
     const getUnixId = `${plan.SCHD_ID}${plan.SCHD_QTY}`;
 
     const arrow = document.getElementsByClassName(`arrow${getUnixId}`)[0];

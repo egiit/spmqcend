@@ -23,7 +23,8 @@ const MainBtnQcInpt = () => {
     const { value } = e.target;
     if (value > 5 || value < 0)
       return flash(
-        `Can't Set Multiple Less Then 0 and Greater Than 5`,
+        `Tidak dapat set perkalian kurang dari 0 dan lebih besar dari 5`,
+        // `Can't Set Multiple Less Then 0 and Greater Than 5`,
         2000,
         "danger"
       );
