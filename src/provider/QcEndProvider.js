@@ -209,18 +209,18 @@ export const QcEndProvider = ({ children }) => {
   }, [state.schDate, siteName, lineName, idSiteLine, shift, userId]);
 
   //function if plan per size taped
-  function planSizeSelected(planz, SCHD) {
+  async function planSizeSelected(planz, SCHD) {
     dispatch({
       type: _ACTION._SET_SCHD_SELECT,
       payload: { data: SCHD },
     });
     getQrQtyResult(planz.SCHD_ID, planz.ORDER_SIZE);
     getListDefForRep(planz.SCHD_ID, planz.ORDER_SIZE);
-    postPlanSize(planz);
     dispatch({
       type: _ACTION._SET_PLNZ_SELECT,
       payload: { data: planz },
     });
+    await postPlanSize(planz);
   }
   //function bundleUnSelect
   function planSizeUnSelected() {
@@ -421,7 +421,9 @@ export const QcEndProvider = ({ children }) => {
           }
         }
       })
-      .catch((err) => flash(err.message, 2000, "danger"));
+      .catch((err) => {
+        flash(err.response.data.message, 2000, "danger");
+      });
   }
 
   //save data def prev
