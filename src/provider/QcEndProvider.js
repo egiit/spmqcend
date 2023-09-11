@@ -20,8 +20,8 @@ export const QcEndProvider = ({ children }) => {
   const initialstate = {
     date: moment().format("YYYY-MM-DD"),
     schDate: moment().format("YYYY-MM-DD"),
-    // date: "2023-04-11",
-    // schDate: "2023-04-11",
+    // date: "2023-08-18",
+    // schDate: "2023-08-18",
     dataDailyPlan: [],
     dataPlanBySize: [],
     dataPlanBySizePend: [],
@@ -53,6 +53,10 @@ export const QcEndProvider = ({ children }) => {
     bdlForRetrun: {},
     mdlConfirReturn: false,
     measCheckCount: [],
+    qrSplitList: [],
+    undoCount: {},
+    dataLog: [],
+    btnProcess: false,
     // lineActive: "",
   };
 
@@ -66,7 +70,7 @@ export const QcEndProvider = ({ children }) => {
   ) {
     await axios
       .get(
-        `/planning/planning-daily-qcend/${schDate}/${siteName}/${lineName}/${idSiteLine}/${shift}/`
+        `/qc-endline/dailyplanning/${schDate}/${siteName}/${lineName}/${idSiteLine}/${shift}/`
       )
       .then((res) => {
         dispatch({
@@ -80,7 +84,7 @@ export const QcEndProvider = ({ children }) => {
   //function get data size planning
   async function getSizePlaning(date, siteName, lineName, userId) {
     await axios
-      .get(`/qc/endline/plan-by-size/${date}/${siteName}/${lineName}/${userId}`)
+      .get(`/qc-endline/schedule-size/${date}/${siteName}/${lineName}`)
       .then((res) => {
         if (res.status === 200) {
           dispatch({
@@ -93,11 +97,9 @@ export const QcEndProvider = ({ children }) => {
   }
 
   //function get data size planning
-  async function getSizePlaningPend(date, siteName, lineName, userId) {
+  async function getSizePlaningPend(date, siteName, lineName) {
     await axios
-      .get(
-        `/qc/endline/planz-pendding/${date}/${siteName}/${lineName}/${userId}`
-      )
+      .get(`/qc-endline/qr-pendding/${date}/${siteName}/${lineName}`)
       .then((res) => {
         if (res.status === 200) {
           dispatch({
@@ -109,24 +111,24 @@ export const QcEndProvider = ({ children }) => {
       .catch((err) => console.log(err));
   }
   //function get data size planning
-  async function getQrBundlePend(date, siteName, lineName) {
-    await axios
-      .get(`/qc/endline/qr-sewing-in-pend/${date}/${siteName}/${lineName}`)
-      .then((res) => {
-        if (res.status === 200) {
-          dispatch({
-            type: _ACTION._GET_SCH_QR_BUNDLE_PEND,
-            payload: { data: res.data.data },
-          });
-        }
-      })
-      .catch((err) => console.log(err));
-  }
+  // async function getQrBundlePend(date, siteName, lineName) {
+  //   await axios
+  //     .get(`/qc-endline/schedule-size-qr/${date}/${siteName}/${lineName}`)
+  //     .then((res) => {
+  //       if (res.status === 200) {
+  //         dispatch({
+  //           type: _ACTION._GET_SCH_QR_BUNDLE_PEND,
+  //           payload: { data: res.data.data },
+  //         });
+  //       }
+  //     })
+  //     .catch((err) => console.log(err));
+  // }
 
   //get data qr bundle
   async function getQrBundle(date, siteName, lineName) {
     await axios
-      .get(`/qc/endline/qr-sewing-in/${date}/${siteName}/${lineName}/%25%25`)
+      .get(`/qc-endline/schedule-size-qr/${date}/${siteName}/${lineName}`)
       .then((res) => {
         if (res.status === 200) {
           dispatch({
@@ -146,23 +148,6 @@ export const QcEndProvider = ({ children }) => {
         payload: { data: res.data },
       });
     });
-  }
-
-  //get data qr have check measurement
-  async function getQrMeasCheck(date, siteName, lineName) {
-    await axios
-      .get(
-        `/measurement/endline/meas-count-check/${date}/${siteName}/${lineName}`
-      )
-      .then((res) => {
-        if (res.status === 200) {
-          dispatch({
-            type: _ACTION._SET_MEAS_CHECK_COUNT,
-            payload: { data: res.data.data },
-          });
-        }
-      })
-      .catch((err) => console.log(err));
   }
 
   //get Defect code/name list
@@ -189,9 +174,9 @@ export const QcEndProvider = ({ children }) => {
     getDailyPlanning(state.schDate, siteName, lineName, idSiteLine, shift);
     getQrBundle(state.schDate, siteName, lineName);
     getQrMeasCheck(state.schDate, siteName, lineName);
-    getSizePlaningPend(state.schDate, siteName, lineName, userId);
+    getSizePlaningPend(state.schDate, siteName, lineName);
     getSizePlaning(state.schDate, siteName, lineName, userId);
-    getQrBundlePend(state.schDate, siteName, lineName);
+    // getQrBundlePend(state.schDate, siteName, lineName);
   };
 
   useEffect(() => {
@@ -204,33 +189,35 @@ export const QcEndProvider = ({ children }) => {
     getQrBundle(state.schDate, siteName, lineName);
     getQrMeasCheck(state.schDate, siteName, lineName);
     getSizePlaning(state.schDate, siteName, lineName, userId);
-    getSizePlaningPend(state.schDate, siteName, lineName, userId);
-    getQrBundlePend(state.schDate, siteName, lineName);
+    getSizePlaningPend(state.schDate, siteName, lineName);
+    // getQrBundlePend(state.schDate, siteName, lineName);
   }, [state.schDate, siteName, lineName, idSiteLine, shift, userId]);
 
   //function if plan per size taped
-  async function planSizeSelected(planz, SCHD) {
+  async function qrSelected(planz, SCHD) {
     dispatch({
       type: _ACTION._SET_SCHD_SELECT,
       payload: { data: SCHD },
     });
-    getQrQtyResult(planz.SCHD_ID, planz.ORDER_SIZE);
-    getListDefForRep(planz.SCHD_ID, planz.ORDER_SIZE);
+    getQrQtyResult(planz.BARCODE_SERIAL);
+    getListDefForRep(planz.BARCODE_SERIAL);
+    getUndoCount(planz.BARCODE_SERIAL);
     dispatch({
       type: _ACTION._SET_PLNZ_SELECT,
       payload: { data: planz },
     });
-    await postPlanSize(planz);
+    // await postPlanSize(planz);
   }
   //function bundleUnSelect
   function planSizeUnSelected() {
-    const qr = state.qrQtyResult[0];
-    const dataUpdPlanSize = { ...state.planSizeSelect, ...qr };
-    patchPlanSize(dataUpdPlanSize);
     refrehAll();
     dispatch({
       type: _ACTION._SET_PLNZ_SELECT,
       payload: { data: [] },
+    });
+    dispatch({
+      type: _ACTION._GET_UNDO_COUNT,
+      payload: { data: {} },
     });
     dispatch({
       type: _ACTION._SET_MDL_INPUT,
@@ -251,54 +238,33 @@ export const QcEndProvider = ({ children }) => {
     savePrevDef({});
   }
 
-  //fucntion postPlanSize
-  async function postPlanSize(plan) {
-    const plansize = {
-      ...plan,
-      PLANSIZE_ADD_ID: userId,
-      PLANSIZE_MOD_ID: userId,
-    };
-    await axios
-      .post("/qc/endline/plansize", plansize)
-      .then((res) => {
-        if (res.status === 200) {
-          dispatch({
-            type: _ACTION._SET_MDL_INPUT,
-            payload: true,
-          });
-          //jika plan size baru maka masukan plansize_id ke selected
-
-          if (res.data.status === "create") {
-            const { PLANSIZE_ID } = res.data.data;
-            dispatch({
-              type: _ACTION._SET_PLNZ_SELECT,
-              payload: { data: { ...plansize, PLANSIZE_ID } },
-            });
-          }
-        }
-      })
-      .catch((err) => flash(err.message, 2000, "danger"));
-  }
-  //fucntion update data to plansize after count
-  async function patchPlanSize(plan) {
-    const plansize = {
-      ...plan,
-      PLANSIZE_MOD_ID: userId,
-    };
-    await axios
-      .patch("/qc/endline/plansize", plansize)
-      .catch((err) => flash(err.message, 2000, "danger"));
-  }
-
   //function getQrQtyResult
-  async function getQrQtyResult(schdid, size) {
+  async function getQrQtyResult(barcodeSerial) {
     await axios
-      .get(`/qc/endline/planz/${schdid}/${size}`)
+      .get(`/qc-endline/qr-selected/${barcodeSerial}`)
       .then((res) => {
         dispatch({
           type: _ACTION._GET_QR_RESULT,
-          payload: { data: res.data },
+          payload: { data: res.data.data },
         });
+        dispatch({
+          type: _ACTION._SET_MDL_INPUT,
+          payload: true,
+        });
+      })
+      .catch((err) => flash(err.message, 2000, "danger"));
+  }
+  //function nilai Undo
+  async function getUndoCount(barcodeSerial) {
+    await axios
+      .get(`/qc-endline/count-undo/${barcodeSerial}/${userId}`)
+      .then((res) => {
+        if (res.data) {
+          dispatch({
+            type: _ACTION._GET_UNDO_COUNT,
+            payload: { data: res.data },
+          });
+        }
       })
       .catch((err) => flash(err.message, 2000, "danger"));
   }
@@ -318,28 +284,27 @@ export const QcEndProvider = ({ children }) => {
 
   //handle postoutput on click main button
   async function postOutput(type, dataOutput) {
-    const bdl = state.planSizeSelect;
-    const qr = state.qrQtyResult[0];
+    const bdl = state.schdSelected;
+    const qr = state.planSizeSelect;
 
     const dataBasic = {
-      PLANSIZE_ID: bdl.PLANSIZE_ID,
-      ENDLINE_PLAN_SIZE: bdl.ORDER_SIZE,
+      BARCODE_SERIAL: qr.BARCODE_SERIAL,
+      ENDLINE_PLAN_SIZE: qr.ORDER_SIZE,
       ENDLINE_OUT_QTY: 1,
       ENDLINE_ID_SITELINE: idSiteLine,
       ENDLINE_LINE_NAME: lineName,
-      ENDLINE_PORD_TYPE: bdl.type,
+      ENDLINE_PORD_TYPE: qr.type,
       ENDLINE_SCH_ID: bdl.SCH_ID,
-      ENDLINE_SCHD_ID: bdl.SCHD_ID,
-      ENDLINE_ACT_SCHD_ID: state.schdSelected.SCHD_ID,
-      ENDLINE_SCHD_DATE: state.schdSelected.SCHD_PROD_DATE,
+      ENDLINE_SCHD_ID: qr.SCHD_ID,
+      ENDLINE_ACT_SCHD_ID: bdl.SCHD_ID,
+      ENDLINE_SCHD_DATE: bdl.SCHD_PROD_DATE,
       ENDLINE_SEQUANCE: parseInt(qr.TOTAL_CHECKED) + 1,
       ENDLINE_TIME: moment().format("HH:mm:ss"),
       ENDLINE_ADD_ID: userId,
     };
 
     const qtyPush = parseInt(qr.TOTAL_CHECKED) + dataBasic.ENDLINE_OUT_QTY;
-
-    if (qtyPush > bdl.QTY) {
+    if (qtyPush > qr.ORDER_QTY) {
       return flash(
         `Tidak dapat intput lebih besar dari jumlah bundle QTY'`,
         //  `Can't Input Grather Theen Sum Of Bundle QTY`,
@@ -356,7 +321,7 @@ export const QcEndProvider = ({ children }) => {
             : state.multipleRtt;
         const compQtyTotal = parseInt(qr.TOTAL_CHECKED) + parseInt(qtyRtt);
 
-        if (compQtyTotal > bdl.QTY) {
+        if (compQtyTotal > qr.ORDER_QTY) {
           return flash(
             `Tidak dapat intput lebih besar dari jumlah bundle QTY'`,
             // `Can't Input Grather Theen Sum Of Bundle QTT`,
@@ -405,25 +370,30 @@ export const QcEndProvider = ({ children }) => {
 
   //function submit output
   async function submitData(data) {
+    dispatch({
+      type: _ACTION._SET_ACTV_BTN_PROCESS,
+      payload: true,
+    });
     await axios
-      .post("/qc/endline/output", data)
+      .post("/qc-endline/output", data)
       .then((res) => {
         if (res.data.ENDLINE_ADD_ID) {
-          getQrQtyResult(res.data.ENDLINE_SCHD_ID, res.data.ENDLINE_PLAN_SIZE);
+          getQrQtyResult(res.data.BARCODE_SERIAL);
           // getQrBundlePend(state.schDate, siteName, lineName);
           //jika type post defect maka ambil data untuk repaird
           addUndoFrtEndEvryPost(res.data.ENDLINE_OUT_TYPE);
           if (res.data.ENDLINE_OUT_TYPE === "DEFECT") {
-            getListDefForRep(
-              res.data.ENDLINE_SCHD_ID,
-              res.data.ENDLINE_PLAN_SIZE
-            );
+            getListDefForRep(res.data.BARCODE_SERIAL);
           }
         }
       })
       .catch((err) => {
         flash(err.response.data.message, 2000, "danger");
       });
+    dispatch({
+      type: _ACTION._SET_ACTV_BTN_PROCESS,
+      payload: false,
+    });
   }
 
   //save data def prev
@@ -435,9 +405,9 @@ export const QcEndProvider = ({ children }) => {
   }
 
   //get list qty defect for repaird
-  async function getListDefForRep(schdi, size) {
+  async function getListDefForRep(barcodeSerial) {
     await axios
-      .get(`/qc/endline/defect/${schdi}/${size}`)
+      .get(`/qc-endline/qr-selected-defect/${barcodeSerial}`)
       .then((res) => {
         if (res.data) {
           dispatch({
@@ -459,16 +429,10 @@ export const QcEndProvider = ({ children }) => {
     }));
 
     await axios
-      .patch("/qc/endline/repaired", dataRepair)
+      .patch("/qc-endline/repaired", dataRepair)
       .then((res) => {
-        getQrQtyResult(
-          state.planSizeSelect.SCHD_ID,
-          state.planSizeSelect.ORDER_SIZE
-        );
-        getListDefForRep(
-          state.planSizeSelect.SCHD_ID,
-          state.planSizeSelect.ORDER_SIZE
-        );
+        getQrQtyResult(state.planSizeSelect.BARCODE_SERIAL);
+        getListDefForRep(state.planSizeSelect.BARCODE_SERIAL);
         // refrehBundle();
         addUndoFrtEndEvryPost("REPAIR");
 
@@ -480,15 +444,14 @@ export const QcEndProvider = ({ children }) => {
 
   //for validasi saldo undo
   async function handleUndoDefRejGood(type) {
-    const { UNDO_RTT, UNDO_DEFECT, UNDO_BS, UNDO_REPAIR } =
-      state.planSizeSelect;
+    const { UNDO_RTT, UNDO_DEFECT, UNDO_BS, UNDO_REPAIR } = state.undoCount;
     switch (type) {
       case "RTT":
         if (UNDO_RTT > 0) {
           dispatch({
-            type: _ACTION._SET_PLNZ_SELECT,
+            type: _ACTION._GET_UNDO_COUNT,
             payload: {
-              data: { ...state.planSizeSelect, UNDO_RTT: UNDO_RTT - 1 },
+              data: { ...state.undoCount, UNDO_RTT: UNDO_RTT - 1 },
             },
           });
           undo(type);
@@ -497,9 +460,9 @@ export const QcEndProvider = ({ children }) => {
       case "DEFECT":
         if (UNDO_DEFECT > 0) {
           dispatch({
-            type: _ACTION._SET_PLNZ_SELECT,
+            type: _ACTION._GET_UNDO_COUNT,
             payload: {
-              data: { ...state.planSizeSelect, UNDO_DEFECT: UNDO_DEFECT - 1 },
+              data: { ...state.undoCount, UNDO_DEFECT: UNDO_DEFECT - 1 },
             },
           });
           undo(type);
@@ -508,9 +471,9 @@ export const QcEndProvider = ({ children }) => {
       case "BS":
         if (UNDO_BS > 0) {
           dispatch({
-            type: _ACTION._SET_PLNZ_SELECT,
+            type: _ACTION._GET_UNDO_COUNT,
             payload: {
-              data: { ...state.planSizeSelect, UNDO_BS: UNDO_BS - 1 },
+              data: { ...state.undoCount, UNDO_BS: UNDO_BS - 1 },
             },
           });
           undo(type);
@@ -519,9 +482,9 @@ export const QcEndProvider = ({ children }) => {
       case "REPAIR":
         if (UNDO_REPAIR > 0) {
           dispatch({
-            type: _ACTION._SET_PLNZ_SELECT,
+            type: _ACTION._GET_UNDO_COUNT,
             payload: {
-              data: { ...state.planSizeSelect, UNDO_REPAIR: UNDO_REPAIR - 1 },
+              data: { ...state.undoCount, UNDO_REPAIR: UNDO_REPAIR - 1 },
             },
           });
           undo(type);
@@ -539,30 +502,33 @@ export const QcEndProvider = ({ children }) => {
       USER_ID: userId,
       ENDLINE_OUT_TYPE: type,
     };
+
     await axios
-      .patch(`/qc/endline/undo/`, dataUndo)
+      .patch(`/qc-endline/exe-undo/`, dataUndo)
       .then((res) => {
-        getQrQtyResult(dataUndo.SCHD_ID, dataUndo.ORDER_SIZE);
+        getQrQtyResult(dataUndo.BARCODE_SERIAL);
         //jika type post defect maka ambil data untuk repaird
         if (type === "DEFECT" || type === "REPAIR") {
-          getListDefForRep(dataUndo.SCHD_ID, dataUndo.ORDER_SIZE);
+          getListDefForRep(dataUndo.BARCODE_SERIAL);
         }
         flash(res.data.message, 2000, "success");
       })
-      .catch((err) => flash(err.message, 2000, "danger"));
+      .catch((err) => {
+        console.log(err);
+        flash(err.response.data.message, 2000, "danger");
+      });
   }
 
   //function untuk menambah saldo di Front End setiap melakukan post agar tidak lewat front end
   function addUndoFrtEndEvryPost(type) {
-    const { UNDO_RTT, UNDO_DEFECT, UNDO_BS, UNDO_REPAIR } =
-      state.planSizeSelect;
+    const { UNDO_RTT, UNDO_DEFECT, UNDO_BS, UNDO_REPAIR } = state.undoCount;
     switch (type) {
       case "RTT":
         if (UNDO_RTT < 3) {
           dispatch({
-            type: _ACTION._SET_PLNZ_SELECT,
+            type: _ACTION._GET_UNDO_COUNT,
             payload: {
-              data: { ...state.planSizeSelect, UNDO_RTT: UNDO_RTT + 1 },
+              data: { ...state.undoCount, UNDO_RTT: UNDO_RTT + 1 },
             },
           });
         }
@@ -570,9 +536,9 @@ export const QcEndProvider = ({ children }) => {
       case "DEFECT":
         if (UNDO_DEFECT < 3) {
           dispatch({
-            type: _ACTION._SET_PLNZ_SELECT,
+            type: _ACTION._GET_UNDO_COUNT,
             payload: {
-              data: { ...state.planSizeSelect, UNDO_DEFECT: UNDO_DEFECT + 1 },
+              data: { ...state.undoCount, UNDO_DEFECT: UNDO_DEFECT + 1 },
             },
           });
         }
@@ -580,9 +546,9 @@ export const QcEndProvider = ({ children }) => {
       case "BS":
         if (UNDO_BS < 3) {
           dispatch({
-            type: _ACTION._SET_PLNZ_SELECT,
+            type: _ACTION._GET_UNDO_COUNT,
             payload: {
-              data: { ...state.planSizeSelect, UNDO_BS: UNDO_BS + 1 },
+              data: { ...state.undoCount, UNDO_BS: UNDO_BS + 1 },
             },
           });
         }
@@ -590,9 +556,9 @@ export const QcEndProvider = ({ children }) => {
       case "REPAIR":
         if (UNDO_REPAIR < 3) {
           dispatch({
-            type: _ACTION._SET_PLNZ_SELECT,
+            type: _ACTION._GET_UNDO_COUNT,
             payload: {
-              data: { ...state.planSizeSelect, UNDO_REPAIR: UNDO_REPAIR + 1 },
+              data: { ...state.undoCount, UNDO_REPAIR: UNDO_REPAIR + 1 },
             },
           });
         }
@@ -603,33 +569,45 @@ export const QcEndProvider = ({ children }) => {
   }
 
   //function untuk open modal transfer QR
-  function handlMdlTfrActv(planz, bdl, type) {
-    const databundle = { ...planz, type: type };
-    const bal = CheckNilai(planz.GOOD) - CheckNilai(planz.TFR_QTY);
+  async function handlMdlTfrActv(bdl) {
+    // console.log({ planz, bdl, type });
+    // const databundle = { ...planz, type: type };
+    // const bal = CheckNilai(planz.GOOD) - CheckNilai(planz.TFR_QTY);
 
-    if (bal < bdl.ORDER_QTY) {
+    if (CheckNilai(bdl.BAL_TRANSFER) < 1) {
       return flash("Tidak ada balance GOOD untuk ditransfer", 2000, "danger");
     }
 
     const qrData = {
       ...bdl,
-      SCH_ID: planz.SCH_ID,
-      SCHD_ID: planz.SCHD_ID,
       SEWING_SCAN_BY: userId,
       SEWING_SCAN_LOCATION: siteName,
     };
+
     dispatch({
       type: _ACTION._SET_QR_4_TFR,
       payload: qrData,
     });
     dispatch({
       type: _ACTION._SET_PLNZ_SELECT,
-      payload: { data: databundle },
+      payload: { data: qrData },
     });
     dispatch({
       type: _ACTION._SET_MDL_TFR,
       payload: true,
     });
+    if (bdl.COUNT_SPLIT) {
+      await axios
+        .get(`/qc-endline/qr-splited/${bdl.BARCODE_SERIAL}`)
+        .then((res) => {
+          if (res.status === 200) {
+            dispatch({
+              type: _ACTION._GET_QR_SPLIT,
+              payload: { data: res.data },
+            });
+          }
+        });
+    }
   }
 
   //function untuk close modal transfer QR
@@ -646,12 +624,21 @@ export const QcEndProvider = ({ children }) => {
       type: _ACTION._SET_MDL_TFR,
       payload: false,
     });
+    dispatch({
+      type: _ACTION._GET_QR_SPLIT,
+      payload: { data: [] },
+    });
   }
 
   //function untuk transfer
-  async function handleTrfrQr() {
+  async function handleTrfrQr(qrTfr) {
+    const qrTfrMain = {
+      ...qrTfr,
+      BARCODE_MAIN: qrTfr.BARCODE_SERIAL,
+    };
+
     await axios
-      .post("/qc/endline/qr/transfer", state.qrForTfr)
+      .post("/qc/endline/qr/transfer", qrTfrMain)
       .then((res) => {
         if (res.status === 200) {
           flash(res.data.message, 2000, res.data.qrstatus);
@@ -660,7 +647,43 @@ export const QcEndProvider = ({ children }) => {
         }
       })
       .catch((err) => {
-        flash(err.message, 2000, "danger");
+        flash(err.response.data.message, 2000, "danger");
+        closedModalTf();
+      });
+  }
+  //function untuk transfer split
+  async function handleTrfrQrSplit(qrTfr, mainqr) {
+    //check balance transfer
+    if (parseInt(mainqr.BAL_TRANSFER) < qrTfr.NEW_QTY)
+      return flash("Tidak ada balance GOOD untuk ditransfer", 2000, "danger");
+    await axios
+      .post("/qc-endline/qr/split-transfer-one", qrTfr)
+      .then((res) => {
+        if (res.status === 200) {
+          flash(res.data.message, 2000, res.data.qrstatus);
+          refrehAll();
+          closedModalTf();
+        }
+      })
+      .catch((err) => {
+        flash(err.response.data.message, 2000, "danger");
+        closedModalTf();
+      });
+  }
+
+  //function untuk confirm split dan transfer
+  async function handleSplitAndTfr(listQrSplit) {
+    await axios
+      .post("/qc-endline/qr/split-transfer/", listQrSplit)
+      .then((res) => {
+        if (res.status === 200) {
+          flash(res.data.message, 2000, res.data.qrstatus);
+          refrehAll();
+          closedModalTf();
+        }
+      })
+      .catch((err) => {
+        flash(err.response.data.message, 2000, "danger");
         closedModalTf();
       });
   }
@@ -723,7 +746,8 @@ export const QcEndProvider = ({ children }) => {
 
   //function get spec list
   async function getSpectList(bdl, schdId) {
-    const { ORDER_NO, ORDER_SIZE } = bdl;
+    const { ORDER_SIZE } = bdl;
+    const { ORDER_NO } = schdId;
 
     await axios
       .get(`/measurement/spec-list/${ORDER_NO}/${ORDER_SIZE}`)
@@ -752,10 +776,8 @@ export const QcEndProvider = ({ children }) => {
   }
 
   //function untuk open modal Return QR
-  function handlMdlReturn(planz, bdl) {
-    const bal = CheckNilai(planz.QTY) - CheckNilai(planz.TOTAL_CHECKED);
-
-    if (bal < bdl.ORDER_QTY) {
+  function handlMdlReturn(bdl) {
+    if (bdl.TOTAL_CHECKED !== "0") {
       return flash(
         `Tidak dapat mereturn bundle yang sudah dicheck`,
         2000,
@@ -764,7 +786,7 @@ export const QcEndProvider = ({ children }) => {
     }
     dispatch({
       type: _ACTION._SET_BDL_RETURN,
-      payload: { data: { ...planz, ...bdl } },
+      payload: { data: bdl },
     });
     dispatch({
       type: _ACTION._SET_MDL_RETRURN,
@@ -820,6 +842,23 @@ export const QcEndProvider = ({ children }) => {
     if (checkQrExist.length > 0) return checkQrExist[0].CHECK_COUNT;
   }
 
+  //get data qr have check measurement
+  async function getQrMeasCheck(date, siteName, lineName) {
+    await axios
+      .get(
+        `/measurement/endline/meas-count-check/${date}/${siteName}/${lineName}`
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch({
+            type: _ACTION._SET_MEAS_CHECK_COUNT,
+            payload: { data: res.data.data },
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+
   return (
     <QcEndlineContex.Provider
       value={{
@@ -835,7 +874,7 @@ export const QcEndProvider = ({ children }) => {
         refreshPlanning,
         refrehBundle,
         refrehAll,
-        planSizeSelected,
+        qrSelected,
         planSizeUnSelected,
         handlePageActive,
         postOutput,
@@ -845,6 +884,7 @@ export const QcEndProvider = ({ children }) => {
         handlMdlTfrActv,
         closedModalTf,
         handleTrfrQr,
+        handleSplitAndTfr,
         handleAddRemark,
         getSpectList,
         mdlMasurement,
@@ -853,6 +893,7 @@ export const QcEndProvider = ({ children }) => {
         handleReturn,
         measCkCountRfrs,
         measCountVal,
+        handleTrfrQrSplit,
       }}
     >
       {children}

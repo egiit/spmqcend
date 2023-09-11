@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { Button, Table } from "react-bootstrap";
+import React, { useContext, useState } from "react";
+import { Button, Table, Row, Col, Form } from "react-bootstrap";
 import { IoMdDoneAll } from "react-icons/io";
 import { RiFileEditFill } from "react-icons/ri";
 import { BiTransferAlt } from "react-icons/bi";
@@ -7,154 +7,192 @@ import { BsViewList } from "react-icons/bs";
 import { QcEndlineContex } from "../../provider/QcEndProvider";
 import { FcRuler } from "react-icons/fc";
 import { ImUndo2 } from "react-icons/im";
+import { TbArrowsSplit } from "react-icons/tb";
+import CheckNilai from "../../partial/CheckNilai";
 
 const TrPlanSize = ({
   plan,
   viewQrList,
   handleSelPlanSize,
   checkStatus,
-  typeProd,
+  prodType,
+  dataPlanBySize,
 }) => {
   const { state, handlMdlTfrActv, getSpectList, handlMdlReturn, measCountVal } =
     useContext(QcEndlineContex);
+  const [queryBdl, setQuryBdl] = useState("");
+
+  function filterQrBdl(data, schd, size, qry) {
+    if (!data || data.length === 0) return data;
+    const newData = [...data];
+    if (qry === "")
+      return newData.filter(
+        (dta) => dta.SCH_ID === schd && dta.ORDER_SIZE === size
+      );
+    return newData.filter(
+      (dta) =>
+        dta.SCH_ID === schd &&
+        dta.ORDER_SIZE === size &&
+        dta.BARCODE_SERIAL.indexOf(qry) > -1
+    );
+  }
+
+  function handleInptQrSearch(e) {
+    const { value } = e.target;
+    setQuryBdl(value);
+  }
+
+  function checkTfr(bdl) {
+    if (parseInt(bdl.TRANSFER_QTY) === bdl.ORDER_QTY) {
+      return <IoMdDoneAll size={20} color="#00a814" />;
+    } else {
+      if (bdl.COUNT_SPLIT) return <TbArrowsSplit size={22} color="#A30000" />;
+      return null;
+    }
+  }
 
   return (
     <>
-      {state.dataPlanBySize.length !== 0 ? (
-        state.dataPlanBySize
-          .filter((planz) => planz.SCHD_ID === plan.SCHD_ID)
+      {dataPlanBySize?.length !== 0 ? (
+        dataPlanBySize
+          .filter((planz) => planz.SCH_ID === plan.SCH_ID)
           .map((plnz, i) => (
             <React.Fragment key={i}>
               <tr className="text-center">
                 {/* <td>{plnz.BUNDLE_SEQUENCE}</td> */}
                 {/* <td>{plnz.BARCODE_SERIAL}</td> */}
-                <td>{plnz.SCHD_PROD_DATE}</td>
-                <td style={{ maxWidth: "200px" }}>{plnz.ORDER_STYLE}</td>
-                <td>{plnz.ORDER_SIZE}</td>
+                {/* <td>{plnz.SCHD_PROD_DATE}</td> */}
+                {/* <td style={{ maxWidth: "200px" }}>{plnz.ORDER_STYLE}</td> */}
+                <td>{plnz.SIZE_CODE}</td>
                 <td>{plnz.BDL_TOTAL}</td>
-                <td>{plnz.QTY}</td>
+                <td>{plnz.SCH_QTY}</td>
+                <td>{plnz.LOADING_QTY}</td>
                 <td>{plnz.TOTAL_CHECKED}</td>
-                <td>{plnz.RTT}</td>
-                <td>{plnz.DEFECT}</td>
-                <td>{plnz.REPAIRED}</td>
-                <td>{plnz.BS}</td>
-                <td>
-                  {plnz.TOTAL_CHECKED ? plnz.QTY - plnz.TOTAL_CHECKED : null}
-                </td>
-                <td>{checkStatus(plnz.QTY, plnz.TOTAL_CHECKED)}</td>
+                <td>{plnz.GOOD}</td>
+                <td>{plnz.DEFECT_BS}</td>
+                <td>{plnz.BALANCE}</td>
+                <td>{plnz.TTL_TRANSFER}</td>
+                <td>{plnz.BAL_TRANSFER}</td>
+                <td>{checkStatus(plnz.BAL_SCHEDULE, plnz.TOTAL_CHECKED)}</td>
                 <td>
                   <Button
                     size="sm"
                     className="btn-transfer me-2"
-                    onClick={() => viewQrList(plnz, typeProd)}
+                    onClick={() => viewQrList(plnz, prodType)}
                   >
                     <BsViewList size={20} />
                   </Button>
-                  <Button
-                    size="sm"
-                    className="btn-input"
-                    onClick={() => handleSelPlanSize(plnz, typeProd, plan)}
-                  >
-                    <RiFileEditFill size={20} />
-                  </Button>
                 </td>
               </tr>
-              <tr className={`listqrview ${plnz.SCHD_ID + plnz.ORDER_SIZE}`}>
+              <tr className={`listqrview ${plnz.SCH_ID + plnz.SIZE_CODE}`}>
                 <td colSpan={13} className="table-secondary">
-                  <div className="fw-bold">
-                    Total Good : {plnz.GOOD} {"   "} | Total Transfer :{" "}
-                    {plnz.TFR_QTY} {"   "} | Balance :{" "}
-                    {plnz.TFR_QTY ? plnz.GOOD - plnz.TFR_QTY : null}
-                  </div>
+                  <Row className="fw-bold">
+                    <Col sm={3}>
+                      <Form.Control
+                        size="sm"
+                        type="text"
+                        onChange={handleInptQrSearch}
+                        placeholder="QR Search"
+                      />
+                    </Col>
+                  </Row>
                   <Table size="sm" bordered responsive>
                     <thead>
                       <tr className="table-light text-center">
-                        <th>BOX</th>
+                        <th>BOX NO</th>
                         <th>QR SERIAL</th>
-                        <th>ORDER REF</th>
+                        {/* <th>ORDER REF</th> */}
                         <th>SIZE</th>
                         <th>QTY</th>
                         <th>SCANIN DATE</th>
                         {/* <th>SCH DATE</th> */}
-                        <th>MEAS CHECK</th>
+                        <th>CHECK</th>
+                        <th>GOOD</th>
+                        <th>DEFECT/BS</th>
+                        {/* <th>REPAIRED</th> */}
+                        {/* <th>BS</th> */}
+                        <th>BALANCE</th>
+                        {/* <th>STATUS</th> */}
+                        <th>MEAS</th>
+                        <th>TFR QTY</th>
                         <th>TFR STATUS</th>
                         <th>ACT</th>
+                        <th>INSPECT</th>
                       </tr>
                     </thead>
                     <tbody className="table-light">
                       {state.dataQrBundle
-                        ? state.dataQrBundle
-                            .filter(
-                              (bdls) =>
-                                bdls.ORDER_STYLE === plnz.ORDER_STYLE &&
-                                bdls.ORDER_SIZE === plnz.ORDER_SIZE &&
-                                bdls.ORDER_COLOR === plnz.ORDER_COLOR &&
-                                plnz.SCHD_ID === bdls.SCHD_ID
-                            )
-                            .map((bdl, idx) => (
-                              <tr key={idx} className="text-center">
-                                <td>{bdl.BUNDLE_SEQUENCE}</td>
-                                <td>{bdl.BARCODE_SERIAL}</td>
-                                <td>{bdl.ORDER_REF}</td>
-                                <td>{bdl.ORDER_SIZE}</td>
-                                <td>{bdl.ORDER_QTY}</td>
-                                <td>{bdl.SCAN_DATE}</td>
-                                {/* <td>{bdl.SCHD_PROD_DATE}</td> */}
-                                <td>
-                                  {measCountVal(
-                                    state.measCheckCount,
-                                    bdl.BARCODE_SERIAL
-                                  )}
-                                </td>
-                                <td>
-                                  {bdl.BARCODE_TRANSFER ? (
-                                    <IoMdDoneAll size={20} color="#00a814" />
-                                  ) : null}
-                                </td>
-                                <td>
-                                  <Button
-                                    size="sm"
-                                    className="btn-transfer me-2"
-                                    disabled={
-                                      bdl.BARCODE_SERIAL ===
-                                      bdl.BARCODE_TRANSFER
-                                    }
-                                    onClick={() =>
-                                      handlMdlReturn(plnz, bdl, typeProd)
-                                    }
-                                  >
-                                    <ImUndo2 size={16} />
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="outline-secondary"
-                                    className="me-2"
-                                    disabled={
-                                      bdl.BARCODE_SERIAL ===
-                                      bdl.BARCODE_TRANSFER
-                                    }
-                                    onClick={() =>
-                                      getSpectList(bdl, plnz.SCHD_ID)
-                                    }
-                                  >
-                                    <FcRuler size={16} />
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    // className="btn-transfer"
-                                    disabled={
-                                      bdl.BARCODE_SERIAL ===
-                                      bdl.BARCODE_TRANSFER
-                                    }
-                                    onClick={() =>
-                                      handlMdlTfrActv(plnz, bdl, typeProd)
-                                    }
-                                  >
-                                    <BiTransferAlt size={16} />
-                                  </Button>
-                                </td>
-                              </tr>
-                            ))
+                        ? filterQrBdl(
+                            state.dataQrBundle,
+                            plnz.SCH_ID,
+                            plnz.SIZE_CODE,
+                            queryBdl
+                          ).map((bdl, idx) => (
+                            <tr key={idx} className="text-center">
+                              <td>{bdl.BUNDLE_SEQUENCE}</td>
+                              <td>{bdl.BARCODE_SERIAL}</td>
+                              <td>{bdl.ORDER_SIZE}</td>
+                              <td>{bdl.ORDER_QTY}</td>
+                              <td>{bdl.SCAN_DATE}</td>
+                              <td>{bdl.TOTAL_CHECKED}</td>
+                              <td>{bdl.GOOD}</td>
+                              <td>{bdl.DEFECT_BS}</td>
+                              <td>{bdl.BALANCE}</td>
+                              {/* <td>{bdl.SCHD_PROD_DATE}</td> */}
+                              <td>
+                                {measCountVal(
+                                  state.measCheckCount,
+                                  bdl.BARCODE_SERIAL
+                                )}
+                              </td>
+                              <td>{bdl.TRANSFER_QTY}</td>
+                              <td>{checkTfr(bdl)}</td>
+                              <td>
+                                <Button
+                                  size="sm"
+                                  className="btn-transfer me-2"
+                                  disabled={bdl.TOTAL_CHECKED !== "0"}
+                                  onClick={() => handlMdlReturn(bdl)}
+                                >
+                                  <ImUndo2 size={16} />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline-secondary"
+                                  className="me-2"
+                                  disabled={bdl.BAL_TRANSFER === "0"}
+                                  onClick={() => getSpectList(bdl, plan)}
+                                >
+                                  <FcRuler size={16} />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  // className="btn-transfer"
+                                  disabled={
+                                    CheckNilai(bdl.BAL_TRANSFER) < 1 ||
+                                    bdl.RETURN_STATUS !== null
+                                  }
+                                  onClick={() => handlMdlTfrActv(bdl)}
+                                >
+                                  <BiTransferAlt size={16} />
+                                </Button>
+                              </td>
+                              <td>
+                                <Button
+                                  size="sm"
+                                  className="btn-input"
+                                  disabled={
+                                    parseInt(bdl.TRANSFER_QTY) === bdl.ORDER_QTY
+                                  }
+                                  onClick={() =>
+                                    handleSelPlanSize(bdl, prodType, plan)
+                                  }
+                                >
+                                  <RiFileEditFill size={20} />
+                                </Button>
+                              </td>
+                            </tr>
+                          ))
                         : null}
                     </tbody>
                   </Table>

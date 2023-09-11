@@ -7,6 +7,8 @@ import Main from "./page/Main";
 import { Message } from "./partial/Message";
 import { Flasher } from "react-universal-flash";
 import Reporting from "./page/Reporting";
+import InputLog from "./page/InputLog";
+import "./App.css";
 
 function App() {
   return (
@@ -26,6 +28,7 @@ function App() {
       >
         <Route path="maininput" element={<Main />} />
         <Route path="/reporting" element={<Reporting />} />
+        <Route path="/inputlog" element={<InputLog />} />
       </Route>
     </Routes>
   );

@@ -1,26 +1,34 @@
-import React, { memo } from "react";
-import { Card, Button, Table, Row, Col } from "react-bootstrap";
+import React, { memo, useContext, useState } from "react";
+import { Card, Button, Table, Row, Col, Form } from "react-bootstrap";
 import { FaUserPlus } from "react-icons/fa";
 import { IoIosArrowDown, IoMdTimer } from "react-icons/io";
 import { GiCheckMark } from "react-icons/gi";
 import { SlNote } from "react-icons/sl";
-import { useContext } from "react";
 import { QcEndlineContex } from "../provider/QcEndProvider";
 import { flash } from "react-universal-flash";
 import { getTimeFromMins } from "../partial/TimeManipulate";
 import TrPlanSize from "./compMainModal/TrPlanSize";
-import TrPlanSizePending from "./compMainModal/TrPlanSizePending";
+// import TrPlanSizePending from "./compMainModal/TrPlanSizePending";
+import CheckNilai from "../partial/CheckNilai";
 
 const ListPlanning = ({
   selectHc,
   handleSelPlanSize,
   viewQrList,
   openMdlRemark,
+  prodType,
 }) => {
   const { state } = useContext(QcEndlineContex);
+  const [showLoading, setShowLoadingQty] = useState(false);
+  const [showComplete, setShowComplete] = useState(false);
+  const [querySize, setQuerySize] = useState("");
 
   function accordOpen(plan) {
-    if (plan.ACT_MP === null)
+    if (plan.ACT_MP === null && prodType === "normal")
+      return flash("Mohon set Manpower terlebih dahulu!", 2000, "warning");
+    if (plan.ACT_MP_OT === null && prodType === "ot")
+      return flash("Mohon set Manpower terlebih dahulu!", 2000, "warning");
+    if (plan.ACT_MP_X_OT === null && prodType === "extOt")
       return flash("Mohon set Manpower terlebih dahulu!", 2000, "warning");
     // return flash("Please Set Actual Manpower First!", 2000, "warning");
     const getUnixId = `${plan.SCHD_ID}${plan.SCHD_QTY}`;
@@ -34,11 +42,88 @@ const ListPlanning = ({
   }
 
   function checkStatus(qty, checked) {
-    if (checked) {
-      if (checked === qty) return <GiCheckMark size={20} color="#00a814" />;
-      if (checked !== qty) return <IoMdTimer size={20} color="#fcba03" />;
+    if (checked !== 0) {
+      if ("0" === qty) return <GiCheckMark size={20} color="#00a814" />;
+      if ("0" !== qty) return <IoMdTimer size={20} color="#fcba03" />;
     }
     return null;
+  }
+
+  //function untuk input from search size
+  function handleInputFilterz(e) {
+    const { value } = e.target;
+
+    setQuerySize(value);
+  }
+  //function untuk showloading qty 0
+  function handleShowLoading(e) {
+    const { checked } = e.target;
+    setShowLoadingQty(checked);
+  }
+  //function untuk show complete status
+  function handleShowComplete(e) {
+    const { checked } = e.target;
+    setShowComplete(checked);
+  }
+
+  //function untuk filter data size jika ada input search size
+  function filterSize(data) {
+    if (querySize === "") return data;
+    const newData = [...data];
+    return newData.filter(
+      (dtz) => dtz.SIZE_CODE.toLowerCase().indexOf(querySize.toLowerCase()) > -1
+    );
+  }
+
+  //function show loading 0
+  function filersData(data) {
+    const newData = [...data];
+    if (!showLoading && !showComplete)
+      return newData.filter(
+        (dtz) =>
+          parseInt(dtz.LOADING_QTY) !== 0 &&
+          parseInt(dtz.LOADING_QTY) !== parseInt(dtz.TTL_TRANSFER)
+      );
+    if (showLoading && !showComplete)
+      return newData.filter(
+        (dtz) =>
+          parseInt(dtz.LOADING_QTY) === 0 ||
+          parseInt(dtz.LOADING_QTY) !== parseInt(dtz.TTL_TRANSFER)
+      );
+    if (!showLoading && showComplete)
+      return newData.filter(
+        (dtz) =>
+          parseInt(dtz.LOADING_QTY) !== 0 ||
+          parseInt(dtz.TRANSFER_QTY) === dtz.ORDER_QTY
+      );
+    if (showLoading && showComplete) return newData;
+  }
+
+  function findTarget(plan, prodType) {
+    if (prodType === "normal") {
+      if (plan.ACT_TARGET) return plan.ACT_TARGET;
+      return plan.PLAN_TARGET;
+    }
+    if (prodType === "ot") {
+      if (plan.ACT_TARGET_OT) return plan.ACT_TARGET_OT;
+      return CheckNilai(plan.PLAN_TARGET_OT);
+    }
+    if (prodType === "extOt") {
+      if (plan.ACT_TARGET_X_OT) return plan.ACT_TARGET_X_OT;
+      return CheckNilai(plan.PLAN_TARGET_X_OT);
+    }
+  }
+
+  function findOutput(plan, prodType) {
+    if (prodType === "normal") return plan.NORMAL_OUTPUT;
+    if (prodType === "ot") return plan.OT_OUTPUT;
+    if (prodType === "extOt") return CheckNilai(plan.X_OT_OUTPUT);
+  }
+
+  function findType(prodType) {
+    if (prodType === "normal") return "N";
+    if (prodType === "ot") return "O";
+    if (prodType === "extOt") return "XO";
   }
   return (
     <>
@@ -63,7 +148,7 @@ const ListPlanning = ({
                         <Button
                           size="sm"
                           variant="secondary"
-                          onClick={() => openMdlRemark(plan, "normal")}
+                          onClick={() => openMdlRemark(plan, prodType)}
                         >
                           <SlNote size="18" color="#FFF" />
                         </Button>
@@ -72,7 +157,7 @@ const ListPlanning = ({
                         <Button
                           size="sm"
                           variant="primary"
-                          onClick={() => selectHc(plan, "normal")}
+                          onClick={() => selectHc(plan, prodType)}
                         >
                           <FaUserPlus size="20" color="#FFF" />
                         </Button>
@@ -80,7 +165,7 @@ const ListPlanning = ({
                       <td
                         rowSpan={2}
                         className="noborder"
-                        onClick={() => accordOpen(plan, "normal")}
+                        onClick={() => accordOpen(plan, prodType)}
                       >
                         <IoIosArrowDown
                           size="20"
@@ -96,10 +181,8 @@ const ListPlanning = ({
                       <td>{plan.ITEM_COLOR_NAME}</td>
                       <td>{getTimeFromMins(plan.PLAN_WH)}</td>
                       <MP plan={plan} />
-                      <td>
-                        {plan.ACT_TARGET ? plan.ACT_TARGET : plan.PLAN_TARGET}
-                      </td>
-                      <td>{plan.NORMAL_OUTPUT}</td>
+                      <td>{findTarget(plan, prodType)}</td>
+                      <td>{findOutput(plan, prodType)}</td>
                       <td>
                         {plan.ACT_TARGET
                           ? plan.NORMAL_OUTPUT - plan.ACT_TARGET
@@ -110,54 +193,86 @@ const ListPlanning = ({
                 </Table>
                 {/* detail bundle planning */}
                 <Row
-                  className={`mt-2 row-planed row-planid-${plan.SCHD_ID}${plan.SCHD_QTY}`}
+                  className={`mt-2 row-planed row-planid-${plan.SCHD_ID}${plan.SCHD_QTY} border-top`}
                 >
                   <Col>
-                    {state.dataQrBundle ? (
-                      <Table
-                        size="sm"
-                        bordered
-                        responsive
-                        hover
-                        className="tbl-qc-detail"
-                      >
-                        <thead>
-                          <tr className="table-dark text-center align-middle">
-                            {/* <th>BOX</th> */}
-                            {/* <th>QR SERIAL</th> */}
-                            <th>SCH DATE</th>
-                            <th style={{ maxWidth: "200px" }}>STYLE</th>
-                            <th>SIZE</th>
-                            <th>T.BUNDLE</th>
-                            <th>QTY</th>
-                            <th>CHECK</th>
-                            <th>RFT</th>
-                            <th>DEFECT</th>
-                            <th>REPAIRED</th>
-                            <th>BS</th>
-                            <th>PENDING</th>
-                            <th>STATUS</th>
-                            <th>ACT</th>
-                          </tr>
-                        </thead>
-                        <tbody className=" align-middle">
-                          <TrPlanSize
+                    <Row className="my-1">
+                      <Col sm={2}>
+                        <Form.Control
+                          size="sm"
+                          type="text"
+                          placeholder="Size Search"
+                          onChange={handleInputFilterz}
+                        />
+                      </Col>
+                      <Col sm={3} className="fst-italic">
+                        <Form.Check // prettier-ignore
+                          type="switch"
+                          id="hideloading-switch"
+                          label="Show Loading Qty 0"
+                          onChange={handleShowLoading}
+                        />
+                      </Col>
+                      <Col sm={3} className="fst-italic">
+                        <Form.Check // prettier-ignore
+                          type="switch"
+                          id="showcomplete-switch"
+                          label="Show complete status"
+                          onChange={handleShowComplete}
+                        />
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="list-table-size">
+                        {state.dataQrBundle ? (
+                          <Table
+                            size="sm"
+                            bordered
+                            hover
+                            className="tbl-qc-detail"
+                          >
+                            <thead>
+                              <tr className="table-dark text-center align-middle row-header-size">
+                                {/* <th>BOX</th> */}
+                                {/* <th>QR SERIAL</th> */}
+                                {/* <th style={{ maxWidth: "200px" }}>STYLE</th> */}
+                                <th>SIZE</th>
+                                <th>T.BOX</th>
+                                <th>SCH QTY</th>
+                                <th>LOADING QTY</th>
+                                <th>CHECK</th>
+                                <th>GOOD</th>
+                                <th>DEFECT/BS</th>
+                                <th>BALANCE</th>
+                                <th>TRANSFER</th>
+                                <th>BAL.TFR</th>
+                                <th>STATUS</th>
+                                <th>DETAIL</th>
+                              </tr>
+                            </thead>
+                            <tbody className=" align-middle">
+                              <TrPlanSize
+                                plan={plan}
+                                viewQrList={viewQrList}
+                                handleSelPlanSize={handleSelPlanSize}
+                                checkStatus={checkStatus}
+                                dataPlanBySize={filterSize(
+                                  filersData(state.dataPlanBySize)
+                                )}
+                                prodType={findType(prodType)}
+                              />
+                              {/* <TrPlanSizePending
                             plan={plan}
                             viewQrList={viewQrList}
                             handleSelPlanSize={handleSelPlanSize}
                             checkStatus={checkStatus}
-                            typeProd="N"
-                          />
-                          <TrPlanSizePending
-                            plan={plan}
-                            viewQrList={viewQrList}
-                            handleSelPlanSize={handleSelPlanSize}
-                            checkStatus={checkStatus}
-                            typeProd="N"
-                          />
-                        </tbody>
-                      </Table>
-                    ) : null}
+                            prodType="N"
+                          /> */}
+                            </tbody>
+                          </Table>
+                        ) : null}
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
               </Card.Body>

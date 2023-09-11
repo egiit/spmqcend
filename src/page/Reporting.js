@@ -61,16 +61,12 @@ const Reporting = () => {
   }
 
   function findWip() {
-    const allDataPlanSize = [
-      ...state.dataPlanBySize,
-      ...state.dataPlanBySizePend,
-    ];
+    const allDataPlanSize = [...state.dataPlanBySize];
 
     if (allDataPlanSize.length === 0) return 0;
 
-    const totalQtyBdl = findTot(allDataPlanSize, "QTY");
-    const totalGood = findTot(allDataPlanSize, "GOOD");
-    return totalQtyBdl - totalGood;
+    const totalWip = findTot(allDataPlanSize, "BALANCE");
+    return totalWip;
   }
 
   function findCheckDef() {

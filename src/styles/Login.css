@@ -3,12 +3,55 @@
   background: linear-gradient(128deg, rgba(208, 0, 0, 0.9559174011401436) 0%, rgba(204, 54, 0, 0.882) 50%, rgba(255, 31, 31, 0.99) 91%);
 } */
 section {
-  background: rgb(56, 30, 255);
-  background: radial-gradient(circle, rgba(56, 30, 255, 0.9921218487394958) 0%, rgba(23, 181, 241, 1) 50%, rgba(58, 102, 241, 1) 100%);
+  margin: 0;
+  padding: 0;
+  /* background: rgb(56, 30, 255);
+  background: radial-gradient(circle, rgba(56, 30, 255, 0.9921218487394958) 0%, rgba(23, 181, 241, 1) 50%, rgba(58, 102, 241, 1) 100%); */
+}
+
+section .cards-form {
+  height: 60vh;
 }
 
 .login-body {
   min-height: 111vh;
+}
+
+section .cards-form .cards-login {
+  background: linear-gradient(128deg, rgba(255, 230, 91, 0.956) 0%, rgba(255, 254, 180, 0.882) 50%, rgba(255, 226, 129, 0.99) 91%);
+}
+
+@media (max-width: 1250px) {
+  section .cards-form {
+    height: 70vh;
+  }
+
+  section .cards-form .cards-login {
+    background: linear-gradient(128deg, rgba(255, 230, 91, 0.956) 0%, rgba(255, 254, 180, 0.882) 50%, rgba(255, 226, 129, 0.99) 91%);
+  }
+}
+
+@media (max-width: 480px) {
+  section .cards-form {
+    margin-top: 50%;
+    height: 47vh;
+  }
+
+  section .cards-form .cards-login {
+    background: none;
+  }
+
+}
+
+@media (max-width: 376px) {
+  section .cards-form {
+    margin-top: 50%;
+    height: 60vh;
+  }
+
+  section .cards-form .cards-login {
+    background: none;
+  }
 }
 
 /* @keyframes mybackground {

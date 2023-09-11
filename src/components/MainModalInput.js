@@ -28,7 +28,11 @@ const MainModalInput = () => {
           {/* <ListGroup.Item variant="secondary">
             {bdl.BARCODE_SERIAL}
           </ListGroup.Item> */}
+          <ListGroup.Item variant="secondary">
+            {bdl.BARCODE_SERIAL}
+          </ListGroup.Item>
           <ListGroup.Item variant="secondary">{bdl.BUYER_CODE}</ListGroup.Item>
+          <ListGroup.Item variant="secondary">{bdl.MO_NO}</ListGroup.Item>
           <ListGroup.Item variant="secondary">{bdl.ORDER_STYLE}</ListGroup.Item>
           <ListGroup.Item variant="secondary">{bdl.ORDER_COLOR}</ListGroup.Item>
           <ListGroup.Item variant="secondary">{bdl.ORDER_SIZE}</ListGroup.Item>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Card, Row, Col, Form, Button } from "react-bootstrap";
+import { Row, Col, Form, Button } from "react-bootstrap";
 import axios from "../axios/axios.js";
 import logo from "../asset/logos.png";
+import bckg from "../asset/backgroundlogin.jpg";
+// import bgcolor from "../asset/bgcolor.jpg";
 import "../styles/Login.css";
 // import jwtDecode from "jwt-decode";
 
@@ -69,71 +71,104 @@ const Login = () => {
 
   return (
     <section className="login-body">
-      <Container className="py-3 h-100 ">
-        <Row className="d-flex align-items-center justify-content-center h-80 mt-3 mt-lg-5">
-          <Col className="col-10 col-md-6 col-xl-4 h-100 mt-1 mt-lg-5">
-            <Card className="border-0 shadow mt-5">
-              <Card.Body className="rounded">
-                <div className="d-block text-center mb-1">
-                  <img
-                    className="img-fluid"
-                    style={{ width: "12rem" }}
-                    src={logo}
-                    alt=""
-                  />
-                </div>
-                <h3 className="text-center text-muted fst-italic fs-6 font-weight-light">
-                  SUMMIT - QC End Line
-                </h3>
-                {/* <Form> */}
-                <Form onSubmit={Auth}>
-                  <Form.Floating className="mb-3">
-                    <Form.Control
-                      className="rounded-pill ps-3"
-                      name="username"
-                      type="text"
-                      placeholder="Username"
-                      required
-                      value={username}
-                      onChange={onChangeUsername}
+      <Row
+        className="m-0 p-0"
+        style={{
+          height: "111vh",
+          backgroundImage: `url(${bckg})`,
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <Col style={{ height: "111vh" }}>
+          <Row className="d-flex align-items-center justify-content-center h-80 mt-3 mt-lg-5">
+            <Col className="col-10 col-md-8 col-xl-6 h-100 mt-1 mt-lg-5">
+              <Row className="rounded-3 bg-light p-0 shadow cards-form">
+                <Col className="py-md-4  d-none d-md-block">
+                  <div className="d-block text-center my-md-4 mt-xl-5 ">
+                    <img
+                      className="img-fluid"
+                      style={{ width: "16rem" }}
+                      src={logo}
+                      alt=""
                     />
-                    <Form.Label className=" ps-3 text-muted">
-                      User Name
-                    </Form.Label>
-                  </Form.Floating>
-                  <Form.Floating className="mb-3">
-                    <Form.Control
-                      className="rounded-pill ps-3"
-                      name="password"
-                      type="password"
-                      required
-                      placeholder="*******"
-                      value={password}
-                      onChange={onChangePassword}
-                      autoComplete="on"
+                  </div>
+                  <div className="bg-secondary shadow-sm rounded bg-opacity-10 p-2 mx-2">
+                    <h1 className="text-center fst-italic fs-3 font-weight-light">
+                      SUMMIT
+                    </h1>
+                    <h2 className="text-center fst-italic fs-5 font-weight-light mb-3">
+                      (Sumbiri Management IT System)
+                    </h2>
+                  </div>
+                  <div className="text-center text-muted fst-italic font-weight-light mt-5 text-version">
+                    Version 1.2
+                  </div>
+                </Col>
+                <Col className="cards-login rounded-end py-5 px-3">
+                  <div className="d-block d-md-none text-center mb-1">
+                    <img
+                      className="img-fluid"
+                      style={{ width: "12rem" }}
+                      src={logo}
+                      alt=""
                     />
-                    <Form.Label className="ps-3 text-muted">
-                      Password
-                    </Form.Label>
-                  </Form.Floating>
-                  <div>
-                    <p className="ps-3 fst-italic text-danger">{msg}</p>
+                    <h3 className="text-center text-muted mt-2 fst-italic fs-6 font-weight-light">
+                      SUMMIT - QC Endline Module
+                    </h3>
                   </div>
-                  <div className="d-grid align-items-center mt-3 mb-2">
-                    <Button
-                      className="rounded-pill"
-                      variant="primary"
-                      type="submit"
-                    >
-                      Login
-                    </Button>
-                  </div>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+                  <h2 className="text-center d-none d-md-block fst-italic fs-5 font-weight-light mt-4 mt-xl-5 mb-3">
+                    QC Endline Module
+                  </h2>
+                  <Form onSubmit={Auth} className="px-3">
+                    <Form.Floating className="mb-3">
+                      <Form.Control
+                        className="rounded-pill ps-3 border-0 shadow-sm"
+                        name="username"
+                        type="text"
+                        placeholder="Username"
+                        required
+                        value={username}
+                        onChange={onChangeUsername}
+                      />
+                      <Form.Label className=" ps-3 text-muted">
+                        User Name
+                      </Form.Label>
+                    </Form.Floating>
+                    <Form.Floating className="mb-3">
+                      <Form.Control
+                        className="rounded-pill ps-3 border-0 shadow-sm"
+                        name="password"
+                        type="password"
+                        required
+                        placeholder="*******"
+                        value={password}
+                        onChange={onChangePassword}
+                        autoComplete="on"
+                      />
+                      <Form.Label className="ps-3 text-muted">
+                        Password
+                      </Form.Label>
+                    </Form.Floating>
+                    <div>
+                      <p className="ps-3 fst-italic text-danger">{msg}</p>
+                    </div>
+                    <div className="d-grid align-items-center mt-3 mb-2">
+                      <Button
+                        className="rounded-pill border-0 shadow-sm fw-bold"
+                        variant="secondary"
+                        type="submit"
+                      >
+                        Login
+                      </Button>
+                    </div>
+                  </Form>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
     </section>
   );
 };

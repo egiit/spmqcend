@@ -33,7 +33,13 @@ div.title-header {
 
 
 div.styleBgsite {
-  background: linear-gradient(131deg, rgba(0, 189, 255, 1) 0%, rgba(49, 77, 254, 1) 52%, rgba(1, 29, 231, 1) 98%);
+  background-color: #21D4FD;
+  background-image: linear-gradient(19deg, #21D4FD 0%, #B721FF 100%);
+}
+
+div.styleBgOt {
+  background-color: #FFE53B;
+  background-image: linear-gradient(147deg, #FFE53B 31%, #FF2525 100%);
 }
 
 
@@ -157,6 +163,40 @@ table.tbl-qc-detail tbody tr td {
   font-size: 0.8rem;
 }
 
+div.list-table-size table.tbl-qc-detail thead tr.row-header-size {
+  position: sticky;
+  /* color: red; */
+  top: 0;
+  border: 1px;
+  z-index: 1;
+}
+
+div.list-table-pending table.tbl-qc-detail thead tr.row-header-size {
+  position: sticky;
+  /* color: red; */
+  top: 0;
+  /* border: 1px; */
+  z-index: 1;
+}
+
+div.list-table-pending table.tbl-qc-detail thead tr:nth-child(2) {
+  position: sticky;
+  /* color: red; */
+  top: 20px;
+  /* border: 1px; */
+  z-index: 1;
+}
+
+div.list-table-pending table.tbl-qc-detail tbody tr td:nth-child(4),
+div.list-table-pending table.tbl-qc-detail tbody tr td:nth-child(5) {
+  width: 150px;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
 button.btn-input {
   background: rgb(0, 189, 255);
   background: linear-gradient(121deg, rgba(0, 189, 255, 1) 9%, rgba(50, 81, 250, 1) 51%, rgba(21, 57, 252, 1) 100%);
@@ -171,6 +211,10 @@ button.btn-transfer {
 
 svg.icon-completed {
   color: linear-gradient(121deg, rgba(89, 250, 86, 1) 9%, rgba(0, 153, 21, 1) 76%);
+}
+
+div.input-log {
+  background: linear-gradient(121deg, rgba(89, 250, 86, 1) 9%, rgba(0, 153, 21, 1) 76%);
 }
 
 table tbody tr td svg {
@@ -192,6 +236,18 @@ div.row-planed.opened {
   overflow: hidden;
   transition: 3s ease-out;
   display: block;
+}
+
+div.row-planed.opened div.list-table-size {
+  overflow: auto;
+  transition: 2s ease-out;
+  height: 70vh;
+}
+
+div.list-table-pending {
+  overflow: scroll;
+  transition: 2s ease-out;
+  height: 85vh;
 }
 
 div.fade.modal-backdrop.show {

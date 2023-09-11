@@ -157,7 +157,26 @@ export const _QCReducer = (state, action) => {
         ...state,
         measCheckCount: action.payload.data,
       };
-
+    case _ACTION._GET_UNDO_COUNT:
+      return {
+        ...state,
+        undoCount: action.payload.data,
+      };
+    case _ACTION._GET_QR_SPLIT:
+      return {
+        ...state,
+        qrSplitList: action.payload.data,
+      };
+    case _ACTION._GET_DATA_LOG:
+      return {
+        ...state,
+        dataLog: action.payload.data,
+      };
+    case _ACTION._SET_ACTV_BTN_PROCESS:
+      return {
+        ...state,
+        btnProcess: action.payload,
+      };
     default:
       return state;
   }

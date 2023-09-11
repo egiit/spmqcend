@@ -5,7 +5,7 @@ import ListPlanning from "../components/ListPlanning";
 import { useContext } from "react";
 import { QcEndlineContex } from "../provider/QcEndProvider";
 import { _ACTION } from "../provider/QcEndAction";
-import ListPlanningOt from "../components/ListPlanningOt";
+// import ListPlanningOt from "../components/ListPlanningOt";
 import ModalUpdtHC from "../components/ModalUpdtHC";
 import MainModalInput from "../components/MainModalInput";
 import ModalQrForTfr from "../components/ModalQrForTfr";
@@ -14,16 +14,18 @@ import MdlAddRemark from "../components/MdlAddRemark";
 import MdlMeasurement from "../components/MdlMeasurement";
 import MdlConfReturn from "../components/MdlConfReturn";
 import { flash } from "react-universal-flash";
-import LisPlanningExtOt from "../components/LisPlanningExtOt";
+import axios from "../axios/axios";
+// import LisPlanningExtOt from "../components/LisPlanningExtOt";
 
 const Main = () => {
   const {
     state,
     dispatch,
-    planSizeSelected,
+    qrSelected,
     handleAddRemark,
     mdlMasurement,
     measCkCountRfrs,
+    refrehAll,
   } = useContext(QcEndlineContex);
   // const { handleShow } = useOutletContext();
 
@@ -81,20 +83,42 @@ const Main = () => {
   }
 
   //function for select bundle
-  function handleSelPlanSize(bundleQr, type, SCHD) {
-    if (bundleQr.RETURN_COUNT)
+  async function handleSelPlanSize(bundleQr, type, SCHD) {
+    // console.log({ bundleQr, type, SCHD });
+    if (bundleQr.RETURN_STATUS)
       return flash(
-        `Anda memiliki ${bundleQr.RETURN_COUNT} Box yang dikembalikan, Mohon konfirmasi ke Preparation`,
+        `Box ini telah return, Mohon konfirmasi ke Preparation`,
         4000,
         "warning"
       );
 
-    const databundle = { ...bundleQr, type: type };
-    planSizeSelected(databundle, SCHD);
+    //check jika schedule(SCHD_ID) daily tidak dihapus adm produksi
+    await axios
+      .get(`/qc-endline/check-schedule/${SCHD.SCHD_ID}`)
+      .then((res) => {
+        if (res.data.existSchedule) {
+          const databundle = {
+            ...bundleQr,
+            type: type,
+            ORDER_STYLE: SCHD.ORDER_STYLE_DESCRIPTION,
+          };
+          qrSelected(databundle, SCHD);
+        } else {
+          flash(
+            `Schedule Telah diperbaharui Adm Produksi System akan melakukan syncronize data terbaru`,
+            4000,
+            "warning"
+          );
+          return refrehAll();
+        }
+      })
+      .catch((err) => {
+        flash(`Error saat melakukan pengecekan schedule daily`, 4000, "danger");
+      });
   }
 
   function viewQrList(planz) {
-    const getPlanzunix = planz.SCHD_ID + planz.ORDER_SIZE;
+    const getPlanzunix = `${planz.SCH_ID}${planz.SIZE_CODE}`;
     const trlisqr = document.getElementsByClassName(getPlanzunix)[0];
     trlisqr.classList.toggle("shows");
   }
@@ -135,22 +159,22 @@ const Main = () => {
             className="mt-3 mb-0 border-bottom border-secondary border-opacity-50"
           >
             <Nav.Item onClick={() => handleTabs("normal")}>
-              <Nav.Link className="" eventKey="normal">
+              <Nav.Link className="py-1" eventKey="normal">
                 Normal
               </Nav.Link>
             </Nav.Item>
             <Nav.Item onClick={() => handleTabs("ot")}>
-              <Nav.Link className="" eventKey="ot">
+              <Nav.Link className="py-1" eventKey="ot">
                 Over Time
               </Nav.Link>
             </Nav.Item>
             <Nav.Item onClick={() => handleTabs("extOt")}>
-              <Nav.Link className="" eventKey="extOt">
+              <Nav.Link className="py-1" eventKey="extOt">
                 Extra OT
               </Nav.Link>
             </Nav.Item>
             <Nav.Item onClick={() => handleTabs("pendding")}>
-              <Nav.Link className="" eventKey="pendding">
+              <Nav.Link className="py-1" eventKey="pendding">
                 List Pendding
               </Nav.Link>
             </Nav.Item>
@@ -158,7 +182,7 @@ const Main = () => {
 
           {state.activeTab === "normal" ? (
             <div>
-              <div className="bg-primary text-center my-1 fw-bold fs-5 text-light">
+              <div className="styleBgsite text-center my-1 fw-bold fs-5">
                 Normal Time
               </div>
               <ListPlanning
@@ -166,20 +190,21 @@ const Main = () => {
                 handleSelPlanSize={handleSelPlanSize}
                 viewQrList={viewQrList}
                 openMdlRemark={openMdlRemark}
+                prodType={"normal"}
               />
             </div>
           ) : null}
           {state.activeTab === "ot" ? (
             <div>
-              <div className="bg-warning text-center my-1 fw-bold fs-5 ">
+              <div className="styleBgOt text-center my-1 fw-bold fs-5 ">
                 Over Time
               </div>
-              <ListPlanningOt
-                dataDailyPlan={state.dataDailyPlan}
+              <ListPlanning
                 selectHc={selectHc}
                 handleSelPlanSize={handleSelPlanSize}
                 viewQrList={viewQrList}
                 openMdlRemark={openMdlRemark}
+                prodType={"ot"}
               />
             </div>
           ) : null}
@@ -188,18 +213,16 @@ const Main = () => {
               <div className="bg-danger text-center my-1 fw-bold fs-5 text-light">
                 Extra Over Time
               </div>
-              <LisPlanningExtOt
-                dataDailyPlan={state.dataDailyPlan}
+              <ListPlanning
                 selectHc={selectHc}
                 handleSelPlanSize={handleSelPlanSize}
                 viewQrList={viewQrList}
                 openMdlRemark={openMdlRemark}
+                prodType={"extOt"}
               />
             </div>
           ) : null}
-          {state.activeTab === "pendding" ? (
-            <TableListPendding viewQrList={viewQrList} />
-          ) : null}
+          {state.activeTab === "pendding" ? <TableListPendding /> : null}
         </Col>
       </Row>
       {state.mdlHC ? <ModalUpdtHC handleClose={handleMdlHcClose} /> : null}

@@ -8,7 +8,7 @@ import { _ACTION } from "../provider/QcEndAction";
 import { flash } from "react-universal-flash";
 
 const MenuOffCanvas = ({ show, handleClose, logout }) => {
-  const { refrehAll, state, idSiteLine, dispatch } =
+  const { refrehAll, state, idSiteLine, dispatch, siteName, lineName } =
     useContext(QcEndlineContex);
   const navigate = useNavigate();
 
@@ -50,6 +50,22 @@ const MenuOffCanvas = ({ show, handleClose, logout }) => {
       .catch((err) => flash(err.message, 2000, "danger"));
     handleClose();
   };
+  const handleOpenLog = async (e) => {
+    handleNavigate(e, "/inputlog");
+    await axios
+      .get(`/qc-endline/log-tablet/${state.date}/${siteName}/${lineName}`)
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch({
+            type: _ACTION._GET_DATA_LOG,
+            payload: { data: res.data },
+          });
+        }
+      })
+      .catch((err) => flash(err.message, 2000, "danger"));
+
+    handleClose();
+  };
 
   return (
     <Offcanvas show={show} onHide={handleClose} placement="end">
@@ -74,7 +90,7 @@ const MenuOffCanvas = ({ show, handleClose, logout }) => {
             <Button variant="success" onClick={(e) => handleOpenReport(e)}>
               Reporting
             </Button>
-            <Button variant="secondary" onClick={() => console.log()}>
+            <Button variant="secondary" onClick={(e) => handleOpenLog(e)}>
               Input Log
             </Button>
           </div>

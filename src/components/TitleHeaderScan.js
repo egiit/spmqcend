@@ -70,10 +70,7 @@ const TitleHeaderScan = ({ handleShow }) => {
         <p className="text  fw-bold mb-0">{shift}</p>
         <p className="text  fw-bold mb-0">{qcName}</p>
       </Col>
-      <Col
-        sm={3}
-        className="text-center fs-4 fw-bold pt-2 text-light styleBgsite"
-      >
+      <Col sm={3} className="text-center fs-4 fw-bold pt-2 styleBgsite">
         <NavDropdown
           className="ps-0"
           id="nav-dropdown-line"

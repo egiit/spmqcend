@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import "../App.css";
 import DeviceOrientation, { Orientation } from "react-screen-orientation";
 
 import axios from "../axios/axios";

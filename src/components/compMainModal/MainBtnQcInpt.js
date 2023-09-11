@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Row, Col, Button, Card, Form } from "react-bootstrap";
+import { Row, Col, Button, Card, Form, Spinner } from "react-bootstrap";
 import { ImUndo2 } from "react-icons/im";
 import { QcEndlineContex } from "../../provider/QcEndProvider";
 import { IoIosArrowBack } from "react-icons/io";
@@ -16,7 +16,8 @@ const MainBtnQcInpt = () => {
     handleUndoDefRejGood,
   } = useContext(QcEndlineContex);
   const bdl = state.planSizeSelect;
-  const qr = state.qrQtyResult[0];
+  const qr = state.qrQtyResult[0] ? state.qrQtyResult[0] : state.planSizeSelect;
+  const undos = state.undoCount;
 
   function handleMultiple(e) {
     e.preventDefault();
@@ -40,10 +41,10 @@ const MainBtnQcInpt = () => {
         <Col sm={5}>
           <Row className="border rounded p-1 ms-1 bg-warning bg-opacity-50">
             <Col className="border-end border-dark">
-              Sum Of Bundle QTY :<span className="ms-1 fw-bold">{bdl.QTY}</span>
+              Bundle QTY :<span className="ms-1 fw-bold">{bdl.ORDER_QTY}</span>
             </Col>
             <Col>
-              Total Checked QTY :
+              Checked QTY :
               <span className="ms-1 fw-bold">{qr.TOTAL_CHECKED}</span>
             </Col>
           </Row>
@@ -62,20 +63,41 @@ const MainBtnQcInpt = () => {
                 <Card.Body>
                   <Row>
                     <Col sm={9}>
-                      <Row
-                        className={`good-btn btn p-3 rounded d-flex align-items-center shadow ${
-                          bdl.QTY === qr.TOTAL_CHECKED ? "disabled" : ""
-                        }`}
-                        style={{ height: "30vh" }}
-                        onClick={() => postOutput("RTT")}
-                      >
-                        <Col className="text-start">
-                          <h3>RFT</h3>
-                        </Col>
-                        <Col className="text-center ms-4">
-                          <h1>{qr.RTT}</h1>
-                        </Col>
-                      </Row>
+                      {state.btnProcess ? (
+                        <Row
+                          className={`good-btn btn p-3 rounded d-flex align-items-center shadow disabled`}
+                          style={{ height: "30vh" }}
+                        >
+                          <Col>
+                            <Spinner
+                              animation="border"
+                              role="status"
+                              variant="secondary"
+                            >
+                              <span className="visually-hidden">
+                                Loading...
+                              </span>
+                            </Spinner>
+                          </Col>
+                        </Row>
+                      ) : (
+                        <Row
+                          className={`good-btn btn p-3 rounded d-flex align-items-center shadow ${
+                            bdl.ORDER_QTY === parseInt(qr.TOTAL_CHECKED)
+                              ? "disabled"
+                              : ""
+                          }`}
+                          style={{ height: "30vh" }}
+                          onClick={() => postOutput("RTT")}
+                        >
+                          <Col className="text-start">
+                            <h3>RFT</h3>
+                          </Col>
+                          <Col className="text-center ms-4">
+                            <h1>{qr.RTT}</h1>
+                          </Col>
+                        </Row>
+                      )}
                     </Col>
                     <Col sm={3} className="px-3">
                       <Row className="px-2 mb-2">
@@ -106,7 +128,7 @@ const MainBtnQcInpt = () => {
                           <Button
                             variant="light"
                             className="shadow-sm border"
-                            disabled={!bdl.UNDO_RTT || qr.RTT === "0"}
+                            disabled={!undos.UNDO_RTT || undos.UNDO_RTT === 0}
                             onClick={() => handleUndoDefRejGood("RTT")}
                           >
                             <ImUndo2 size={40} className="undo-btn" />
@@ -125,20 +147,41 @@ const MainBtnQcInpt = () => {
                 <Card.Body>
                   <Row>
                     <Col sm={9}>
-                      <Row
-                        className={`btn-bs btn p-3 rounded d-flex align-items-center shadow ${
-                          bdl.QTY === qr.TOTAL_CHECKED ? "disabled" : ""
-                        }`}
-                        style={{ height: "30vh" }}
-                        onClick={() => handlePageActive("BS")}
-                      >
-                        <Col className="text-start">
-                          <h3>BAD STOCK</h3>
-                        </Col>
-                        <Col className="text-center ms-4">
-                          <h1>{qr.BS}</h1>
-                        </Col>
-                      </Row>
+                      {state.btnProcess ? (
+                        <Row
+                          className={`btn-bs btn p-3 rounded d-flex align-items-center shadow disabled`}
+                          style={{ height: "30vh" }}
+                        >
+                          <Col className="text-center">
+                            <Spinner
+                              animation="border"
+                              role="status"
+                              variant="light"
+                            >
+                              <span className="visually-hidden">
+                                Loading...
+                              </span>
+                            </Spinner>
+                          </Col>
+                        </Row>
+                      ) : (
+                        <Row
+                          className={`btn-bs btn p-3 rounded d-flex align-items-center shadow ${
+                            bdl.ORDER_QTY === parseInt(qr.TOTAL_CHECKED)
+                              ? "disabled"
+                              : ""
+                          }`}
+                          style={{ height: "30vh" }}
+                          onClick={() => handlePageActive("BS")}
+                        >
+                          <Col className="text-start">
+                            <h3>BAD STOCK</h3>
+                          </Col>
+                          <Col className="text-center ms-4">
+                            <h1>{qr.BS}</h1>
+                          </Col>
+                        </Row>
+                      )}
                     </Col>
                     <Col sm={3}>
                       <Row
@@ -149,7 +192,7 @@ const MainBtnQcInpt = () => {
                           <Button
                             variant="light"
                             className="shadow-sm border"
-                            disabled={!bdl.UNDO_BS || qr.BS === "0"}
+                            disabled={!undos.UNDO_BS || undos.UNDO_BS === 0}
                             onClick={() => handleUndoDefRejGood("BS")}
                           >
                             <ImUndo2 size={40} className="undo-btn" />
@@ -170,31 +213,73 @@ const MainBtnQcInpt = () => {
                 <Card.Body>
                   <Row>
                     <Col sm={9}>
-                      <Row
-                        className={`btn-defect btn p-2 rounded d-flex align-items-center shadow mb-2 ${
-                          bdl.QTY === qr.TOTAL_CHECKED ? "disabled" : ""
-                        }`}
-                        style={{ height: "14vh" }}
-                        onClick={() => handlePageActive("DEFECT")}
-                      >
-                        <Col className="text-start">
-                          <h3>DEFECTIVES</h3>
-                        </Col>
-                        <Col className="text-center ms-4">
-                          <h1>{qr.DEFECT}</h1>
-                        </Col>
-                      </Row>
-                      <Row
-                        className={`btn-defect btn p-2 rounded d-flex align-items-center shadow mt-1 ${
-                          bdl.QTY === qr.TOTAL_CHECKED ? "disabled" : ""
-                        }`}
-                        style={{ height: "14vh" }}
-                        onClick={() => postOutput("DEFECT_PREV")}
-                      >
-                        <Col className="text-start">
-                          <h3>DEFECT PREVIOUS </h3>
-                        </Col>
-                      </Row>
+                      {state.btnProcess ? (
+                        <Row
+                          className={`btn-defect btn p-2 rounded d-flex align-items-center shadow mb-2 disabled`}
+                          style={{ height: "14vh" }}
+                        >
+                          <Col>
+                            <Spinner
+                              animation="border"
+                              role="status"
+                              variant="secondary"
+                            >
+                              <span className="visually-hidden">
+                                Loading...
+                              </span>
+                            </Spinner>
+                          </Col>
+                        </Row>
+                      ) : (
+                        <Row
+                          className={`btn-defect btn p-2 rounded d-flex align-items-center shadow mb-2 ${
+                            bdl.ORDER_QTY === parseInt(qr.TOTAL_CHECKED)
+                              ? "disabled"
+                              : ""
+                          }`}
+                          style={{ height: "14vh" }}
+                          onClick={() => handlePageActive("DEFECT")}
+                        >
+                          <Col className="text-start">
+                            <h3>DEFECTIVES</h3>
+                          </Col>
+                          <Col className="text-center ms-4">
+                            <h1>{qr.DEFECT}</h1>
+                          </Col>
+                        </Row>
+                      )}
+                      {state.btnProcess ? (
+                        <Row
+                          className={`btn-defect btn p-2 rounded d-flex align-items-center shadow mt-1 disabled`}
+                          style={{ height: "14vh" }}
+                        >
+                          <Col>
+                            <Spinner
+                              animation="border"
+                              role="status"
+                              variant="secondary"
+                            >
+                              <span className="visually-hidden">
+                                Loading...
+                              </span>
+                            </Spinner>
+                          </Col>
+                        </Row>
+                      ) : (
+                        <Row
+                          className={`btn-defect btn p-2 rounded d-flex align-items-center shadow mt-1 ${
+                            bdl.ORDER_QTY === parseInt(qr.TOTAL_CHECKED)
+                              ? "disabled"
+                              : ""
+                          }`}
+                          style={{ height: "14vh" }}
+                          onClick={() => postOutput("DEFECT_PREV")}
+                        >
+                          <Col className="text-start">
+                            <h3>DEFECT PREVIOUS </h3>
+                          </Col>
+                        </Row>
+                      )}
                     </Col>
                     <Col sm={3}>
                       <Row
@@ -205,7 +290,9 @@ const MainBtnQcInpt = () => {
                           <Button
                             variant="light"
                             className="shadow-sm border"
-                            disabled={!bdl.UNDO_DEFECT || qr.DEFECT === "0"}
+                            disabled={
+                              !undos.UNDO_DEFECT || undos.UNDO_DEFECT === 0
+                            }
                             onClick={() => handleUndoDefRejGood("DEFECT")}
                           >
                             <ImUndo2 size={40} className="undo-btn" />
@@ -224,20 +311,41 @@ const MainBtnQcInpt = () => {
                 <Card.Body>
                   <Row>
                     <Col sm={9}>
-                      <Row
-                        className={`btn-repaird btn p-3 rounded d-flex align-items-center shadow ${
-                          state.dataDefectForRep.length === 0 ? "disabled" : ""
-                        }`}
-                        style={{ height: "30vh" }}
-                        onClick={() => handlePageActive("REPAIRED")}
-                      >
-                        <Col className="text-start">
-                          <h3>REPAIRED</h3>
-                        </Col>
-                        <Col className="text-center ms-4">
-                          <h1>{qr.REPAIRED}</h1>
-                        </Col>
-                      </Row>
+                      {state.btnProcess ? (
+                        <Row
+                          className={`btn-repaird btn p-3 rounded d-flex align-items-center shadow disabled`}
+                          style={{ height: "30vh" }}
+                        >
+                          <Col className="text-center">
+                            <Spinner
+                              animation="border"
+                              role="status"
+                              variant="light"
+                            >
+                              <span className="visually-hidden">
+                                Loading...
+                              </span>
+                            </Spinner>
+                          </Col>
+                        </Row>
+                      ) : (
+                        <Row
+                          className={`btn-repaird btn p-3 rounded d-flex align-items-center shadow ${
+                            state.dataDefectForRep.length === 0
+                              ? "disabled"
+                              : ""
+                          }`}
+                          style={{ height: "30vh" }}
+                          onClick={() => handlePageActive("REPAIRED")}
+                        >
+                          <Col className="text-start">
+                            <h3>REPAIRED</h3>
+                          </Col>
+                          <Col className="text-center ms-4">
+                            <h1>{qr.REPAIRED}</h1>
+                          </Col>
+                        </Row>
+                      )}
                     </Col>
                     <Col sm={3}>
                       <Row
@@ -248,7 +356,9 @@ const MainBtnQcInpt = () => {
                           <Button
                             variant="light"
                             className="shadow-sm border"
-                            disabled={!bdl.UNDO_REPAIR || qr.REPAIRED === "0"}
+                            disabled={
+                              !undos.UNDO_REPAIR || undos.UNDO_REPAIR === 0
+                            }
                             onClick={() => handleUndoDefRejGood("REPAIR")}
                           >
                             <ImUndo2 size={40} className="undo-btn" />
