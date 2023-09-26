@@ -747,15 +747,15 @@ export const QcEndProvider = ({ children }) => {
   //function get spec list
   async function getSpectList(bdl, schdId) {
     const { ORDER_SIZE } = bdl;
-    const { ORDER_NO } = schdId;
-
+    const { ORDER_NO, SCHD_ID } = schdId;
+    const unixSize = encodeURIComponent(ORDER_SIZE);
     await axios
-      .get(`/measurement/spec-list/${ORDER_NO}/${ORDER_SIZE}`)
+      .get(`/measurement/spec-list/${ORDER_NO}/${unixSize}`)
       .then((res) => {
         if (res.status === 200 && res.data.data.length > 0) {
           dispatch({
             type: _ACTION._SET_QR_MES_SELECT,
-            payload: { data: { ...bdl, ACT_SCHD_ID: schdId } },
+            payload: { data: { ...bdl, ACT_SCHD_ID: SCHD_ID } },
           });
           dispatch({
             type: _ACTION._GET_MEASUREMENT_SPECT,

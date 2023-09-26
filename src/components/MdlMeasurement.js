@@ -141,6 +141,7 @@ const MdlMeasurement = ({ handleClose }) => {
     const findArrIdx = dataTemp.findIndex(
       (data) => data.POM_ID === spec.POM_ID && data.MES_SEQ === seq
     );
+
     if (dataTemp.length === 0) return setDataTemp([newval]);
     if (findArrIdx < 0) {
       newtemp.push(newval);
@@ -259,9 +260,10 @@ const MdlMeasurement = ({ handleClose }) => {
 
   async function getDataMeasOut(dataBundleSel, siteName, lineName) {
     const { BARCODE_SERIAL, ORDER_SIZE } = dataBundleSel;
+    const unixSize = encodeURIComponent(ORDER_SIZE);
     await axios
       .get(
-        `/measurement/endline-out/${BARCODE_SERIAL}/${siteName}/${lineName}/${ORDER_SIZE}`
+        `/measurement/endline-out/${BARCODE_SERIAL}/${siteName}/${lineName}/${unixSize}`
       )
       .then((res) => {
         if (res.status === 200) {

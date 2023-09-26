@@ -51,6 +51,14 @@ const TrPlanSize = ({
     }
   }
 
+  function CheckDisabled(bdl) {
+    // const checkMeas = measCountVal(state.measCheckCount, bdl.BARCODE_SERIAL);
+    // console.log(checkMeas);
+    if (CheckNilai(bdl.BAL_TRANSFER) < 1 || bdl.RETURN_STATUS !== null) {
+      return true;
+    }
+  }
+
   return (
     <>
       {dataPlanBySize?.length !== 0 ? (
@@ -160,7 +168,7 @@ const TrPlanSize = ({
                                   size="sm"
                                   variant="outline-secondary"
                                   className="me-2"
-                                  disabled={bdl.BAL_TRANSFER === "0"}
+                                  disabled={bdl.TRANSFER_QTY === bdl.ORDER_QTY}
                                   onClick={() => getSpectList(bdl, plan)}
                                 >
                                   <FcRuler size={16} />
@@ -168,10 +176,7 @@ const TrPlanSize = ({
                                 <Button
                                   size="sm"
                                   // className="btn-transfer"
-                                  disabled={
-                                    CheckNilai(bdl.BAL_TRANSFER) < 1 ||
-                                    bdl.RETURN_STATUS !== null
-                                  }
+                                  disabled={CheckDisabled(bdl)}
                                   onClick={() => handlMdlTfrActv(bdl)}
                                 >
                                   <BiTransferAlt size={16} />
