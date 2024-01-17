@@ -180,7 +180,7 @@ const ListPlanning = ({
                       {/* <td>{plan.PRODUCT_ITEM_DESCRIPTION}</td> */}
                       <td>{plan.ITEM_COLOR_NAME}</td>
                       <td>{getTimeFromMins(plan.PLAN_WH)}</td>
-                      <MP plan={plan} />
+                      <MP plan={plan} prodType={prodType} />
                       <td>{findTarget(plan, prodType)}</td>
                       <td>{findOutput(plan, prodType)}</td>
                       <td>
@@ -283,11 +283,21 @@ const ListPlanning = ({
   );
 };
 
-const MP = memo(({ plan }) => {
-  if (plan.ACT_MP == null) {
-    return <td className="text-warning">{plan.PLAN_MP}</td>;
+const MP = memo(({ plan, prodType }) => {
+  let mpPlan = plan.PLAN_MP;
+  let actMp = plan.ACT_MP;
+  if (prodType === "ot") {
+    mpPlan = plan.PLAN_MP_OT;
+    actMp = plan.ACT_MP_OT;
   }
-  return <td>{plan.ACT_MP}</td>;
+  if (prodType === "extOt") {
+    mpPlan = plan.PLAN_MP_X_OT;
+    actMp = plan.ACT_MP_X_OT;
+  }
+  if (!actMp) {
+    return <td className="text-warning">{mpPlan}</td>;
+  }
+  return <td>{actMp}</td>;
 });
 
 export default ListPlanning;
