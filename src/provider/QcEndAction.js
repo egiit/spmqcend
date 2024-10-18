@@ -34,4 +34,7 @@ export const _ACTION = {
   _GET_QR_SPLIT: "getQrSplitList",
   _GET_DATA_LOG: "getDataLog",
   _SET_ACTV_BTN_PROCESS: "setAcativeBtnProcess",
+  _SET_MDL_DETAIL_TRUE: "setMdlTrue",
+  _SET_MDL_DTL_SELECT: "_SET_MDL_DTL_SELECT",
+  _GET_QR_DETAIL: "_GET_QR_DETAIL",
 };

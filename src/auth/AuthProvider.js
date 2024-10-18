@@ -17,11 +17,12 @@ export const AuthProvider = ({ children }) => {
   const [lineName, setLineName] = useState("");
   const [idSiteLine, setIdSiteLine] = useState("");
   const [shift, setShift] = useState("");
+  const [groupId, setGroupId] = useState("");
 
   useEffect(() => {
     const refreshToken = async () => {
       return await axios
-        .get(`/tokenQc`)
+        .get(`/tokenQc13`)
         .then((response) => {
           setToken(response.data.accessToken);
           const decoded = jwt_decode(response.data.accessToken);
@@ -35,6 +36,7 @@ export const AuthProvider = ({ children }) => {
           setLineName(decoded.lineName);
           setIdSiteLine(decoded.idSiteLine);
           setShift(decoded.shift);
+          setGroupId(decoded.groupId);
           // navigate("maininput");
         })
         .catch((error) => {
@@ -67,6 +69,7 @@ export const AuthProvider = ({ children }) => {
     lineName,
     idSiteLine,
     shift,
+    groupId,
   };
 
   return (

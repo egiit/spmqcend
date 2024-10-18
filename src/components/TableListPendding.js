@@ -1,20 +1,19 @@
 import { useState } from "react";
 import { Button, Table, Row, Col, Form } from "react-bootstrap";
-import { IoMdDoneAll } from "react-icons/io";
+// import { IoMdDoneAll } from "react-icons/io";
 // import { GiCheckMark } from "react-icons/gi";
 // import { RiFileEditFill } from "react-icons/ri";
-import { BiTransferAlt } from "react-icons/bi";
 // import { BsViewList } from "react-icons/bs";
 import React, { useContext } from "react";
 import { QcEndlineContex } from "../provider/QcEndProvider";
-import { ImUndo2 } from "react-icons/im";
-import { TbArrowsSplit } from "react-icons/tb";
-import CheckNilai from "../partial/CheckNilai";
+// import { ImUndo2 } from "react-icons/im";
+// import { TbArrowsSplit } from "react-icons/tb";
+// import CheckNilai from "../partial/CheckNilai";
 import { totalCol } from "../partial/TotalCol";
+import { MdOutlineViewCarousel } from "react-icons/md";
 
 const TableListPendding = () => {
-  const { state, handlMdlTfrActv, handlMdlReturn } =
-    useContext(QcEndlineContex);
+  const { state, hdlOpnMdlQrDetail } = useContext(QcEndlineContex);
   const [query, setQuery] = useState({});
 
   function handleFilter(e, key) {
@@ -38,14 +37,14 @@ const TableListPendding = () => {
   //   return null;
   // }
 
-  function checkTfr(bdl) {
-    if (parseInt(bdl.TRANSFER_QTY) === bdl.ORDER_QTY) {
-      return <IoMdDoneAll size={20} color="#00a814" />;
-    } else {
-      if (bdl.COUNT_SPLIT) return <TbArrowsSplit size={22} color="#A30000" />;
-      return null;
-    }
-  }
+  // function checkTfr(bdl) {
+  //   if (parseInt(bdl.TRANSFER_QTY) === bdl.ORDER_QTY) {
+  //     return <IoMdDoneAll size={20} color="#00a814" />;
+  //   } else {
+  //     if (bdl.COUNT_SPLIT) return <TbArrowsSplit size={22} color="#A30000" />;
+  //     return null;
+  //   }
+  // }
 
   //function filter data
   function filterData(data, filters) {
@@ -97,17 +96,17 @@ const TableListPendding = () => {
             <th>SIZE</th>
             <th>QTY</th>
             {/* <th>SCH DATE</th> */}
-            <th>CHECK</th>
+            {/* <th>CHECK</th>
             <th>GOOD</th>
-            <th>DEFECT/BS</th>
+            <th>DEFECT/BS</th> */}
             {/* <th>REPAIRED</th> */}
             {/* <th>BS</th> */}
-            <th>BALANCE</th>
+            {/* <th>BALANCE</th> */}
             {/* <th>STATUS</th> */}
             {/* <th>MEAS</th> */}
             <th>TFR QTY</th>
-            <th>TFR STATUS</th>
-            <th>ACT</th>
+            {/*<th>TFR STATUS</th> */}
+            <th>VIEW</th>
           </tr>
           <tr className="table-light text-center align-middle">
             <th style={{ maxWidth: "50px" }}>
@@ -171,7 +170,7 @@ const TableListPendding = () => {
                 "ORDER_QTY"
               )}
             </th>
-            <th>
+            {/* <th>
               {totalCol(
                 filterData(state.dataPlanBySizePend, query),
                 "TOTAL_CHECKED"
@@ -188,14 +187,14 @@ const TableListPendding = () => {
             </th>
             <th>
               {totalCol(filterData(state.dataPlanBySizePend, query), "BALANCE")}
-            </th>
+            </th> */}
             <th>
               {totalCol(
                 filterData(state.dataPlanBySizePend, query),
                 "TRANSFER_QTY"
               )}
             </th>
-            <th></th>
+            {/* <th></th> */}
             <th></th>
           </tr>
         </thead>
@@ -210,25 +209,25 @@ const TableListPendding = () => {
                 <td>{bdl.ITEM_COLOR_NAME}</td>
                 <td>{bdl.ORDER_SIZE}</td>
                 <td>{bdl.ORDER_QTY}</td>
-                <td>{bdl.TOTAL_CHECKED}</td>
+                {/* <td>{bdl.TOTAL_CHECKED}</td>
                 <td>{bdl.GOOD}</td>
                 <td>{bdl.DEFECT_BS}</td>
-                <td>{bdl.BALANCE}</td>
+                <td>{bdl.BALANCE}</td> */}
                 {/* <td>{bdl.SCHD_PROD_DATE}</td> */}
                 {/* <td>
                   {measCountVal(state.measCheckCount, bdl.BARCODE_SERIAL)}
                 </td> */}
                 <td>{bdl.TRANSFER_QTY}</td>
-                <td>{checkTfr(bdl)}</td>
+                {/* <td>{checkTfr(bdl)}</td> */}
                 <td>
-                  <Button
+                  {/* <Button
                     size="sm"
                     className="btn-transfer me-2"
                     disabled={bdl.TOTAL_CHECKED !== "0"}
                     onClick={() => handlMdlReturn(bdl)}
                   >
                     <ImUndo2 size={16} />
-                  </Button>
+                  </Button> */}
                   {/* <Button
                       size="sm"
                       variant="outline-secondary"
@@ -241,13 +240,14 @@ const TableListPendding = () => {
                   <Button
                     size="sm"
                     // className="btn-transfer"
-                    disabled={
-                      CheckNilai(bdl.BAL_TRANSFER) < 1 ||
-                      bdl.RETURN_STATUS !== null
-                    }
-                    onClick={() => handlMdlTfrActv(bdl)}
+                    // disabled={
+                    //   CheckNilai(bdl.BAL_TRANSFER) < 1 ||
+                    //   bdl.RETURN_STATUS !== null
+                    // }
+                    // onClick={() => handlMdlTfrActv(bdl)}
+                    onClick={() => hdlOpnMdlQrDetail(bdl)}
                   >
-                    <BiTransferAlt size={16} />
+                    <MdOutlineViewCarousel size={16} />
                   </Button>
                 </td>
               </tr>

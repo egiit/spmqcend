@@ -12,8 +12,16 @@ const intialqrqty = { BS: 0, DEFECT: 0, REPAIRED: 0, RTT: 0, TOTAL_CHECKED: 0 };
 
 export const QcEndProvider = ({ children }) => {
   const { value } = useContext(AuthContext);
-  const { userId, qcName, qcType, siteName, lineName, shift, idSiteLine } =
-    value;
+  const {
+    userId,
+    groupId,
+    qcName,
+    qcType,
+    siteName,
+    lineName,
+    shift,
+    idSiteLine,
+  } = value;
 
   const reducer = _QCReducer;
 
@@ -56,7 +64,10 @@ export const QcEndProvider = ({ children }) => {
     qrSplitList: [],
     undoCount: {},
     dataLog: [],
+    dataQrDtlSelect: {},
+    dataQrDetail: {},
     btnProcess: false,
+    mdlDetailQr: false,
     // lineActive: "",
   };
 
@@ -254,6 +265,7 @@ export const QcEndProvider = ({ children }) => {
       })
       .catch((err) => flash(err.message, 2000, "danger"));
   }
+
   //function nilai Undo
   async function getUndoCount(barcodeSerial) {
     await axios
@@ -275,6 +287,8 @@ export const QcEndProvider = ({ children }) => {
       if (state.dataDefectForRep.length === 0) {
         return flash("Tidak ada data repaired !", 2000, "danger");
       }
+
+      getListDefForRep(state.planSizeSelect.BARCODE_SERIAL);
     }
     dispatch({
       type: _ACTION._SET_DEF_PAGE,
@@ -301,6 +315,7 @@ export const QcEndProvider = ({ children }) => {
       ENDLINE_SEQUANCE: parseInt(qr.TOTAL_CHECKED) + 1,
       ENDLINE_TIME: moment().format("HH:mm:ss"),
       ENDLINE_ADD_ID: userId,
+      GROUP_ID: groupId,
     };
 
     const qtyPush = parseInt(qr.TOTAL_CHECKED) + dataBasic.ENDLINE_OUT_QTY;
@@ -424,6 +439,7 @@ export const QcEndProvider = ({ children }) => {
     const dataRepair = deftoRepair.map((rep) => ({
       ...rep,
       ENDLINE_ADD_ID: userId,
+      GROUP_ID: groupId,
       ENDLINE_ACT_RPR_SCHD_ID: state.schdSelected.SCHD_ID,
       PLANSIZE_ID: state.planSizeSelect.PLANSIZE_ID,
     }));
@@ -581,6 +597,7 @@ export const QcEndProvider = ({ children }) => {
     const qrData = {
       ...bdl,
       SEWING_SCAN_BY: userId,
+      GROUP_ID: groupId,
       SEWING_SCAN_LOCATION: siteName,
     };
 
@@ -702,6 +719,7 @@ export const QcEndProvider = ({ children }) => {
       TYPE_PROD: findType(typeProd),
       REMARK: remaksText,
       PROD_DATE: state.planForRemark.SCHD_PROD_DATE,
+      GROUP_ID: groupId,
       ADD_ID: userId,
       MOD_ID: userId,
     };
@@ -859,6 +877,46 @@ export const QcEndProvider = ({ children }) => {
       .catch((err) => console.log(err));
   }
 
+  async function hdlOpnMdlQrDetail(bdl) {
+    await axios
+      .get(`/qc-endline/qr-selected/${bdl.BARCODE_SERIAL}`)
+      .then((res) => {
+        if (res.status === 200) {
+          if (res.data.data.length > 0) {
+            const datas = res.data.data[0];
+            const dataQr = {
+              ...datas,
+              GOOD: CheckNilai(datas.RTT) + CheckNilai(datas.REPAIRED),
+            };
+            dispatch({
+              type: _ACTION._GET_QR_DETAIL,
+              payload: { data: dataQr },
+            });
+            dispatch({
+              type: _ACTION._SET_MDL_DTL_SELECT,
+              payload: { data: bdl },
+            });
+          }
+          dispatch({
+            type: _ACTION._SET_MDL_DETAIL_TRUE,
+            payload: true,
+          });
+        }
+      })
+      .catch((err) => flash(err.message, 2000, "danger"));
+  }
+
+  function clsMdlQrDetail() {
+    dispatch({
+      type: _ACTION._SET_MDL_DETAIL_TRUE,
+      payload: false,
+    });
+    dispatch({
+      type: _ACTION._GET_QR_DETAIL,
+      payload: { data: {} },
+    });
+  }
+
   return (
     <QcEndlineContex.Provider
       value={{
@@ -887,6 +945,7 @@ export const QcEndProvider = ({ children }) => {
         handleSplitAndTfr,
         handleAddRemark,
         getSpectList,
+        getListDefForRep,
         mdlMasurement,
         handlMdlReturn,
         closedModalRetr,
@@ -894,6 +953,8 @@ export const QcEndProvider = ({ children }) => {
         measCkCountRfrs,
         measCountVal,
         handleTrfrQrSplit,
+        hdlOpnMdlQrDetail,
+        clsMdlQrDetail,
       }}
     >
       {children}

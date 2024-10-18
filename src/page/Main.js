@@ -15,6 +15,7 @@ import MdlMeasurement from "../components/MdlMeasurement";
 import MdlConfReturn from "../components/MdlConfReturn";
 import { flash } from "react-universal-flash";
 import axios from "../axios/axios";
+import MdlDetailQr from "../components/MdlDetailQr";
 // import LisPlanningExtOt from "../components/LisPlanningExtOt";
 
 const Main = () => {
@@ -239,6 +240,7 @@ const Main = () => {
         />
       ) : null}
       {state.mdlMeas ? <MdlMeasurement handleClose={handleCloseMeas} /> : null}
+      {state.mdlDetailQr ? <MdlDetailQr /> : null}
     </>
   );
 };

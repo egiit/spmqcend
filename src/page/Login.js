@@ -48,7 +48,7 @@ const Login = () => {
     try {
       e.preventDefault();
       await axios
-        .post("/loginqc", {
+        .post("/loginqc13", {
           QC_USERNAME: username,
           QC_USER_PASSWORD: password,
         })
@@ -84,7 +84,7 @@ const Login = () => {
           <Row className="d-flex align-items-center justify-content-center h-80 mt-3 mt-lg-5">
             <Col className="col-10 col-md-8 col-xl-6 h-100 mt-1 mt-lg-5">
               <Row className="rounded-3 bg-light p-0 shadow cards-form">
-                <Col className="py-md-4  d-none d-md-block">
+                <Col className="cards-logo py-md-4  d-none d-md-block ">
                   <div className="d-block text-center my-md-4 mt-xl-5 ">
                     <img
                       className="img-fluid"
@@ -102,7 +102,7 @@ const Login = () => {
                     </h2>
                   </div>
                   <div className="text-center text-muted fst-italic font-weight-light mt-5 text-version">
-                    Version 1.2
+                    Version 1.3
                   </div>
                 </Col>
                 <Col className="cards-login rounded-end py-5 px-3">

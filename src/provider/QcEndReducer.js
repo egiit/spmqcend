@@ -177,6 +177,21 @@ export const _QCReducer = (state, action) => {
         ...state,
         btnProcess: action.payload,
       };
+    case _ACTION._SET_MDL_DETAIL_TRUE:
+      return {
+        ...state,
+        mdlDetailQr: action.payload,
+      };
+    case _ACTION._SET_MDL_DTL_SELECT:
+      return {
+        ...state,
+        dataQrDtlSelect: action.payload.data,
+      };
+    case _ACTION._GET_QR_DETAIL:
+      return {
+        ...state,
+        dataQrDetail: action.payload.data,
+      };
     default:
       return state;
   }
