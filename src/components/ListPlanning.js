@@ -157,6 +157,7 @@ const ListPlanning = ({
                         <Button
                           size="sm"
                           variant="primary"
+                          disabled={plan.ACT_MP}
                           onClick={() => selectHc(plan, prodType)}
                         >
                           <FaUserPlus size="20" color="#FFF" />
