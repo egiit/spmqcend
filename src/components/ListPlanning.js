@@ -125,6 +125,17 @@ const ListPlanning = ({
     if (prodType === "ot") return "O";
     if (prodType === "extOt") return "XO";
   }
+
+  function checkDisMp(plan, prodType) {
+    let actMp = plan.ACT_MP;
+    if (prodType === "ot") {
+      actMp = plan.ACT_MP_OT;
+    }
+    if (prodType === "extOt") {
+      actMp = plan.ACT_MP_X_OT;
+    }
+    return actMp
+  }
   return (
     <>
       {state.dataDailyPlan
@@ -157,7 +168,7 @@ const ListPlanning = ({
                         <Button
                           size="sm"
                           variant="primary"
-                          disabled={plan.ACT_MP}
+                          disabled={checkDisMp(plan, prodType)}
                           onClick={() => selectHc(plan, prodType)}
                         >
                           <FaUserPlus size="20" color="#FFF" />
