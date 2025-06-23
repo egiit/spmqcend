@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
         .then((response) => {
           setToken(response.data.accessToken);
           const decoded = jwt_decode(response.data.accessToken);
-          // console.log(decoded);
+          localStorage.setItem("token", response.data.accessToken);
           setUserId(decoded.userId);
           setUsername(decoded.username);
           setQcName(decoded.qcName);
@@ -37,14 +37,17 @@ export const AuthProvider = ({ children }) => {
           setIdSiteLine(decoded.idSiteLine);
           setShift(decoded.shift);
           setGroupId(decoded.groupId);
-          // navigate("maininput");
         })
         .catch((error) => {
           if (error.response) return navigate("/");
         });
     };
-    refreshToken();
-  }, [navigate]);
+    setInterval(() => {
+      if (localStorage.getItem("token")) {
+        refreshToken();
+      }
+    }, 30 * 60 * 1000);
+  }, []);
 
   const initialState = { spin: false };
   const reducer = (state, action) => {

@@ -19,6 +19,7 @@ const MainLayout = () => {
     await axios
       .delete("/LogoutQc")
       .then(() => {
+        localStorage.removeItem('token')
         navigate("/");
       })
       .catch((error) => {

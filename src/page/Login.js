@@ -31,8 +31,9 @@ const Login = () => {
           if (error.response) return "";
         });
     };
+    
     cekLogin();
-  }, [navigate]);
+  }, []);
 
   const onChangeUsername = (e) => {
     const value = e.target.value;
@@ -53,6 +54,7 @@ const Login = () => {
           QC_USER_PASSWORD: password,
         })
         .then((response) => {
+          localStorage.setItem("token", response.data.accessToken);
           // const decode = jwtDecode(response.data.accessToken);
 
           // if (decode.userPath) {
