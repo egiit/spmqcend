@@ -12,6 +12,7 @@ instance.defaults.headers.common["Content-Type"] = "multipart/form-data";
 
 instance.interceptors.request.use(
   function (config) {
+    config.headers["Authorization"] = `sumbiri ${localStorage.getItem("token")}`;
     return config;
   },
   function (error) {
@@ -25,9 +26,17 @@ instance.interceptors.response.use(
   function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
+    if (response.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
     return response;
   },
   function (error) {
+    if (error.response.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     return Promise.reject(error);

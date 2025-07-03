@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
         .then((response) => {
           setToken(response.data.accessToken);
           const decoded = jwt_decode(response.data.accessToken);
+          localStorage.setItem("token", response.data.accessToken);
           // console.log(decoded);
           setUserId(decoded.userId);
           setUsername(decoded.username);

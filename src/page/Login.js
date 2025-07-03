@@ -20,6 +20,7 @@ const Login = () => {
       return await axios
         .get("/tokenQc")
         .then((response) => {
+          localStorage.setItem("token", response.data.accessToken);
           // const decode = jwtDecode(response.data.accessToken);
 
           // if (decode.userPath) {
@@ -53,6 +54,7 @@ const Login = () => {
           QC_USER_PASSWORD: password,
         })
         .then((response) => {
+          localStorage.setItem("token", response.data.accessToken);
           // const decode = jwtDecode(response.data.accessToken);
 
           // if (decode.userPath) {
