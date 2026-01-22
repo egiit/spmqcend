@@ -607,7 +607,6 @@ export const QcEndProvider = ({ children }) => {
         const { MASTER_TROLLEY_ID } = res.data.data;
         flash(`Terdapat Trolley ID ${MASTER_TROLLEY_ID}`, 2000, "success");
       }
-console.log( res.data.data);
 
     const qrData = {
       ...bdl,
@@ -689,8 +688,21 @@ console.log( res.data.data);
     //check balance transfer
     if (parseInt(mainqr.BAL_TRANSFER) < qrTfr.NEW_QTY)
       return flash("Tidak ada balance GOOD untuk ditransfer", 2000, "danger");
+
+    const res = await axios.get(
+      `/qc-endline/trolley-sewing-out/${siteName}/${lineName}`
+    );
+
+    const qrData = {
+      ...qrTfr,
+      SEWING_SCAN_BY: userId,
+      GROUP_ID: groupId,
+      SEWING_SCAN_LOCATION: siteName,
+      TROLLEY_ID : res.data.data.TROLLEY_ID,
+    };
+
     await axios
-      .post("/qc-endline/qr/split-transfer-one2", qrTfr)
+      .post("/qc-endline/qr/split-transfer-one2", qrData)
       .then((res) => {
         if (res.status === 200) {
           flash(res.data.message, 2000, res.data.qrstatus);
