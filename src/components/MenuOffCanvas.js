@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Row, Col, Button, Offcanvas } from "react-bootstrap";
 import { GrRefresh, GrLogout } from "react-icons/gr";
 import { QcEndlineContex } from "../provider/QcEndProvider";
@@ -6,10 +6,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "../axios/axios";
 import { _ACTION } from "../provider/QcEndAction";
 import { flash } from "react-universal-flash";
+import FeedbackSystem from "./FeedbackSystem";
 
 const MenuOffCanvas = ({ show, handleClose, logout }) => {
-  const { refrehAll, state, idSiteLine, dispatch, siteName, lineName } =
-    useContext(QcEndlineContex);
+  const { refrehAll, state, idSiteLine, dispatch, siteName, lineName } = useContext(QcEndlineContex);
+
+  const [modalFeedback, setModalFeedback] = useState(false)
   const navigate = useNavigate();
 
   const handleNavigate = (e, link) => {
@@ -68,6 +70,8 @@ const MenuOffCanvas = ({ show, handleClose, logout }) => {
   };
 
   return (
+    <>
+    {modalFeedback && <FeedbackSystem show={true} handleClose={() => setModalFeedback(false)}/>}
     <Offcanvas show={show} onHide={handleClose} placement="end">
       <Offcanvas.Header closeButton className="pb-1">
         <Offcanvas.Title>SUMMIT-QC End Line</Offcanvas.Title>
@@ -93,11 +97,13 @@ const MenuOffCanvas = ({ show, handleClose, logout }) => {
             <Button variant="secondary" onClick={(e) => handleOpenLog(e)}>
               Input Log
             </Button>
+            <hr />
+            <Button variant="warning" onClick={() => setModalFeedback(true)}>Bantuan sistem</Button>
           </div>
         </div>
         <div className="d-grid mt-2">
-          <Button variant="warning" onClick={() => logout()}>
-            logout <GrLogout size={20} />
+          <Button variant="danger" onClick={() => logout()}>
+            logout <GrLogout size={20} color="white" />
           </Button>
         </div>
         <Row>
@@ -105,6 +111,7 @@ const MenuOffCanvas = ({ show, handleClose, logout }) => {
         </Row>
       </Offcanvas.Body>
     </Offcanvas>
+    </>
   );
 };
 
