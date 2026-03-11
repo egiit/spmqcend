@@ -137,7 +137,7 @@ const FeedbackSystem = ({ show, handleClose }) => {
                                         as="textarea"
                                         rows={5}
                                         className="aduan-modal-textarea"
-                                        placeholder="Contoh: Maaf salah tab output untuk sytle ..., tolong di undo sekian ..."
+                                        placeholder="Contoh: Salah tab output untuk sytle ..., tolong di undo qty sekian ..."
                                         value={complaintText}
                                         onChange={(e) => setComplaintText(e.target.value)}
                                     />
