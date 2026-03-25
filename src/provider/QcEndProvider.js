@@ -594,26 +594,11 @@ export const QcEndProvider = ({ children }) => {
       return flash("Tidak ada balance GOOD untuk ditransfer", 2000, "danger");
     }
     
-      const res = await axios.get(
-        `/qc-endline/trolley-sewing-out/${siteName}/${lineName}`
-      );
-
-      if (res.status === 202) {
-        flash("Tidak Terdapat Trolley pada Line Station", 2000, "danger");
-        return; // BENAR-BENAR KELUAR DARI FUNCTION
-      }
-
-      if (res.status === 200) {
-        const { MASTER_TROLLEY_ID } = res.data.data;
-        flash(`Terdapat Trolley ID ${MASTER_TROLLEY_ID}`, 2000, "success");
-      }
-
     const qrData = {
       ...bdl,
       SEWING_SCAN_BY: userId,
       GROUP_ID: groupId,
       SEWING_SCAN_LOCATION: siteName,
-      TROLLEY_ID : res.data.data.TROLLEY_ID,
     };
 
     dispatch({
@@ -670,7 +655,7 @@ export const QcEndProvider = ({ children }) => {
     };
 
     await axios
-      .post("/qc/endline/qr/transfer2", qrTfrMain)
+      .post("/qc/endline/qr/transfer", qrTfrMain)
       .then((res) => {
         if (res.status === 200) {
           flash(res.data.message, 2000, res.data.qrstatus);
@@ -689,20 +674,15 @@ export const QcEndProvider = ({ children }) => {
     if (parseInt(mainqr.BAL_TRANSFER) < qrTfr.NEW_QTY)
       return flash("Tidak ada balance GOOD untuk ditransfer", 2000, "danger");
 
-    const res = await axios.get(
-      `/qc-endline/trolley-sewing-out/${siteName}/${lineName}`
-    );
-
     const qrData = {
       ...qrTfr,
       SEWING_SCAN_BY: userId,
       GROUP_ID: groupId,
       SEWING_SCAN_LOCATION: siteName,
-      TROLLEY_ID : res.data.data.TROLLEY_ID,
     };
 
     await axios
-      .post("/qc-endline/qr/split-transfer-one2", qrData)
+      .post("/qc-endline/qr/split-transfer-one", qrData)
       .then((res) => {
         if (res.status === 200) {
           flash(res.data.message, 2000, res.data.qrstatus);
