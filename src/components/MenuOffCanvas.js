@@ -74,7 +74,7 @@ const MenuOffCanvas = ({ show, handleClose, logout }) => {
     {modalFeedback && <FeedbackSystem show={true} handleClose={() => setModalFeedback(false)}/>}
     <Offcanvas show={show} onHide={handleClose} placement="end">
       <Offcanvas.Header closeButton className="pb-1">
-        <Offcanvas.Title>SUMMIT-QC End Line</Offcanvas.Title>
+        <Offcanvas.Title>SUMMIT-QC End Line with AGV Integration</Offcanvas.Title>
       </Offcanvas.Header>
       <Offcanvas.Body className="pt-1">
         <div className="d-grid">
