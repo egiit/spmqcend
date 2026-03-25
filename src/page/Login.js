@@ -102,7 +102,7 @@ const Login = () => {
                     </h2>
                   </div>
                   <div className="text-center text-muted fst-italic font-weight-light mt-5 text-version">
-                    Version 1.3
+                    Version 1.3 with <b>AGV Integration</b>
                   </div>
                 </Col>
                 <Col className="cards-login rounded-end py-5 px-3">
