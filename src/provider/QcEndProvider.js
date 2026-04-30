@@ -593,7 +593,8 @@ export const QcEndProvider = ({ children }) => {
     if (CheckNilai(bdl.BAL_TRANSFER) < 1) {
       return flash("Tidak ada balance GOOD untuk ditransfer", 2000, "danger");
     }
-    
+
+    try {
       const res = await axios.get(
         `/qc-endline/trolley-sewing-out/${siteName}/${lineName}`
       );
@@ -640,6 +641,9 @@ export const QcEndProvider = ({ children }) => {
           }
         });
     }
+    } catch (err) {
+        flash(err?.response?.data?.message || "Faield fetch station line")
+      }
   }
 
   //function untuk close modal transfer QR
@@ -689,6 +693,7 @@ export const QcEndProvider = ({ children }) => {
     if (parseInt(mainqr.BAL_TRANSFER) < qrTfr.NEW_QTY)
       return flash("Tidak ada balance GOOD untuk ditransfer", 2000, "danger");
 
+    try {
     const res = await axios.get(
       `/qc-endline/trolley-sewing-out/${siteName}/${lineName}`
     );
@@ -711,9 +716,12 @@ export const QcEndProvider = ({ children }) => {
         }
       })
       .catch((err) => {
-        flash(err.response.data.message, 2000, "danger");
+        flash(err?.response.data.message, 2000, "danger");
         closedModalTf();
       });
+      } catch (err) {
+        flash(err?.response?.data?.message || "Faield fetch station line")
+      }
   }
 
   //function untuk confirm split dan transfer
