@@ -1,21 +1,23 @@
-import { useContext, useState } from "react";
+import { lazy, Suspense, useContext, useState } from "react";
 import { Row, Col, Button, Offcanvas } from "react-bootstrap";
 import { GrRefresh, GrLogout } from "react-icons/gr";
 import { QcEndlineContex } from "../provider/QcEndProvider";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "../axios/axios";
 import { _ACTION } from "../provider/QcEndAction";
 import { flash } from "react-universal-flash";
-import FeedbackSystem from "./FeedbackSystem";
+const FeedbackSystem = lazy(() => import("./FeedbackSystem"));
 
 const MenuOffCanvas = ({ show, handleClose, logout }) => {
   const { refrehAll, state, idSiteLine, dispatch, siteName, lineName } = useContext(QcEndlineContex);
 
   const [modalFeedback, setModalFeedback] = useState(false)
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const handleNavigate = (e, link) => {
     e.stopPropagation();
+    if (link === "/maininput" && /^\/maininput\/?$/.test(pathname)) refrehAll();
     navigate(link);
     handleClose();
   };
@@ -71,7 +73,11 @@ const MenuOffCanvas = ({ show, handleClose, logout }) => {
 
   return (
     <>
-    {modalFeedback && <FeedbackSystem show={true} handleClose={() => setModalFeedback(false)}/>}
+    {modalFeedback && (
+      <Suspense fallback={<div className="position-fixed bottom-0 start-0 bg-light p-2" role="status" style={{ zIndex: 1060 }}>Memuat bantuan...</div>}>
+        <FeedbackSystem show={true} handleClose={() => setModalFeedback(false)} />
+      </Suspense>
+    )}
     <Offcanvas show={show} onHide={handleClose} placement="end">
       <Offcanvas.Header closeButton className="pb-1">
         <Offcanvas.Title>SUMMIT-QC End Line</Offcanvas.Title>
@@ -87,9 +93,15 @@ const MenuOffCanvas = ({ show, handleClose, logout }) => {
           <div className="d-grid gap-2 border rounded bg-light px-1 py-2">
             <Button
               variant="primary"
-              onClick={(e) => handleNavigate(e, "maininput")}
+              onClick={(e) => handleNavigate(e, "/maininput")}
             >
               Main Input
+            </Button>
+            <Button
+              variant="dark"
+              onClick={(e) => handleNavigate(e, "/confirmsewing")}
+            >
+              Confirm Sewing IN
             </Button>
             <Button variant="success" onClick={(e) => handleOpenReport(e)}>
               Reporting
